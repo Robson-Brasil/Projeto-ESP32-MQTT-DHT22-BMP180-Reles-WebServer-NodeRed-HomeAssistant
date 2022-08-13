@@ -19,7 +19,6 @@ Versão : 6 - Alfa
 #include <WiFiUdp.h>      // Importa a Biblioteca WiFiUdp
 #include <esp_task_wdt.h> // Importa a Biblioteca do WatchDog
 #include <Arduino.h>      // ArduinoJson Library: https://github.com/bblanchon/ArduinoJson
-#include <WiFi.h>
 #include "SinricPro.h"    //SinricPro Library: https://sinricpro.github.io/esp8266-esp32-sdk/
 #include "SinricProSwitch.h"
 #include <map>
@@ -130,9 +129,9 @@ typedef struct {      // struct for the std::map below
 
 std::map<String, deviceConfig_t> devices = {
     //{deviceId, {relayPIN,  flipSwitchPIN}}
-    {device_ID_1, {  RelayPin6}},
-    {device_ID_2, {  RelayPin7}},
-    {device_ID_3, {  RelayPin8}}
+    {device_ID_1, {RelayPin6}},
+    {device_ID_2, {RelayPin7}},
+    {device_ID_3, {RelayPin8}}
         
 };
 
