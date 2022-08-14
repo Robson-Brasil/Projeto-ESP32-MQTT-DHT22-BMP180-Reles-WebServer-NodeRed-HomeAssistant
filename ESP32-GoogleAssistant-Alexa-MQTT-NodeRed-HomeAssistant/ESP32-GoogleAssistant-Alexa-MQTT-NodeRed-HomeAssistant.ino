@@ -782,7 +782,7 @@ void loop()
     else
     {
       Serial.println("Movimento Detectado");
-      MQTT.publish(motion_topic, "Movimento Detectato");
+      MQTT.publish(motion_topic, "Movimento Detectado");
       }
     }
     SinricPro.handle();
