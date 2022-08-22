@@ -60,9 +60,9 @@ unsigned long delayTime;
 int pirPin = 17;
 int val;
 
-#define ID_MQTT "ESP32-IoT" /* ID MQTT (para identificação de sessão)         \
+#define ID_MQTT "ESP32-IoT" /* ID MQTT (para identificação de sessão)           \
                             IMPORTANTE: Este deve ser único no broker (ou seja, \
-                            se um client MQTT tentar entrar com o mesmo          \
+                            se um client MQTT tentar entrar com o mesmo         \
                             ID de outro já conectado ao broker, o broker        \
                             irá fechar a conexão de um deles).*/
 
@@ -109,10 +109,10 @@ const char * SSID = "RVR 2,4GHz";               // SSID / nome da rede WI-FI que
 const char * PASSWORD = "RodrigoValRobson2021"; // Senha da rede WI-FI que deseja se conectar
 
 // Configurações do Broker MQTT
-const char * BROKER_MQTT = "192.168.15.40"; // URL do broker MQTT que se deseja utilizar
-const char * mqttUserName = "RobsonBrasil"; // MQTT UserName
-const char * mqttPwd = "LoboAlfa";          // MQTT Password
-int BROKER_PORT = 1883;                     // Porta do Broker MQTT
+const char * BROKER_MQTT  = "192.168.15.40";    // URL do broker MQTT que se deseja utilizar
+const char * mqttUserName = "RobsonBrasil";     // MQTT UserName
+const char * mqttPwd      = "LoboAlfa";         // MQTT Password
+int BROKER_PORT           = 1883;               // Porta do Broker MQTT
 
 // IP Estático
 IPAddress staticIP(192, 168, 15, 50);
