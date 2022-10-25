@@ -26,36 +26,36 @@ Versão : 6 - Alfa
 #include <map>
 
 // Tópicos do Subscribe
-const char *sub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando";  // Somente por MQTT
-const char *sub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando";        // Ligados ao Nora/MQTT
-const char *sub2 = "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Comando";        // Ligados ao Nora/MQTT
-const char *sub3 = "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Comando";        // Ligados ao Nora/MQTT
-const char *sub4 = "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando";        // Ligados ao Nora/MQTT
-const char *sub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando";        // Ligados ao Nora/MQTT
-const char *sub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando";        // Ligados ao MQTT/Alexa
-const char *sub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando";        // Ligados ao MQTT/Alexa
-const char *sub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando";        // Ligados ao MQTT/Alexa
+const char* sub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando";  // Somente por MQTT
+const char* sub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando";        // Ligados ao Nora/MQTT
+const char* sub2 = "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Comando";        // Ligados ao Nora/MQTT
+const char* sub3 = "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Comando";        // Ligados ao Nora/MQTT
+const char* sub4 = "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando";        // Ligados ao Nora/MQTT
+const char* sub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando";        // Ligados ao Nora/MQTT
+const char* sub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando";        // Ligados ao MQTT/Alexa
+const char* sub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando";        // Ligados ao MQTT/Alexa
+const char* sub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando";        // Ligados ao MQTT/Alexa
 
 // Tópicos do Publish
-const char *pub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado";  // Somente por MQTT
-const char *pub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado";        // Ligados ao Nora/MQTT
-const char *pub2 = "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado";        // Ligados ao Nora/MQTT
-const char *pub3 = "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado";        // Ligados ao Nora/MQTT
-const char *pub4 = "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado";        // Ligados ao Nora/MQTT
-const char *pub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado";        // Ligados ao Nora/MQTT
-const char *pub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado";        // Ligados ao MQTT/Alexa
-const char *pub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado";        // Ligados ao MQTT/Alexa
-const char *pub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado";        // Ligados ao MQTT/Alexa
-const char *pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                // Somente por MQTT
-const char *pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
-const char *pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
+const char*  pub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado";  // Somente por MQTT
+const char*  pub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado";        // Ligados ao Nora/MQTT
+const char*  pub2 = "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado";        // Ligados ao Nora/MQTT
+const char*  pub3 = "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado";        // Ligados ao Nora/MQTT
+const char*  pub4 = "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado";        // Ligados ao Nora/MQTT
+const char*  pub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado";        // Ligados ao Nora/MQTT
+const char*  pub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado";        // Ligados ao MQTT/Alexa
+const char*  pub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado";        // Ligados ao MQTT/Alexa
+const char*  pub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado";        // Ligados ao MQTT/Alexa
+const char*  pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                // Somente por MQTT
+const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
+const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
 
 //Tópicos do Sensor de Movimento
-const char *motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";  // Somente por MQTT
-const char *inTopic = "ESP32/MinhaCasa/QuartoRobson/inTopic";      // Somente por MQTT
-const char *outTopic = "ESP32/MinhaCasa/QuartoRobson/outTopic";    // Somente por MQTT
+const char* motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";  // Somente por MQTT
+const char* inTopic      = "ESP32/MinhaCasa/QuartoRobson/inTopic";      // Somente por MQTT
+const char* outTopic     = "ESP32/MinhaCasa/QuartoRobson/outTopic";    // Somente por MQTT
 
-float diff = 1.0;
+float diff               = 1.0;
 
 unsigned long delayTime;
 //const int MOTION_PIN = 5;
@@ -107,14 +107,14 @@ int status_todos = 0;
 DHT dht(DHTPIN, DHTTYPE);
 
 // Configurações do WIFI
-const char *SSID = "RVR 2,4GHz";                // SSID / nome da rede WI-FI que deseja se conectar
-const char *PASSWORD = "RodrigoValRobson2021";  // Senha da rede WI-FI que deseja se conectar
+const char*     SSID      = "RVR 2,4GHz";                // SSID / nome da rede WI-FI que deseja se conectar
+const char* PASSWORD      = "RodrigoValRobson2021";  // Senha da rede WI-FI que deseja se conectar
 
 // Configurações do Broker MQTT
-const char *BROKER_MQTT = "192.168.15.40";  // URL do broker MQTT que se deseja utilizar
-const char *mqttUserName = "RobsonBrasil";  // MQTT UserName
-const char *mqttPwd = "LoboAlfa";           // MQTT Password
-int BROKER_PORT = 1883;                     // Porta do Broker MQTT
+const char* BROKER_MQTT   = "192.168.15.40";  // URL do broker MQTT que se deseja utilizar
+const char* mqttUserName  = "RobsonBrasil";  // MQTT UserName
+const char* mqttPwd       = "LoboAlfa";           // MQTT Password
+int BROKER_PORT           = 1883;                     // Porta do Broker MQTT
 
 // IP Estático
 IPAddress staticIP(192, 168, 15, 50);
@@ -223,7 +223,7 @@ void setupSinricPro() {
 }
 
 // WatchDog
-hw_timer_t *timer = NULL;  // Faz o controle do temporizador (interrupção por tempo)
+hw_timer_t* timer = NULL;  // Faz o controle do temporizador (interrupção por tempo)
 
 // Função que o temporizador irá chamar, para reiniciar o ESP32
 void IRAM_ATTR resetModule() {
