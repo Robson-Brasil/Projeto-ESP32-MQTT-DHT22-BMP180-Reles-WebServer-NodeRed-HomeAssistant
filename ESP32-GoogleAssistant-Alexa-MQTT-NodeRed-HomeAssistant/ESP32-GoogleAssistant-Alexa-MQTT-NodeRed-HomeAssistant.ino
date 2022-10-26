@@ -2,28 +2,36 @@
 IoT - Automação Residencial
 Autor : Robson Brasil
 Dispositivo : ESP32 WROOM32
-Preferences--> Aditional boards Manager URLs : 
-http://arduino.esp8266.com/stable/package_esp8266com_index.json,https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-Download Board ESP32 (2.0.3): 
+Preferences--> Aditional boards Manager URLs: 
+                                   http://arduino.esp8266.com/stable/package_esp8266com_index.json,https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+Download Board ESP32 (2.0.3):
+WiFi Manager
 Broker MQTT
-Node-Red / Google Assistant-Nora https://smart-nora.eu/ / Alexa-SirincPro https://portal.sinric.pro/
-Para Instalação do Node-Red : https://nodered.org/docs/getting-started/
+Node-Red / Google Assistant-Nora:  https://smart-nora.eu/  
+Alexa-SirincPro:                   https://portal.sinric.pro/
+Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
 Home Assistant
-Para Instalação do Home Assistant : https://www.home-assistant.io/installation/
-Versão : 6 - Alfa
-Última Modificação : 22/07/2022
+Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
+Versão : 8 - Alfa
+Última Modificação : 25/10/2022
 **********************************************************************************/
 
 // Bibliotecas
-#include <WiFi.h>          // Importa a Biblioteca WiFi
-#include <PubSubClient.h>  // Importa a Biblioteca PubSubClient
-#include <DHT.h>           // Importa a Biblioteca DHT
-#include <WiFiUdp.h>       // Importa a Biblioteca WiFiUdp
-#include <esp_task_wdt.h>  // Importa a Biblioteca do WatchDog
-#include <Arduino.h>       // ArduinoJson Library: https://github.com/bblanchon/ArduinoJson
-#include "SinricPro.h"     // SinricPro Library: https://sinricpro.github.io/esp8266-esp32-sdk/
-#include "SinricProSwitch.h"
+#include <WiFi.h>               // Importa a Biblioteca WiFi
+#include <PubSubClient.h>       // Importa a Biblioteca PubSubClient
+#include <DHT.h>                // Importa a Biblioteca DHT
+#include <WiFiUdp.h>            // Importa a Biblioteca WiFiUdp
+#include <esp_task_wdt.h>       // Importa a Biblioteca do WatchDog
+#include <Arduino.h>            // ArduinoJson Library:        https://github.com/bblanchon/ArduinoJson
+#include "SinricPro.h"          // SinricPro Library:          https://sinricpro.github.io/esp8266-esp32-sdk/
+#include "SinricProSwitch.h"    // SinricPro Library:          https://sinricpro.github.io/esp8266-esp32-sdk/
 #include <map>
+#include <DNSServer.h>          // DNSServer Library:          https://github.com/zhouhan0126/DNSServer---esp32
+#include <ESPAsyncWebServer.h>  //ESPAsyncWebServer Library:   https://github.com/me-no-dev/ESPAsyncWebServer
+#include <ESPAsyncWiFiManager.h>//ESPAsyncWiFiManager Library: https://github.com/alanswx/ESPAsyncWiFiManager
+
+AsyncWebServer server(80);      //Cria os objetos dos servidores
+DNSServer dns;
 
 // Tópicos do Subscribe
 const char* sub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando";  // Somente por MQTT
@@ -47,13 +55,13 @@ const char*  pub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado";        /
 const char*  pub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado";        // Ligados ao MQTT/Alexa
 const char*  pub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado";        // Ligados ao MQTT/Alexa
 const char*  pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                // Somente por MQTT
-const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
-const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
+const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                    // Somente por MQTT
+const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";            // Somente por MQTT
 
 //Tópicos do Sensor de Movimento
-const char* motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";  // Somente por MQTT
-const char* inTopic      = "ESP32/MinhaCasa/QuartoRobson/inTopic";      // Somente por MQTT
-const char* outTopic     = "ESP32/MinhaCasa/QuartoRobson/outTopic";    // Somente por MQTT
+const char* motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";              // Somente por MQTT
+const char* inTopic      = "ESP32/MinhaCasa/QuartoRobson/inTopic";             // Somente por MQTT
+const char* outTopic     = "ESP32/MinhaCasa/QuartoRobson/outTopic";            // Somente por MQTT
 
 float diff               = 1.0;
 
@@ -68,7 +76,7 @@ int val;
                             ID de outro já conectado ao broker, o broker        \
                             irá fechar a conexão de um deles).*/
 
-#define APP_KEY "4914a0d0-327e-4815-8128-822b7a80713d"                                          //Site https://portal.sinric.pro/ para conseguir a APP-KEY
+#define    APP_KEY "4914a0d0-327e-4815-8128-822b7a80713d"                                       //Site https://portal.sinric.pro/ para conseguir a APP-KEY
 #define APP_SECRET "b73f409a-fcc5-4c60-8cf4-d86d9b4e2bae-e7fc2fe6-1b4a-4b71-aa38-de61ad019107"  //Site https://portal.sinric.pro/ para conseguir a APP-SECRET
 
 //Enter the device IDs here
@@ -82,12 +90,12 @@ int val;
 #define RelayPin3 21  // D21 Ligados ao Nora/MQTT
 #define RelayPin4 19  // D19 Ligados ao Nora/MQTT
 #define RelayPin5 18  // D18 Ligados ao Nora/MQTT
-#define RelayPin6 5   // D5  Ligados ao MQTT/Alexa
+#define RelayPin6  5  // D5  Ligados ao MQTT/Alexa
 #define RelayPin7 25  // D25 Ligados ao MQTT/Alexa
 #define RelayPin8 26  // D26 Ligados ao MQTT/Alexa
 
 // WiFi Status Relé
-#define wifiLed 0  // D0
+#define wifiLed 0     // D0
 #define DEBOUNCE_TIME 250
 
 int toggleState_0 = 1;  // Define integer to remember the toggle state for relay 0
@@ -103,24 +111,24 @@ int status_todos = 0;
 
 // DHT22 para leitura dos valores  de Temperatura e Umidade
 #define DHTPIN 16
-#define DHTTYPE DHT22  // DHT 22
+#define DHTTYPE DHT22   // DHT 22
 DHT dht(DHTPIN, DHTTYPE);
 
 // Configurações do WIFI
-const char*     SSID      = "RVR 2,4GHz";                // SSID / nome da rede WI-FI que deseja se conectar
+const char*     SSID      = "RVR 2,4GHz";            // SSID / nome da rede WI-FI que deseja se conectar
 const char* PASSWORD      = "RodrigoValRobson2021";  // Senha da rede WI-FI que deseja se conectar
 
 // Configurações do Broker MQTT
-const char* BROKER_MQTT   = "192.168.15.40";  // URL do broker MQTT que se deseja utilizar
-const char* mqttUserName  = "RobsonBrasil";  // MQTT UserName
-const char* mqttPwd       = "LoboAlfa";           // MQTT Password
-int BROKER_PORT           = 1883;                     // Porta do Broker MQTT
+const char* BROKER_MQTT   = "192.168.15.40";         // URL do broker MQTT que se deseja utilizar
+const char* mqttUserName  = "RobsonBrasil";          // MQTT UserName
+const char* mqttPwd       = "LoboAlfa";              // MQTT Password
+int BROKER_PORT           = 1883;                    // Porta do Broker MQTT
 
 // IP Estático
 IPAddress staticIP(192, 168, 15, 50);
 IPAddress gateway(192, 168, 15, 1);
 IPAddress subnet(255, 255, 255, 0);
-IPAddress dns(192, 168, 15, 1);
+//IPAddress dns(192, 168, 15, 1);
 
 typedef struct {  // struct for the std::map below
   int relayPIN;
@@ -182,7 +190,7 @@ void handleFlipSwitches() {
   for (auto &flipSwitch : flipSwitches) {                                         // for each flipSwitch in flipSwitches map
     unsigned long lastFlipSwitchChange = flipSwitch.second.lastFlipSwitchChange;  // get the timestamp when flipSwitch was pressed last time (used to debounce / limit events)
 
-    if (actualMillis - lastFlipSwitchChange > DEBOUNCE_TIME) {  // if time is > debounce time...
+    if (actualMillis - lastFlipSwitchChange > DEBOUNCE_TIME) {           // if time is > debounce time...
 
       int flipSwitchPIN = flipSwitch.first;                              // get the flipSwitch pin from configuration
       bool lastFlipSwitchState = flipSwitch.second.lastFlipSwitchState;  // get the lastFlipSwitchState
@@ -199,8 +207,8 @@ void handleFlipSwitches() {
           bool newRelayState = !digitalRead(relayPIN);            // set the new relay State
           digitalWrite(relayPIN, newRelayState);                  // set the trelay to the new state
 
-          SinricProSwitch &mySwitch = SinricPro[deviceId];  // get Switch device from SinricPro
-          mySwitch.sendPowerStateEvent(!newRelayState);     // send the event
+          SinricProSwitch &mySwitch = SinricPro[deviceId];        // get Switch device from SinricPro
+          mySwitch.sendPowerStateEvent(!newRelayState);           // send the event
 
 #ifdef TACTILE_BUTTON
         }
@@ -232,7 +240,7 @@ void IRAM_ATTR resetModule() {
 }
 
 void watchDogRefresh() {
-  timerWrite(timer, 0);  // reset timer (feed watchdog)
+  timerWrite(timer, 0);        // reset timer (feed watchdog)
 }
 
 // Variáveis e objetos globais
@@ -275,6 +283,10 @@ void setup() {
   setupRelays();
   setupFlipSwitches();
   setupSinricPro();
+
+  AsyncWiFiManager manager(&server, &dns);     //Cria os objetos dos servidores
+  manager.resetSettings();                     //Reseta as configurações do gerenciador
+  manager.autoConnect("ESP32 - Access Point"); //Cria o ponto de acesso
 
   // WatchDog
   // hw_timer_t * timerBegin(uint8_t num, uint16_t divider, bool countUp)
@@ -344,14 +356,14 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length) {
       toggleState_0 = 0;
       MQTT.publish(pub0, "0");
     } else {
-      digitalWrite(RelayPin1, LOW);  // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin2, LOW);  // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin3, LOW);  // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin4, LOW);  // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin5, LOW);  // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin6, LOW);  // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin7, LOW);  // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin8, LOW);  // Turn the Relé off by making the voltage LOW
+      digitalWrite(RelayPin1, LOW);   // Turn the Relé off by making the voltage LOW
+      digitalWrite(RelayPin2, LOW);   // Turn the Relé off by making the voltage LOW
+      digitalWrite(RelayPin3, LOW);   // Turn the Relé off by making the voltage LOW
+      digitalWrite(RelayPin4, LOW);   // Turn the Relé off by making the voltage LOW
+      digitalWrite(RelayPin5, LOW);   // Turn the Relé off by making the voltage LOW
+      digitalWrite(RelayPin6, LOW);   // Turn the Relé off by making the voltage LOW
+      digitalWrite(RelayPin7, LOW);   // Turn the Relé off by making the voltage LOW
+      digitalWrite(RelayPin8, LOW);   // Turn the Relé off by making the voltage LOW
       status_todos = 1;
       toggleState_0 = 1;
       MQTT.publish(pub0, "1");
@@ -368,7 +380,7 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length) {
       toggleState_1 = 0;
       MQTT.publish(pub1, "0");
     } else {
-      digitalWrite(RelayPin1, LOW);  // Turn the Relé off by making the voltage HIGH
+      digitalWrite(RelayPin1, LOW);   // Turn the Relé off by making the voltage HIGH
       toggleState_1 = 1;
       MQTT.publish(pub1, "1");
     }
@@ -534,7 +546,7 @@ Caso contrário, são efetuadas tentativas de conexão*/
 
   WiFi.begin(SSID, PASSWORD);  // Conecta na rede WI-FI
   Serial.println("\nConectando WiFi " + String(SSID));
-  if (WiFi.config(staticIP, gateway, subnet, dns, dns) == false) {
+  if (WiFi.config(staticIP, gateway, subnet) == false) {
     Serial.println("Configuração Falhou");
   }
   while (WiFi.status() != WL_CONNECTED) {
