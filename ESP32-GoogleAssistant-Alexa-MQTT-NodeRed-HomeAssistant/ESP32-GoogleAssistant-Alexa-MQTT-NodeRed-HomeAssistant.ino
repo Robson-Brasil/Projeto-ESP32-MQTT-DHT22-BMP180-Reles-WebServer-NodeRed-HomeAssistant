@@ -23,8 +23,8 @@ Versão : 8 - Alfa
 #include <WiFiUdp.h>            // Importa a Biblioteca WiFiUdp
 #include <esp_task_wdt.h>       // Importa a Biblioteca do WatchDog
 #include <Arduino.h>            // ArduinoJson Library:        https://github.com/bblanchon/ArduinoJson
-#include "SinricPro.h"          // SinricPro Library:          https://sinricpro.github.io/esp8266-esp32-sdk/
-#include "SinricProSwitch.h"    // SinricPro Library:          https://sinricpro.github.io/esp8266-esp32-sdk/
+#include "SinricPro.h"          // SinricPro Library:          https://github.com/sinricpro/esp8266-esp32-sdk
+#include "SinricProSwitch.h"    // SinricPro Library:          https://github.com/sinricpro/esp8266-esp32-sdk
 #include <map>
 #include <DNSServer.h>          // DNSServer Library:          https://github.com/zhouhan0126/DNSServer---esp32
 #include <ESPAsyncWebServer.h>  //ESPAsyncWebServer Library:   https://github.com/me-no-dev/ESPAsyncWebServer
