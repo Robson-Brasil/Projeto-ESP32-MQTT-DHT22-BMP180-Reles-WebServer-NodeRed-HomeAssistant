@@ -1,14 +1,21 @@
 {
-  "configurations": [
-    {
-      "name": "Win32",
-      "includePath": ["C:\\MinGW\\include"],
-      "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
-      "cStandard": "c17",
-      "cppStandard": "c++17",
-      "intelliSenseMode": "${default}",
-      "configurationProvider": "ms-vscode.cpptools"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "C:\\MinGW\\include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "${default}",
+            "configurationProvider": "ms-vscode.cpptools",
+            "compilerPath": "C:\\MinGW\\bin\\g++.exe"
+        }
+    ],
+    "version": 4
 }
