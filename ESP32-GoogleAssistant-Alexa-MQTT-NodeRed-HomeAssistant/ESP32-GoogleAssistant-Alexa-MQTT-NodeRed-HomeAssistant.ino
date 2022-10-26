@@ -126,9 +126,12 @@ const char* mqttPwd       = "LoboAlfa";              // MQTT Password
 int BROKER_PORT           = 1883;                    // Porta do Broker MQTT
 
 // IP Estático
-IPAddress staticIP(192, 168, 15, 50);
+IPAddress local_IP(192, 168, 15, 50);
 IPAddress gateway(192, 168, 15, 1);
 IPAddress subnet(255, 255, 255, 0);
+
+IPAddress primaryDNS(8, 8, 8, 8);
+IPAddress secondaryDNS(8, 8, 4, 4);
 
 typedef struct {  // struct for the std::map below
   int relayPIN;
@@ -547,7 +550,7 @@ Caso contrário, são efetuadas tentativas de conexão*/
 
   WiFi.begin(SSID, PASSWORD);  // Conecta na rede WI-FI
   Serial.println("\nConectando WiFi " + String(SSID));
-  if (WiFi.config(staticIP, gateway, subnet) == false) {
+  if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
     Serial.println("Configuração Falhou");
   }
   while (WiFi.status() != WL_CONNECTED) {
