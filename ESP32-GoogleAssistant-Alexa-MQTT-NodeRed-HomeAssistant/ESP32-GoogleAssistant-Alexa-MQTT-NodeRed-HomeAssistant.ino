@@ -61,13 +61,12 @@ const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";            /
 
 //Tópicos do Sensor de Movimento
 const char* motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";              // Somente por MQTT
-const char* inTopic      = "ESP32/MinhaCasa/QuartoRobson/inTopic";             // Somente por MQTT
-const char* outTopic     = "ESP32/MinhaCasa/QuartoRobson/outTopic";            // Somente por MQTT
+const char*      inTopic = "ESP32/MinhaCasa/QuartoRobson/inTopic";             // Somente por MQTT
+const char*     outTopic = "ESP32/MinhaCasa/QuartoRobson/outTopic";            // Somente por MQTT
 
 float diff               = 1.0;
 
 unsigned long delayTime;
-//const int MOTION_PIN = 5;
 int pirPin = 17;
 int val;
 
@@ -96,7 +95,7 @@ int val;
 #define RelayPin8 26  // D26 Ligados ao MQTT/Alexa
 
 // WiFi Status Relé
-#define wifiLed 0     // D0
+#define wifiLed    0  // D0
 #define DEBOUNCE_TIME 250
 
 int toggleState_0 = 1;  // Define integer to remember the toggle state for relay 0
@@ -108,7 +107,7 @@ int toggleState_5 = 1;  // Define integer to remember the toggle state for relay
 int toggleState_6 = 1;  // Define integer to remember the toggle state for relay 6
 int toggleState_7 = 1;  // Define integer to remember the toggle state for relay 7
 int toggleState_8 = 1;  // Define integer to remember the toggle state for relay 8
-int status_todos = 0;
+int status_todos  = 0;  // Define integer to remember the toggle state for todos
 
 // DHT22 para leitura dos valores  de Temperatura e Umidade
 #define DHTPIN 16
@@ -126,12 +125,12 @@ const char* mqttPwd       = "LoboAlfa";              // MQTT Password
 int BROKER_PORT           = 1883;                    // Porta do Broker MQTT
 
 // IP Estático
-IPAddress local_IP(192, 168, 15, 50);
-IPAddress gateway(192, 168, 15, 1);
-IPAddress subnet(255, 255, 255, 0);
+IPAddress local_IP  (192, 168, 15, 50);
+IPAddress gateway    (192, 168, 15, 1);
+IPAddress subnet    (255, 255, 255, 0);
 
-IPAddress primaryDNS(8, 8, 8, 8);
-IPAddress secondaryDNS(8, 8, 4, 4);
+IPAddress primaryDNS      (8, 8, 8, 8);
+IPAddress secondaryDNS    (8, 8, 4, 4);
 
 typedef struct {  // struct for the std::map below
   int relayPIN;
@@ -157,17 +156,17 @@ std::map<int, flipSwitchConfig_t> flipSwitches;  // this map is used to map flip
                                                  // it will be setup in "setupFlipSwitches" function, using informations from devices map
 
 void setupRelays() {
-  for (auto &device : devices)  // for each device (relay, flipSwitch combination)
+  for (auto &device : devices)                   // for each device (relay, flipSwitch combination)
   {
-    int relayPIN = device.second.relayPIN;  // get the relay pin
-    pinMode(relayPIN, OUTPUT);              // set relay pin to OUTPUT
+    int relayPIN = device.second.relayPIN;       // get the relay pin
+    pinMode(relayPIN, OUTPUT);                   // set relay pin to OUTPUT
     digitalWrite(relayPIN, HIGH);
   }
 }
 
 void setupFlipSwitches() {
-  for (auto &device : devices) {          // for each device (relay / flipSwitch combination)
-    flipSwitchConfig_t flipSwitchConfig;  // create a new flipSwitch configuration
+  for (auto &device : devices) {                   // for each device (relay / flipSwitch combination)
+    flipSwitchConfig_t flipSwitchConfig;           // create a new flipSwitch configuration
 
     flipSwitchConfig.deviceId = device.first;      // set the deviceId
     flipSwitchConfig.lastFlipSwitchChange = 0;     // set debounce time
@@ -175,8 +174,8 @@ void setupFlipSwitches() {
 
     int flipSwitchPIN = device.second.flipSwitchPIN;  // get the flipSwitchPIN
 
-    flipSwitches[flipSwitchPIN] = flipSwitchConfig;  // save the flipSwitch config to flipSwitches map
-    pinMode(flipSwitchPIN, INPUT_PULLUP);            // set the flipSwitch pin to INPUT
+    flipSwitches[flipSwitchPIN] = flipSwitchConfig;   // save the flipSwitch config to flipSwitches map
+    pinMode(flipSwitchPIN, INPUT_PULLUP);             // set the flipSwitch pin to INPUT
   }
 }
 
@@ -550,9 +549,11 @@ Caso contrário, são efetuadas tentativas de conexão*/
 
   WiFi.begin(SSID, PASSWORD);  // Conecta na rede WI-FI
   Serial.println("\nConectando WiFi " + String(SSID));
+  
   if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
     Serial.println("Configuração Falhou");
   }
+  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -580,11 +581,12 @@ void VerificaConexoesWiFIEMQTT(void) {
   if (!MQTT.connected())
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
 
-  reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita
+    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita
 }
 
 // Função: inicializa o output em nível lógico baixo
 void initOutput(void) {
+  
   pinMode(RelayPin1, OUTPUT);
   pinMode(RelayPin2, OUTPUT);
   pinMode(RelayPin3, OUTPUT);
