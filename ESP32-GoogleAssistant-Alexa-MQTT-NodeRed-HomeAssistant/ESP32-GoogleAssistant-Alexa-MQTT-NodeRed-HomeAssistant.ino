@@ -70,7 +70,7 @@ unsigned long delayTime;
 int pirPin = 17;
 int val;
 
-#define ID_MQTT "ESP32-IoT" /* ID MQTT (para identificação de sessão)           \
+#define ID_MQTT "ESP32-IoT" /* ID MQTT (para identificação de seção)           \
                             IMPORTANTE: Este deve ser único no broker (ou seja, \
                             se um client MQTT tentar entrar com o mesmo         \
                             ID de outro já conectado ao broker, o broker        \
@@ -207,7 +207,7 @@ void handleFlipSwitches() {
           String deviceId = flipSwitch.second.deviceId;           // get the deviceId from config
           int relayPIN = devices[deviceId].relayPIN;              // get the relayPIN from config
           bool newRelayState = !digitalRead(relayPIN);            // set the new relay State
-          digitalWrite(relayPIN, newRelayState);                  // set the trelay to the new state
+          digitalWrite(relayPIN, newRelayState);                  // set the relay to the new state
 
           SinricProSwitch &mySwitch = SinricPro[deviceId];        // get Switch device from SinricPro
           mySwitch.sendPowerStateEvent(!newRelayState);           // send the event
@@ -247,7 +247,7 @@ void watchDogRefresh() {
 
 // Variáveis e objetos globais
 WiFiClient espClient;          // Cria o objeto espClient
-PubSubClient MQTT(espClient);  // Instancia o Cliente MQTT passando o objeto espClient
+PubSubClient MQTT(espClient);  // Instância o Cliente MQTT passando o objeto espClient
 
 char str_hum_data[10];
 char str_temp_data[10];
@@ -295,7 +295,7 @@ void setup() {
   // hw_timer_t * timerBegin(uint8_t num, uint16_t divider, bool countUp)
   /*
       num: é a ordem do temporizador. Podemos ter quatro temporizadores, então a ordem pode ser [0,1,2,3].
-      divider: É um prescaler (reduz a frequencia por fator). Para fazer um agendador de um segundo,
+      divider: É um prescaler (reduz a frequência por fator). Para fazer um agendador de um segundo,
       usaremos o divider como 80 (clock principal do ESP32 é 80MHz). Cada instante será T = 1/(80) = 1us
       countUp: True o contador será progressivo
   */
