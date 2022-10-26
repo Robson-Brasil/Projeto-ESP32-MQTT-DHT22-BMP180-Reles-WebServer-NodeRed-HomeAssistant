@@ -30,6 +30,7 @@ Versão : 8 - Alfa
 #include <ESPAsyncWebServer.h>  //ESPAsyncWebServer Library:   https://github.com/me-no-dev/ESPAsyncWebServer
 #include <ESPAsyncWiFiManager.h>//ESPAsyncWiFiManager Library: https://github.com/alanswx/ESPAsyncWiFiManager
 
+//Wi-Fi Manager
 AsyncWebServer server(80);      //Cria os objetos dos servidores
 DNSServer dns;
 
@@ -128,7 +129,6 @@ int BROKER_PORT           = 1883;                    // Porta do Broker MQTT
 IPAddress staticIP(192, 168, 15, 50);
 IPAddress gateway(192, 168, 15, 1);
 IPAddress subnet(255, 255, 255, 0);
-//IPAddress dns(192, 168, 15, 1);
 
 typedef struct {  // struct for the std::map below
   int relayPIN;
@@ -284,6 +284,7 @@ void setup() {
   setupFlipSwitches();
   setupSinricPro();
 
+  //Configuração do Wi-Fi Manager
   AsyncWiFiManager manager(&server, &dns);     //Cria os objetos dos servidores
   manager.resetSettings();                     //Reseta as configurações do gerenciador
   manager.autoConnect("ESP32 - Access Point"); //Cria o ponto de acesso
