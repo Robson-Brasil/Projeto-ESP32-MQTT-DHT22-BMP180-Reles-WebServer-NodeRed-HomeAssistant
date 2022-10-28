@@ -29,9 +29,10 @@ Versão : 8 - Alfa
 #include <DNSServer.h>          // DNSServer Library:          https://github.com/zhouhan0126/DNSServer---esp32
 #include <ESPAsyncWebServer.h>  //ESPAsyncWebServer Library:   https://github.com/me-no-dev/ESPAsyncWebServer
 #include <ESPAsyncWiFiManager.h>//ESPAsyncWiFiManager Library: https://github.com/alanswx/ESPAsyncWiFiManager
+#include <FS.h>
 
 //Wi-Fi Manager
-AsyncWebServer server(80);      //Cria os objetos dos servidores
+AsyncWebServer webServer(80);      //Cria os objetos dos servidores
 DNSServer dns;
 
 // Tópicos do Subscribe
@@ -115,14 +116,14 @@ int status_todos  = 0;  // Define integer to remember the toggle state for todos
 DHT dht(DHTPIN, DHTTYPE);
 
 // Configurações do WIFI
-const char*     SSID      = "RVR 2,4GHz";            // SSID / nome da rede WI-FI que deseja se conectar
+const char*     SSID      =           "RVR 2,4GHz";  // SSID / nome da rede WI-FI que deseja se conectar
 const char* PASSWORD      = "RodrigoValRobson2021";  // Senha da rede WI-FI que deseja se conectar
 
 // Configurações do Broker MQTT
-const char* BROKER_MQTT   = "192.168.15.40";         // URL do broker MQTT que se deseja utilizar
-const char* mqttUserName  = "RobsonBrasil";          // MQTT UserName
-const char* mqttPwd       = "LoboAlfa";              // MQTT Password
-int BROKER_PORT           = 1883;                    // Porta do Broker MQTT
+const char* BROKER_MQTT   = "192.168.15.10";         // URL do broker MQTT que se deseja utilizar
+const char* mqttUserName  =  "RobsonBrasil";         // MQTT UserName
+const char* mqttPwd       =      "LoboAlfa";         // MQTT Password
+int BROKER_PORT           =            1883;         // Porta do Broker MQTT
 
 // IP Estático
 IPAddress local_IP  (192, 168, 15, 50);
@@ -159,8 +160,8 @@ void setupRelays() {
   for (auto &device : devices)                   // for each device (relay, flipSwitch combination)
   {
     int relayPIN = device.second.relayPIN;       // get the relay pin
-    pinMode(relayPIN, OUTPUT);                   // set relay pin to OUTPUT
-    digitalWrite(relayPIN, HIGH);
+  pinMode(relayPIN, OUTPUT);                   // set relay pin to OUTPUT
+  digitalWrite(relayPIN, HIGH);
   }
 }
 
@@ -168,20 +169,20 @@ void setupFlipSwitches() {
   for (auto &device : devices) {                   // for each device (relay / flipSwitch combination)
     flipSwitchConfig_t flipSwitchConfig;           // create a new flipSwitch configuration
 
-    flipSwitchConfig.deviceId = device.first;      // set the deviceId
-    flipSwitchConfig.lastFlipSwitchChange = 0;     // set debounce time
-    flipSwitchConfig.lastFlipSwitchState = false;  // set lastFlipSwitchState to false (LOW)--
+  flipSwitchConfig.deviceId = device.first;      // set the deviceId
+  flipSwitchConfig.lastFlipSwitchChange = 0;     // set debounce time
+  flipSwitchConfig.lastFlipSwitchState = false;  // set lastFlipSwitchState to false (LOW)--
 
     int flipSwitchPIN = device.second.flipSwitchPIN;  // get the flipSwitchPIN
 
-    flipSwitches[flipSwitchPIN] = flipSwitchConfig;   // save the flipSwitch config to flipSwitches map
-    pinMode(flipSwitchPIN, INPUT_PULLUP);             // set the flipSwitch pin to INPUT
+  flipSwitches[flipSwitchPIN] = flipSwitchConfig;   // save the flipSwitch config to flipSwitches map
+  pinMode(flipSwitchPIN, INPUT_PULLUP);             // set the flipSwitch pin to INPUT
   }
 }
 
 bool onPowerState(String deviceId, bool &state) {
   Serial.printf("%s: %s\r\n", deviceId.c_str(), state ? "Ligado" : "Desligado");
-  int relayPIN = devices[deviceId].relayPIN;  // get the relay pin for corresponding device
+    int relayPIN = devices[deviceId].relayPIN;  // get the relay pin for corresponding device
   digitalWrite(relayPIN, !state);             // set the new relay state
   return true;
 }
@@ -192,30 +193,27 @@ void handleFlipSwitches() {
   for (auto &flipSwitch : flipSwitches) {                                         // for each flipSwitch in flipSwitches map
     unsigned long lastFlipSwitchChange = flipSwitch.second.lastFlipSwitchChange;  // get the timestamp when flipSwitch was pressed last time (used to debounce / limit events)
 
-    if (actualMillis - lastFlipSwitchChange > DEBOUNCE_TIME) {           // if time is > debounce time...
+  if (actualMillis - lastFlipSwitchChange > DEBOUNCE_TIME) {           // if time is > debounce time...
 
-      int flipSwitchPIN = flipSwitch.first;                              // get the flipSwitch pin from configuration
-      bool lastFlipSwitchState = flipSwitch.second.lastFlipSwitchState;  // get the lastFlipSwitchState
-      bool flipSwitchState = digitalRead(flipSwitchPIN);                 // read the current flipSwitch state
+    int flipSwitchPIN = flipSwitch.first;                              // get the flipSwitch pin from configuration
+    bool lastFlipSwitchState = flipSwitch.second.lastFlipSwitchState;  // get the lastFlipSwitchState
+    bool flipSwitchState = digitalRead(flipSwitchPIN);                 // read the current flipSwitch state
 
-      if (flipSwitchState != lastFlipSwitchState) {  // if the flipSwitchState has changed...
-#ifdef TACTILE_BUTTON
+  if (flipSwitchState != lastFlipSwitchState) {  // if the flipSwitchState has changed...
 
-        if (flipSwitchState) {  // if the tactile button is pressed
-#endif
-          flipSwitch.second.lastFlipSwitchChange = actualMillis;  // update lastFlipSwitchChange time
-          String deviceId = flipSwitch.second.deviceId;           // get the deviceId from config
-          int relayPIN = devices[deviceId].relayPIN;              // get the relayPIN from config
-          bool newRelayState = !digitalRead(relayPIN);            // set the new relay State
-          digitalWrite(relayPIN, newRelayState);                  // set the relay to the new state
+  if (flipSwitchState) {  // if the tactile button is pressed
+//#endif
+  flipSwitch.second.lastFlipSwitchChange = actualMillis;  // update lastFlipSwitchChange time
+  String deviceId = flipSwitch.second.deviceId;           // get the deviceId from config
+    int relayPIN = devices[deviceId].relayPIN;              // get the relayPIN from config
+    bool newRelayState = !digitalRead(relayPIN);            // set the new relay State
+  digitalWrite(relayPIN, newRelayState);                  // set the relay to the new state
 
-          SinricProSwitch &mySwitch = SinricPro[deviceId];        // get Switch device from SinricPro
-          mySwitch.sendPowerStateEvent(!newRelayState);           // send the event
+  SinricProSwitch &mySwitch = SinricPro[deviceId];        // get Switch device from SinricPro
+  mySwitch.sendPowerStateEvent(!newRelayState);           // send the event
 
-#ifdef TACTILE_BUTTON
-        }
-#endif
-        flipSwitch.second.lastFlipSwitchState = flipSwitchState;  // update lastFlipSwitchState
+  }
+  flipSwitch.second.lastFlipSwitchState = flipSwitchState;  // update lastFlipSwitchState
       }
     }
   }
@@ -224,25 +222,12 @@ void handleFlipSwitches() {
 void setupSinricPro() {
   for (auto &device : devices) {
     const char *deviceId = device.first.c_str();
-    SinricProSwitch &mySwitch = SinricPro[deviceId];
-    mySwitch.onPowerState(onPowerState);
+  SinricProSwitch &mySwitch = SinricPro[deviceId];
+  mySwitch.onPowerState(onPowerState);
   }
 
   SinricPro.begin(APP_KEY, APP_SECRET);
   SinricPro.restoreDeviceStates(true);
-}
-
-// WatchDog
-hw_timer_t* timer = NULL;  // Faz o controle do temporizador (interrupção por tempo)
-
-// Função que o temporizador irá chamar, para reiniciar o ESP32
-void IRAM_ATTR resetModule() {
-  ets_printf("(WatchDog) Reiniciar\n");  // Imprime no log
-  esp_restart();                         // Reinicia o chip
-}
-
-void watchDogRefresh() {
-  timerWrite(timer, 0);        // reset timer (feed watchdog)
 }
 
 // Variáveis e objetos globais
@@ -255,8 +240,8 @@ char str_tempterm_data[10];
 char str_tempF_data[10];
 
 #define MSG_BUFFER_SIZE (1000)
-unsigned long lastMsg = 0;
-int value = 0;
+    unsigned long lastMsg = 0;
+    int value = 0;
 
 // Prototypes
 void initSerial();
@@ -266,11 +251,11 @@ void reconectWiFi();
 void mqtt_callback(char *topic, byte *payload, unsigned int length);
 void VerificaConexoesWiFIEMQTT(void);
 void initOutput(void);
-void watchDogRefresh();
 void IRAM_ATTR watchDogInterrupt();
 void setupRelays();
 void setupFlipSwitches();
 void setupSinricPro();
+void WiFiManager();
 
 /*
 Implementações das funções
@@ -285,28 +270,16 @@ void setup() {
   setupRelays();
   setupFlipSwitches();
   setupSinricPro();
+  WiFiManager();
+}
 
+void WiFiManager(){
   //Configuração do Wi-Fi Manager
-  AsyncWiFiManager manager(&server, &dns);     //Cria os objetos dos servidores
-  manager.resetSettings();                     //Reseta as configurações do gerenciador
-  manager.autoConnect("ESP32 - Access Point"); //Cria o ponto de acesso
-
-  // WatchDog
-  // hw_timer_t * timerBegin(uint8_t num, uint16_t divider, bool countUp)
-  /*
-      num: é a ordem do temporizador. Podemos ter quatro temporizadores, então a ordem pode ser [0,1,2,3].
-      divider: É um prescaler (reduz a frequência por fator). Para fazer um agendador de um segundo,
-      usaremos o divider como 80 (clock principal do ESP32 é 80MHz). Cada instante será T = 1/(80) = 1us
-      countUp: True o contador será progressivo
-  */
-  timer = timerBegin(0, 80, true);  // timerID 0, div 80
-
-  // Timer, callback, interrupção de borda
-  timerAttachInterrupt(timer, &resetModule, true);
-
-  // Timer, tempo (us), repetição
-  timerAlarmWrite(timer, 45000000, true);
-  timerAlarmEnable(timer);  // habilita a interrupção
+  AsyncWiFiManager wifiManager(&webServer, &dns);     //Cria os objetos dos servidores
+  wifiManager.resetSettings();                     //Reseta as configurações do gerenciador
+  wifiManager.autoConnect("ESP32 - Access Point"); //Cria o ponto de acesso
+  wifiManager.setSTAStaticIPConfig(local_IP, gateway, subnet);
+  wifiManager.setBreakAfterConfig(true);
 }
 
 // Função: inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
@@ -342,169 +315,169 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length) {
 
   if (strstr(topic, sub0)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-      data += (char)payload[i];
+  Serial.print((char)payload[i]);
+  data += (char)payload[i];
     }
-    Serial.println();
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin1, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
-      digitalWrite(RelayPin2, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
-      digitalWrite(RelayPin3, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
-      digitalWrite(RelayPin4, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
-      digitalWrite(RelayPin5, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
-      digitalWrite(RelayPin6, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
-      digitalWrite(RelayPin7, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
-      digitalWrite(RelayPin8, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
-      status_todos = 0;
-      toggleState_0 = 0;
-      MQTT.publish(pub0, "0");
-    } else {
-      digitalWrite(RelayPin1, LOW);   // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin2, LOW);   // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin3, LOW);   // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin4, LOW);   // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin5, LOW);   // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin6, LOW);   // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin7, LOW);   // Turn the Relé off by making the voltage LOW
-      digitalWrite(RelayPin8, LOW);   // Turn the Relé off by making the voltage LOW
-      status_todos = 1;
-      toggleState_0 = 1;
-      MQTT.publish(pub0, "1");
+  Serial.println();
+  if ((char)payload[0] == '0') {
+    digitalWrite(RelayPin1, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
+    digitalWrite(RelayPin2, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
+    digitalWrite(RelayPin3, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
+    digitalWrite(RelayPin4, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
+    digitalWrite(RelayPin5, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
+    digitalWrite(RelayPin6, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
+    digitalWrite(RelayPin7, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
+    digitalWrite(RelayPin8, HIGH);  // Turn the Relé on Note that HIGH is the voltage level
+    status_todos = 0;
+    toggleState_0 = 0;
+    MQTT.publish(pub0, "0");
+  } else {
+    digitalWrite(RelayPin1, LOW);   // Turn the Relé off by making the voltage LOW
+    digitalWrite(RelayPin2, LOW);   // Turn the Relé off by making the voltage LOW
+    digitalWrite(RelayPin3, LOW);   // Turn the Relé off by making the voltage LOW
+    digitalWrite(RelayPin4, LOW);   // Turn the Relé off by making the voltage LOW
+    digitalWrite(RelayPin5, LOW);   // Turn the Relé off by making the voltage LOW
+    digitalWrite(RelayPin6, LOW);   // Turn the Relé off by making the voltage LOW
+    digitalWrite(RelayPin7, LOW);   // Turn the Relé off by making the voltage LOW
+    digitalWrite(RelayPin8, LOW);   // Turn the Relé off by making the voltage LOW
+    status_todos = 1;
+    toggleState_0 = 1;
+    MQTT.publish(pub0, "1");
     }
   }
   if (strstr(topic, sub1)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-      data += (char)payload[i];
+  Serial.print((char)payload[i]);
+  data += (char)payload[i];
     }
-    Serial.println();
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin1, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
-      toggleState_1 = 0;
-      MQTT.publish(pub1, "0");
-    } else {
-      digitalWrite(RelayPin1, LOW);   // Turn the Relé off by making the voltage HIGH
-      toggleState_1 = 1;
-      MQTT.publish(pub1, "1");
+  Serial.println();
+  if ((char)payload[0] == '0') {
+    digitalWrite(RelayPin1, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
+    toggleState_1 = 0;
+    MQTT.publish(pub1, "0");
+  } else {
+    digitalWrite(RelayPin1, LOW);   // Turn the Relé off by making the voltage HIGH
+    toggleState_1 = 1;
+    MQTT.publish(pub1, "1");
     }
   }
   if (strstr(topic, sub2)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-      data += (char)payload[i];
+  Serial.print((char)payload[i]);
+    data += (char)payload[i];
     }
-    Serial.println();
+  Serial.println();
 
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin2, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
-      toggleState_2 = 0;
-      MQTT.publish(pub2, "0");
-    } else {
-      digitalWrite(RelayPin2, LOW);  // Turn the Relé off by making the voltage HIGH
-      toggleState_2 = 1;
-      MQTT.publish(pub2, "1");
+  if ((char)payload[0] == '0') {
+    digitalWrite(RelayPin2, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
+    toggleState_2 = 0;
+    MQTT.publish(pub2, "0");
+  } else {
+    digitalWrite(RelayPin2, LOW);  // Turn the Relé off by making the voltage HIGH
+    toggleState_2 = 1;
+    MQTT.publish(pub2, "1");
     }
   }
   if (strstr(topic, sub3)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-      data += (char)payload[i];
+  Serial.print((char)payload[i]);
+    data += (char)payload[i];
     }
-    Serial.println();
+  Serial.println();
 
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin3, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
-      toggleState_3 = 0;
-      MQTT.publish(pub3, "0");
-    } else {
-      digitalWrite(RelayPin3, LOW);  // Turn the Relé off by making the voltage HIGH
-      toggleState_3 = 1;
-      MQTT.publish(pub3, "1");
+  if ((char)payload[0] == '0') {
+    digitalWrite(RelayPin3, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
+    toggleState_3 = 0;
+    MQTT.publish(pub3, "0");
+  } else {
+    digitalWrite(RelayPin3, LOW);  // Turn the Relé off by making the voltage HIGH
+    toggleState_3 = 1;
+    MQTT.publish(pub3, "1");
     }
   }
   if (strstr(topic, sub4)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-      data += (char)payload[i];
+  Serial.print((char)payload[i]);
+    data += (char)payload[i];
     }
-    Serial.println();
+  Serial.println();
 
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin4, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
-      toggleState_4 = 0;
-      MQTT.publish(pub4, "0");
-    } else {
-      digitalWrite(RelayPin4, LOW);  // Turn the Relé off by making the voltage HIGH
-      toggleState_4 = 1;
-      MQTT.publish(pub4, "1");
+  if ((char)payload[0] == '0') {
+    digitalWrite(RelayPin4, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
+    toggleState_4 = 0;
+    MQTT.publish(pub4, "0");
+  } else {
+    digitalWrite(RelayPin4, LOW);  // Turn the Relé off by making the voltage HIGH
+    toggleState_4 = 1;
+    MQTT.publish(pub4, "1");
     }
   }
   if (strstr(topic, sub5)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-      data += (char)payload[i];
-    }
-    Serial.println();
+  Serial.print((char)payload[i]);
+    data += (char)payload[i];
+  }
+  Serial.println();
 
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin5, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
-      toggleState_5 = 0;
-      MQTT.publish(pub5, "0");
-    } else {
-      digitalWrite(RelayPin5, LOW);  // Turn the Relé off by making the voltage HIGH
-      toggleState_5 = 1;
-      MQTT.publish(pub5, "1");
+  if ((char)payload[0] == '0') {
+    digitalWrite(RelayPin5, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
+    toggleState_5 = 0;
+    MQTT.publish(pub5, "0");
+  } else {
+    digitalWrite(RelayPin5, LOW);  // Turn the Relé off by making the voltage HIGH
+    toggleState_5 = 1;
+    MQTT.publish(pub5, "1");
     }
   }
   if (strstr(topic, sub6)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-      data += (char)payload[i];
+  Serial.print((char)payload[i]);
+    data += (char)payload[i];
     }
-    Serial.println();
+  Serial.println();
 
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin6, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
-      toggleState_6 = 0;
-      MQTT.publish(pub6, "0");
-    } else {
-      digitalWrite(RelayPin6, LOW);  // Turn the Relé off by making the voltage HIGH
-      toggleState_6 = 1;
-      MQTT.publish(pub6, "1");
+  if ((char)payload[0] == '0') {
+    digitalWrite(RelayPin6, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
+    toggleState_6 = 0;
+    MQTT.publish(pub6, "0");
+  } else {
+    digitalWrite(RelayPin6, LOW);  // Turn the Relé off by making the voltage HIGH
+    toggleState_6 = 1;
+    MQTT.publish(pub6, "1");
     }
   }
   if (strstr(topic, sub7)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-      data += (char)payload[i];
+  Serial.print((char)payload[i]);
+    data += (char)payload[i];
     }
-    Serial.println();
+  Serial.println();
 
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin7, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
-      toggleState_7 = 0;
-      MQTT.publish(pub7, "0");
-    } else {
-      digitalWrite(RelayPin7, LOW);  // Turn the Relé off by making the voltage HIGH
-      toggleState_7 = 1;
-      MQTT.publish(pub7, "1");
+  if ((char)payload[0] == '0') {
+    digitalWrite(RelayPin7, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
+    toggleState_7 = 0;
+    MQTT.publish(pub7, "0");
+  } else {
+    digitalWrite(RelayPin7, LOW);  // Turn the Relé off by making the voltage HIGH
+    toggleState_7 = 1;
+    MQTT.publish(pub7, "1");
     }
   }
   if (strstr(topic, sub8)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-      data += (char)payload[i];
+  Serial.print((char)payload[i]);
+    data += (char)payload[i];
     }
-    Serial.println();
+  Serial.println();
 
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin8, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
-      toggleState_8 = 0;
-      MQTT.publish(pub8, "0");
-    } else {
-      digitalWrite(RelayPin8, LOW);  // Turn the Relé off by making the voltage HIGH
-      toggleState_8 = 1;
-      MQTT.publish(pub8, "1");
+  if ((char)payload[0] == '0') {
+    digitalWrite(RelayPin8, HIGH);  // Turn the Relé on (Note that LOW is the voltage level
+    toggleState_8 = 0;
+    MQTT.publish(pub8, "0");
+  } else {
+    digitalWrite(RelayPin8, LOW);  // Turn the Relé off by making the voltage HIGH
+    toggleState_8 = 1;
+    MQTT.publish(pub8, "1");
     }
   }
 }
@@ -512,29 +485,26 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length) {
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
 em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
 void reconnectMQTT() {
-  while (!MQTT.connected()) {
-    Serial.print("* Tentando se conectar ao Broker MQTT: ");
-    Serial.println(BROKER_MQTT);
-    if (MQTT.connect(ID_MQTT, mqttUserName, mqttPwd)) {
-      Serial.println("Conectado com sucesso ao broker MQTT!");
-      MQTT.subscribe(sub0);
-      MQTT.subscribe(sub1);
-      MQTT.subscribe(sub2);
-      MQTT.subscribe(sub3);
-      MQTT.subscribe(sub4);
-      MQTT.subscribe(sub5);
-      MQTT.subscribe(sub6);
-      MQTT.subscribe(sub7);
-      MQTT.subscribe(sub8);
-      // Once connected, publish an announcement...
-      // MQTT.publish(outTopic);
-      // ... and resubscribe
-      MQTT.subscribe(inTopic);
-    } else {
-      Serial.println("Falha ao reconectar no broker.");
-      Serial.print(MQTT.state());
-      Serial.println("Haverá nova tentativa de conexão em 2s");
-      delay(2000);
+    while (!MQTT.connected()) {
+  Serial.print("* Tentando se conectar ao Broker MQTT: ");
+  Serial.println(BROKER_MQTT);
+  if (MQTT.connect(ID_MQTT, mqttUserName, mqttPwd)) {
+    Serial.println("Conectado com sucesso ao broker MQTT!");
+    MQTT.subscribe(sub0);
+    MQTT.subscribe(sub1);
+    MQTT.subscribe(sub2);
+    MQTT.subscribe(sub3);
+    MQTT.subscribe(sub4);
+    MQTT.subscribe(sub5);
+    MQTT.subscribe(sub6);
+    MQTT.subscribe(sub7);
+    MQTT.subscribe(sub8);
+    MQTT.subscribe(inTopic);
+  } else {
+  Serial.println("Falha ao reconectar no broker.");
+  Serial.print(MQTT.state());
+  Serial.println("Haverá nova tentativa de conexão em 2s");
+  delay(2000);
     }
   }
 }
@@ -551,12 +521,12 @@ Caso contrário, são efetuadas tentativas de conexão*/
   Serial.println("\nConectando WiFi " + String(SSID));
   
   if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
-    Serial.println("Configuração Falhou");
+  Serial.println("Configuração Falhou");
   }
   
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+    while (WiFi.status() != WL_CONNECTED) {
+  delay(500);
+  Serial.print(".");
   }
   Serial.println();
   Serial.print("Conectado com sucesso na rede ");
@@ -579,9 +549,9 @@ Caso contrário, são efetuadas tentativas de conexão*/
 Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
   if (!MQTT.connected())
-    reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
+  reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
 
-    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita
+  reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita
 }
 
 // Função: inicializa o output em nível lógico baixo
@@ -614,94 +584,87 @@ void initOutput(void) {
 
 void loop() {
 
-  // WatchDog
-  timerWrite(timer, 0);  // reseta o temporizador (alimenta o watchdog)
-  long tme = millis();   // tempo inicial do loop
-  delay(100);
-  tme = millis() - tme;  // calcula o tempo (atual - inicial)
-  watchDogRefresh();
-
   unsigned long now = millis();
   if (now - lastMsg > 1000) {
 
-    float temp_data = dht.readTemperature();  // or dht.readTemperature(true) for Fahrenheit
-    dtostrf(temp_data, 4, 2, str_temp_data);
-    /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
-    float hum_data = dht.readHumidity();
-    dtostrf(hum_data, 4, 2, str_hum_data);
-    /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
-    float tempF_data = dht.readTemperature(true);
-    dtostrf(tempF_data, 4, 2, str_tempF_data);
-    /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
-    float tempterm_data = 0;
-    dtostrf(tempterm_data, 4, 2, str_tempterm_data);
-    /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
-    tempterm_data = dht.computeHeatIndex(tempF_data, hum_data);
-    tempterm_data = dht.convertFtoC(tempterm_data);
-    dtostrf(tempterm_data, 4, 2, str_tempterm_data);
-    /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
+  float temp_data = dht.readTemperature();  // or dht.readTemperature(true) for Fahrenheit
+  dtostrf(temp_data, 4, 2, str_temp_data);
+  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
+  float hum_data = dht.readHumidity();
+  dtostrf(hum_data, 4, 2, str_hum_data);
+  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
+  float tempF_data = dht.readTemperature(true);
+  dtostrf(tempF_data, 4, 2, str_tempF_data);
+  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
+  float tempterm_data = 0;
+  dtostrf(tempterm_data, 4, 2, str_tempterm_data);
+  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
+  tempterm_data = dht.computeHeatIndex(tempF_data, hum_data);
+  tempterm_data = dht.convertFtoC(tempterm_data);
+  dtostrf(tempterm_data, 4, 2, str_tempterm_data);
+  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
 
-    lastMsg = now;
+  lastMsg = now;
 
-    MQTT.publish(pub9, str_temp_data);
+  MQTT.publish(pub9, str_temp_data);
 
-    MQTT.publish(pub10, str_hum_data);
+  MQTT.publish(pub10, str_hum_data);
 
-    MQTT.publish(pub11, str_tempterm_data);
+  MQTT.publish(pub11, str_tempterm_data);
 
-    if (digitalRead(RelayPin1) == HIGH) {
-      MQTT.publish(pub1, "0");
-    } else {
-      MQTT.publish(pub1, "1");
+  if (digitalRead(RelayPin1) == HIGH) {
+  MQTT.publish(pub1, "0");
+  } else {
+  MQTT.publish(pub1, "1");
     }
-    if (digitalRead(RelayPin2) == HIGH) {
-      MQTT.publish(pub2, "0");
-    } else {
-      MQTT.publish(pub2, "1");
+  if (digitalRead(RelayPin2) == HIGH) {
+  MQTT.publish(pub2, "0");
+  } else {
+  MQTT.publish(pub2, "1");
     }
-    if (digitalRead(RelayPin3) == HIGH) {
-      MQTT.publish(pub3, "0");
-    } else {
-      MQTT.publish(pub3, "1");
+  if (digitalRead(RelayPin3) == HIGH) {
+  MQTT.publish(pub3, "0");
+  } else {
+  MQTT.publish(pub3, "1");
     }
-    if (digitalRead(RelayPin4) == HIGH) {
-      MQTT.publish(pub4, "0");
-    } else {
-      MQTT.publish(pub4, "1");
+  if (digitalRead(RelayPin4) == HIGH) {
+  MQTT.publish(pub4, "0");
+  } else {
+  MQTT.publish(pub4, "1");
     }
-    if (digitalRead(RelayPin5) == HIGH) {
-      MQTT.publish(pub5, "0");
-    } else {
-      MQTT.publish(pub5, "1");
+  if (digitalRead(RelayPin5) == HIGH) {
+  MQTT.publish(pub5, "0");
+  } else {
+  MQTT.publish(pub5, "1");
     }
-    if (digitalRead(RelayPin6) == HIGH) {
-      MQTT.publish(pub6, "0");
-    } else {
-      MQTT.publish(pub6, "1");
+  if (digitalRead(RelayPin6) == HIGH) {
+  MQTT.publish(pub6, "0");
+  } else {
+  MQTT.publish(pub6, "1");
     }
-    if (digitalRead(RelayPin7) == HIGH) {
-      MQTT.publish(pub7, "0");
-    } else {
-      MQTT.publish(pub7, "1");
+  if (digitalRead(RelayPin7) == HIGH) {
+  MQTT.publish(pub7, "0");
+  } else {
+  MQTT.publish(pub7, "1");
     }
-    if (digitalRead(RelayPin8) == HIGH) {
-      MQTT.publish(pub8, "0");
-    } else {
-      MQTT.publish(pub8, "1");
+  if (digitalRead(RelayPin8) == HIGH) {
+  MQTT.publish(pub8, "0");
+  } else {
+  MQTT.publish(pub8, "1");
     }
-    if (status_todos == 1) {
-      MQTT.publish(pub0, "1");
-    } else {
-      MQTT.publish(pub0, "0");
+  if (status_todos == 1) {
+  MQTT.publish(pub0, "1");
+  } else {
+  MQTT.publish(pub0, "0");
     }
 
-    val = digitalRead(pirPin);
-    if (val == LOW) {
-      // Serial.println("Sem Movimento");
-      MQTT.publish(motion_topic, "Sem Movimento");
-    } else {
-      Serial.println("Movimento Detectado");
-      MQTT.publish(motion_topic, "Movimento Detectado");
+  val = digitalRead(pirPin);
+  if (val == LOW) {
+// Serial.println("Sem Movimento");
+  MQTT.publish(motion_topic, "Sem Movimento");
+  } else {
+  Serial.println("Movimento Detectado");
+  MQTT.publish(motion_topic, "Movimento Detectado");
     }
   }
   SinricPro.handle();
