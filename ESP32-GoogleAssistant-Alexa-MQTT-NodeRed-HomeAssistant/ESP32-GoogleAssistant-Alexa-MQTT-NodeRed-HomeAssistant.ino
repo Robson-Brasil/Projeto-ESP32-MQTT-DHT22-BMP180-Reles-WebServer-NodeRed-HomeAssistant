@@ -117,7 +117,7 @@ DHT dht(DHTPIN, DHTTYPE);
 
 // Configurações do WIFI
 const char*     SSID      =           "RVR 2,4GHz";  // SSID / nome da rede WI-FI que deseja se conectar
-const char* PASSWORD      = "RodrigoValRobson2021";  // Senha da rede WI-FI que deseja se conectar
+const char* PASSWORD      = "RodrigoValRobson2022";  // Senha da rede WI-FI que deseja se conectar
 
 // Configurações do Broker MQTT
 const char* BROKER_MQTT   = "192.168.15.10";         // URL do broker MQTT que se deseja utilizar
