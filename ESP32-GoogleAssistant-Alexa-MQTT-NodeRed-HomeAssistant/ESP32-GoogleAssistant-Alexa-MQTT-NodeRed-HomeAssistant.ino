@@ -4,7 +4,7 @@ Autor : Robson Brasil
 Dispositivo : ESP32 WROOM32
 Preferences--> Aditional boards Manager URLs: 
                                     http://arduino.esp8266.com/stable/package_esp8266com_index.json,https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-Download Board ESP32 (2.0.3):
+Download Board ESP32 (2.0.5):
 WiFi Manager
 Broker MQTT
 Node-Red / Google Assistant-Nora:  https://smart-nora.eu/  
@@ -21,7 +21,6 @@ Versão : 8 - Alfa
 #include <PubSubClient.h>       // Importa a Biblioteca PubSubClient
 #include <DHT.h>                // Importa a Biblioteca DHT
 #include <WiFiUdp.h>            // Importa a Biblioteca WiFiUdp
-#include <esp_task_wdt.h>       // Importa a Biblioteca do WatchDog
 #include <Arduino.h>            // ArduinoJson Library:        https://github.com/bblanchon/ArduinoJson
 #include "SinricPro.h"          // SinricPro Library:          https://github.com/sinricpro/esp8266-esp32-sdk
 #include "SinricProSwitch.h"    // SinricPro Library:          https://github.com/sinricpro/esp8266-esp32-sdk
@@ -30,10 +29,13 @@ Versão : 8 - Alfa
 #include <ESPAsyncWebServer.h>  //ESPAsyncWebServer Library:   https://github.com/me-no-dev/ESPAsyncWebServer
 #include <ESPAsyncWiFiManager.h>//ESPAsyncWiFiManager Library: https://github.com/alanswx/ESPAsyncWiFiManager
 #include <FS.h>
+#include <Preferences.h>
+#include <Esp32WifiManager.h>
 
 //Wi-Fi Manager
 AsyncWebServer webServer(80);      //Cria os objetos dos servidores
 DNSServer dns;
+WifiManager manager;
 
 // Tópicos do Subscribe
 const char* sub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando";  // Somente por MQTT
@@ -144,7 +146,6 @@ std::map<String, deviceConfig_t> devices = {
   { device_ID_1, { RelayPin6 } },
   { device_ID_2, { RelayPin7 } },
   { device_ID_3, { RelayPin8 } }
-
 };
 
 typedef struct {  // struct for the std::map below
@@ -251,7 +252,6 @@ void reconectWiFi();
 void mqtt_callback(char *topic, byte *payload, unsigned int length);
 void VerificaConexoesWiFIEMQTT(void);
 void initOutput(void);
-void IRAM_ATTR watchDogInterrupt();
 void setupRelays();
 void setupFlipSwitches();
 void setupSinricPro();
@@ -277,9 +277,11 @@ void WiFiManager(){
   //Configuração do Wi-Fi Manager
   AsyncWiFiManager wifiManager(&webServer, &dns);     //Cria os objetos dos servidores
   wifiManager.resetSettings();                     //Reseta as configurações do gerenciador
+//  wifiManager.setSTAStaticIPConfig(local_IP, gateway, subnet);  
   wifiManager.autoConnect("ESP32 - Access Point"); //Cria o ponto de acesso
-  wifiManager.setSTAStaticIPConfig(local_IP, gateway, subnet);
-  wifiManager.setBreakAfterConfig(true);
+  //wifiManager.setBreakAfterConfig(true);
+//  manager.setupAP();
+//  manager.setupScan();
 }
 
 // Função: inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
