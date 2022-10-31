@@ -1,19 +1,19 @@
 /**********************************************************************************
-IoT - Automação Residencial
-Autor : Robson Brasil
-Dispositivo : ESP32 WROOM32
-Preferences--> Aditional boards Manager URLs: 
+  IoT - Automação Residencial
+  Autor : Robson Brasil
+  Dispositivo : ESP32 WROOM32
+  Preferences--> Aditional boards Manager URLs:
                                     http://arduino.esp8266.com/stable/package_esp8266com_index.json,https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-Download Board ESP32 (2.0.5):
-WiFi Manager
-Broker MQTT
-Node-Red / Google Assistant-Nora:  https://smart-nora.eu/  
-Alexa-SirincPro:                   https://portal.sinric.pro/
-Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
-Home Assistant
-Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-Versão : 8 - Alfa
-Última Modificação : 25/10/2022
+  Download Board ESP32 (2.0.5):
+  WiFi Manager
+  Broker MQTT
+  Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
+  Alexa-SirincPro:                   https://portal.sinric.pro/
+  Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
+  Home Assistant
+  Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
+  Versão : 8 - Alfa
+  Última Modificação : 25/10/2022
 **********************************************************************************/
 
 // Bibliotecas
@@ -25,20 +25,32 @@ Versão : 8 - Alfa
 #include "SinricPro.h"        // SinricPro Library:          https://github.com/sinricpro/esp8266-esp32-sdk
 #include "SinricProSwitch.h"  // SinricPro Library:          https://github.com/sinricpro/esp8266-esp32-sdk
 #include <map>
-#include <DNSServer.h>            // DNSServer Library:          https://github.com/zhouhan0126/DNSServer---esp32
-#include <ESPAsyncWebServer.h>    //ESPAsyncWebServer Library:   https://github.com/me-no-dev/ESPAsyncWebServer
-#include <ESPAsyncWiFiManager.h>  //ESPAsyncWiFiManager Library: https://github.com/alanswx/ESPAsyncWiFiManager
-#include <FS.h>
-#include <Preferences.h>
-#include <Esp32WifiManager.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
+#include <DNSServer.h>  // DNSServer Library:          https://github.com/zhouhan0126/DNSServer---esp32
 #include "SPIFFS.h"
+#include "ESPAsyncWebServer.h"
+#include <ESPAsyncWiFiManager.h>  //https://github.com/tzapu/WiFiManager
+#include <AsyncTCP.h>
+#include <AsyncElegantOTA.h>
+#include <Esp32WifiManager.h>
+#include <Arduino_JSON.h>
+#include <WebSerial.h>
+#include <ESPmDNS.h>
+#include <Update.h>
 
-//Wi-Fi Manager
-AsyncWebServer webServer(80);
+// Create AsyncWebServer object on port 80
+AsyncWebServer server(80);
 DNSServer dns;
 WifiManager manager;
+
+// Create an Event Source on /events
+AsyncEventSource events("/events");
+
+// Json Variable to Hold Sensor Readings
+JSONVar readings;
+
+// Timer variables
+unsigned long lastTime = 0;
+unsigned long timerDelay = 10000;
 
 // Tópicos do Subscribe
 const char* sub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando";  // Somente por MQTT
@@ -80,7 +92,7 @@ int val;
                             IMPORTANTE: Este deve ser único no broker (ou seja, \
                             se um client MQTT tentar entrar com o mesmo         \
                             ID de outro já conectado ao broker, o broker        \
-                            irá fechar a conexão de um deles).*/
+irá fechar a conexão de um deles).*/
 
 #define APP_KEY "4914a0d0-327e-4815-8128-822b7a80713d"                                          //Site https://portal.sinric.pro/ para conseguir a APP-KEY
 #define APP_SECRET "b73f409a-fcc5-4c60-8cf4-d86d9b4e2bae-e7fc2fe6-1b4a-4b71-aa38-de61ad019107"  //Site https://portal.sinric.pro/ para conseguir a APP-SECRET
@@ -120,6 +132,14 @@ int status_todos = 0;   // Define integer to remember the toggle state for todos
 #define DHTTYPE DHT22  // DHT 22
 DHT dht(DHTPIN, DHTTYPE);
 
+// Get Sensor Readings and return JSON object
+String getSensorReadings() {
+  readings["temperature"] = String(dht.readTemperature());
+  readings["humidity"] = String(dht.readHumidity());
+  String jsonString = JSON.stringify(readings);
+  return jsonString;
+}
+
 // Configurações do WIFI
 const char* SSID = "RVR 2,4GHz";                // SSID / nome da rede WI-FI que deseja se conectar
 const char* PASSWORD = "RodrigoValRobson2022";  // Senha da rede WI-FI que deseja se conectar
@@ -143,7 +163,6 @@ typedef struct {  // struct for the std::map below
   int flipSwitchPIN;
 } deviceConfig_t;
 
-
 std::map<String, deviceConfig_t> devices = {
   //{deviceId, {relayPIN,  flipSwitchPIN}}
   { device_ID_1, { RelayPin6 } },
@@ -158,7 +177,7 @@ typedef struct {  // struct for the std::map below
 } flipSwitchConfig_t;
 
 std::map<int, flipSwitchConfig_t> flipSwitches;  // this map is used to map flipSwitch PINs to deviceId and handling debounce and last flipSwitch state checks
-                                                 // it will be setup in "setupFlipSwitches" function, using informations from devices map
+// it will be setup in "setupFlipSwitches" function, using informations from devices map
 
 void setupRelays() {
   for (auto& device : devices)  // for each device (relay, flipSwitch combination)
@@ -205,8 +224,8 @@ void handleFlipSwitches() {
 
       if (flipSwitchState != lastFlipSwitchState) {  // if the flipSwitchState has changed...
 
-        if (flipSwitchState) {                                    // if the tactile button is pressed
-                                                                  //#endif
+        if (flipSwitchState) {  // if the tactile button is pressed
+          //#endif
           flipSwitch.second.lastFlipSwitchChange = actualMillis;  // update lastFlipSwitchChange time
           String deviceId = flipSwitch.second.deviceId;           // get the deviceId from config
           int relayPIN = devices[deviceId].relayPIN;              // get the relayPIN from config
@@ -246,6 +265,25 @@ char str_tempF_data[10];
 unsigned long lastMsg = 0;
 int value = 0;
 
+void WiFiManager() {
+  //Configuração do Wi-Fi Manager
+  AsyncWiFiManager wifiManager(&server, &dns);  //Cria os objetos dos servidores
+  wifiManager.resetSettings();                  //Reseta as configurações do gerenciador
+  //  wifiManager.setSTAStaticIPConfig(local_IP, gateway, subnet);
+  wifiManager.autoConnect("ESP32 - Access Point");  //Cria o ponto de acesso
+  //  wifiManager.setBreakAfterConfig(true);
+  //  manager.setupAP();
+  //  manager.setupScan();
+}
+
+void recvMsg(uint8_t* data, size_t len) {
+  WebSerial.println("Received Data...");
+  String d = "";
+  for (int i = 0; i < len; i++) {
+    d += char(data[i]);
+  }
+}
+
 // Prototypes
 void initSerial();
 void initWiFi();
@@ -259,9 +297,7 @@ void setupFlipSwitches();
 void setupSinricPro();
 void WiFiManager();
 
-/*
-Implementações das funções
- */
+/*Implementações das funções*/
 void setup() {
   // Inicializações:
   initOutput();
@@ -273,17 +309,55 @@ void setup() {
   setupFlipSwitches();
   setupSinricPro();
   WiFiManager();
-}
 
-void WiFiManager() {
-  //Configuração do Wi-Fi Manager
-  AsyncWiFiManager wifiManager(&webServer, &dns);   //Cria os objetos dos servidores
-  wifiManager.resetSettings();                      //Reseta as configurações do gerenciador
-//  wifiManager.setSTAStaticIPConfig(local_IP, gateway, subnet);
-  wifiManager.autoConnect("ESP32 - Access Point");  //Cria o ponto de acesso
-//  wifiManager.setBreakAfterConfig(true);
-//  manager.setupAP();
-//  manager.setupScan();
+  // Initialize SPIFFS
+  if (!SPIFFS.begin(true)) {
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
+
+  // Route for root / web page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send(SPIFFS, "/index.html", String(), false);
+  });
+
+  server.serveStatic("/", SPIFFS, "/");
+
+  // Request for the latest sensor readings
+  server.on("/readings", HTTP_GET, [](AsyncWebServerRequest* request) {
+    String json = getSensorReadings();
+    request->send(200, "application/json", json);
+    json = String();
+  });
+
+  events.onConnect([](AsyncEventSourceClient* client) {
+    if (client->lastId()) {
+      Serial.printf("Client reconnected! Last message ID that it got is: %u\n", client->lastId());
+    }
+    // send event with message "hello!", id current millis
+    // and set reconnect delay to 1 second
+    client->send("hello!", NULL, millis(), 10000);
+  });
+
+  server.addHandler(&events);
+
+  // Route to load style.css file
+  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send(SPIFFS, "/style.css", "text/css");
+  });
+
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send(200, "text/plain", "Oi! Quer fazer um UPGRADE, ACERTEI? coloque /update depois do IP");
+  });
+
+  AsyncElegantOTA.begin(&server);  // Start AsyncElegantOTA
+
+  // WebSerial is accessible at "<IP Address>/webserial" in browser
+  WebSerial.begin(&server);
+  WebSerial.msgCallback(recvMsg);
+
+  // Start server
+  server.begin();
 }
 
 // Função: inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
@@ -487,7 +561,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 }
 
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
-em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
+  em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
 void reconnectMQTT() {
   while (!MQTT.connected()) {
     Serial.print("* Tentando se conectar ao Broker MQTT: ");
@@ -517,7 +591,7 @@ void reconnectMQTT() {
 void reconectWiFi() {
 
   /* Se já está conectado a rede WI-FI, nada é feito.
-Caso contrário, são efetuadas tentativas de conexão*/
+    Caso contrário, são efetuadas tentativas de conexão*/
   if (WiFi.status() == WL_CONNECTED)
     return;
 
@@ -550,7 +624,7 @@ Caso contrário, são efetuadas tentativas de conexão*/
 }
 
 /* Função: verifica o estado das conexões WiFI e ao broker MQTT.
-Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
+  Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
   if (!MQTT.connected())
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
@@ -587,6 +661,13 @@ void initOutput(void) {
 // Programa Principal
 
 void loop() {
+
+  if ((millis() - lastTime) > timerDelay) {
+    // Send Events to the client with the Sensor Readings Every 10 seconds
+    events.send("ping", NULL, millis());
+    events.send(getSensorReadings().c_str(), "new_readings", millis());
+    lastTime = millis();
+  }
 
   unsigned long now = millis();
   if (now - lastMsg > 1000) {
