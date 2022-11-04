@@ -12,8 +12,8 @@
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 8 - Alfa
-  Última Modificação : 25/10/2022
+  Versão : 10 - Alfa
+  Última Modificação : 04/11/2022
 **********************************************************************************/
 
 // Bibliotecas
@@ -36,6 +36,25 @@
 #include <WebSerial.h>
 #include <ESPmDNS.h>
 #include <Update.h>
+
+// Configurações do WIFI
+const char* SSID = "RVR 2,4GHz";                // SSID / nome da rede WI-FI que deseja se conectar
+const char* PASSWORD = "RodrigoValRobson2022";  // Senha da rede WI-FI que deseja se conectar
+
+// Configurações do Broker MQTT
+const char* BROKER_MQTT = "192.168.15.10";  // URL do broker MQTT que se deseja utilizar
+const char* mqttUserName = "RobsonBrasil";  // MQTT UserName
+const char* mqttPwd = "LoboAlfa";           // MQTT Password
+int BROKER_PORT = 1883;                     // Porta do Broker MQTT
+
+#define ID_MQTT "ESP32-IoT" /* ID MQTT (para identificação de seção)           \
+                            IMPORTANTE: Este deve ser único no broker (ou seja, \
+                            se um client MQTT tentar entrar com o mesmo         \
+                            ID de outro já conectado ao broker, o broker        \
+irá fechar a conexão de um deles).*/
+
+const char* http_username = "RobsonBrasil";
+const char* http_password = "loboalfa";
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -82,18 +101,21 @@ const char* motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";  // Somente po
 const char* inTopic = "ESP32/MinhaCasa/QuartoRobson/inTopic";      // Somente por MQTT
 const char* outTopic = "ESP32/MinhaCasa/QuartoRobson/outTopic";    // Somente por MQTT
 
+// IP Estático
+IPAddress local_IP(192, 168, 15, 50);
+IPAddress gateway(192, 168, 15, 1);
+IPAddress subnet(255, 255, 255, 0);
+
+IPAddress primaryDNS(8, 8, 8, 8);
+IPAddress secondaryDNS(8, 8, 4, 4);
+
 float diff = 1.0;
 
 unsigned long delayTime;
 int pirPin = 17;
 int val;
 
-#define ID_MQTT "ESP32-IoT" /* ID MQTT (para identificação de seção)           \
-                            IMPORTANTE: Este deve ser único no broker (ou seja, \
-                            se um client MQTT tentar entrar com o mesmo         \
-                            ID de outro já conectado ao broker, o broker        \
-irá fechar a conexão de um deles).*/
-
+//Configurações SinricPro
 #define APP_KEY "4914a0d0-327e-4815-8128-822b7a80713d"                                          //Site https://portal.sinric.pro/ para conseguir a APP-KEY
 #define APP_SECRET "b73f409a-fcc5-4c60-8cf4-d86d9b4e2bae-e7fc2fe6-1b4a-4b71-aa38-de61ad019107"  //Site https://portal.sinric.pro/ para conseguir a APP-SECRET
 
@@ -116,17 +138,6 @@ irá fechar a conexão de um deles).*/
 #define wifiLed 0  // D0
 #define DEBOUNCE_TIME 250
 
-int toggleState_0 = 1;  // Define integer to remember the toggle state for relay 0
-int toggleState_1 = 1;  // Define integer to remember the toggle state for relay 1
-int toggleState_2 = 1;  // Define integer to remember the toggle state for relay 2
-int toggleState_3 = 1;  // Define integer to remember the toggle state for relay 3
-int toggleState_4 = 1;  // Define integer to remember the toggle state for relay 4
-int toggleState_5 = 1;  // Define integer to remember the toggle state for relay 5
-int toggleState_6 = 1;  // Define integer to remember the toggle state for relay 6
-int toggleState_7 = 1;  // Define integer to remember the toggle state for relay 7
-int toggleState_8 = 1;  // Define integer to remember the toggle state for relay 8
-int status_todos = 0;   // Define integer to remember the toggle state for todos
-
 // DHT22 para leitura dos valores  de Temperatura e Umidade
 #define DHTPIN 16
 #define DHTTYPE DHT22  // DHT 22
@@ -140,23 +151,138 @@ String getSensorReadings() {
   return jsonString;
 }
 
-// Configurações do WIFI
-const char* SSID = "RVR 2,4GHz";                // SSID / nome da rede WI-FI que deseja se conectar
-const char* PASSWORD = "RodrigoValRobson2022";  // Senha da rede WI-FI que deseja se conectar
+int toggleState_0 = 1;  // Define integer to remember the toggle state for relay 0
+int toggleState_1 = 1;  // Define integer to remember the toggle state for relay 1
+int toggleState_2 = 1;  // Define integer to remember the toggle state for relay 2
+int toggleState_3 = 1;  // Define integer to remember the toggle state for relay 3
+int toggleState_4 = 1;  // Define integer to remember the toggle state for relay 4
+int toggleState_5 = 1;  // Define integer to remember the toggle state for relay 5
+int toggleState_6 = 1;  // Define integer to remember the toggle state for relay 6
+int toggleState_7 = 1;  // Define integer to remember the toggle state for relay 7
+int toggleState_8 = 1;  // Define integer to remember the toggle state for relay 8
+int status_todos = 0;   // Define integer to remember the toggle state for todos
 
-// Configurações do Broker MQTT
-const char* BROKER_MQTT = "192.168.15.10";  // URL do broker MQTT que se deseja utilizar
-const char* mqttUserName = "RobsonBrasil";  // MQTT UserName
-const char* mqttPwd = "LoboAlfa";           // MQTT Password
-int BROKER_PORT = 1883;                     // Porta do Broker MQTT
+const char* PARAM_INPUT_1 = "state";
 
-// IP Estático
-IPAddress local_IP(192, 168, 15, 50);
-IPAddress gateway(192, 168, 15, 1);
-IPAddress subnet(255, 255, 255, 0);
+//WebServer
+const char index_html[] PROGMEM = R"rawliteral(
+<!DOCTYPE HTML><html>
+<html lang="PT-BR">
 
-IPAddress primaryDNS(8, 8, 8, 8);
-IPAddress secondaryDNS(8, 8, 4, 4);
+<head>
+  <title>Faça Seu Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html {font-family: Arial; display: inline-block; text-align: center;}
+    h2 {font-size: 2.6rem;}
+    body {max-width: 600px; margin:0px auto; padding-bottom: 10px;}
+    .switch {position: relative; display: inline-block; width: 120px; height: 68px} 
+    .switch input {display: none}
+    .slider {position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 34px}
+    .slider:before {position: absolute; content: ""; height: 52px; width: 52px; left: 8px; bottom: 8px; background-color: #fff; -webkit-transition: .4s; transition: .4s; border-radius: 68px}
+    input:checked+.slider {background-color: #2196F3}
+    input:checked+.slider:before {-webkit-transform: translateX(52px); -ms-transform: translateX(52px); transform: translateX(52px)}
+  </style>
+  <body>
+  <h2>ESP32 Web Server</h2>
+  <p></p>
+  <p><button onclick="updateButton()">Ir Para Página de Update via OTA </button></p>
+  <p></p>
+  <p></p>
+  <p><button onclick="temphumButton()">Ir Para Página de Temperatura e Umidade </button></p>
+  <p></p>
+  <p></p>
+  <p><button onclick="logoutButton()">Voltar Para a Página de Login e Senha</button></p>
+  <p></p>
+  <p></p>
+<script>function toggleCheckbox(element) {
+  var xhr = new XMLHttpRequest();
+  if(element.checked){ 
+    xhr.open("GET", "/upgrade?state=1", true); 
+    document.getElementById("state").innerHTML = "ON";  
+  }
+  else { 
+    xhr.open("GET", "/upgrade?state=0", true); 
+    document.getElementById("state").innerHTML = "OFF";      
+  }
+  xhr.send();
+}
+function logoutButton() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/logout", true);
+  xhr.send();
+  setTimeout(function(){ window.open("/logged-out","_self"); }, 1000);
+}
+
+function updateButton() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/up", true);
+  xhr.send();
+  setTimeout(function(){ window.open("/updateOTA","_self"); }, 1000);
+}
+
+function temphumButton() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/temperaturahumidade", true);
+  xhr.send();
+  setTimeout(function(){ window.open("/TempUmid","_self"); }, 1000);
+}
+
+</script>
+</body>
+</head>
+</html>
+)rawliteral";
+
+const char logout_html[] PROGMEM = R"rawliteral(
+<!DOCTYPE HTML><html>
+<html lang="PT-BR">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+<title>Faça Seu Login</title>
+  <meta charset="UTF-8">
+<body>
+  <p><a href="/">Voltar a tela de Login e Senha</a>.</p>
+  <p><strong>Nota:</strong> Feche o Browser para que o processo de Login e Senha volte ao processo inicial.</p>
+
+</body>
+</head>
+</html>
+)rawliteral";
+
+const char up_html[] PROGMEM = R"rawliteral(
+<!DOCTYPE HTML><html>
+<html lang="PT-BR">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+<title>ElegantOTA</title>
+  <meta charset="UTF-8">
+<body>
+  <p><a href="/update">Ir para a página ElegantOTA</a>.</p>
+  <p><strong>Nota:</strong> Não se esqueça de já ter gerado o arquivo .bin</p>
+   <button onclick="logoutButton()">Voltar Para a Página Incial</button>
+
+</body>
+</head>
+</html>
+)rawliteral";
+
+const char temphumid_html[] PROGMEM = R"rawliteral(
+<!DOCTYPE HTML><html>
+<html lang="PT-BR">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+<title>Temperatura e Umidade</title>
+  <meta charset="UTF-8">
+<body>
+<a href="/guages.html">Ir para a página de Temperatura e Umidade</a>.</p>
+<p><strong>Nota:</strong> Leituras feitas pelo Sensor DHT22</p>
+
+</body>
+</head>
+</html>
+)rawliteral";
 
 typedef struct {  // struct for the std::map below
   int relayPIN;
@@ -284,32 +410,7 @@ void recvMsg(uint8_t* data, size_t len) {
   }
 }
 
-// Prototypes
-void initSerial();
-void initWiFi();
-void initMQTT();
-void reconectWiFi();
-void mqtt_callback(char* topic, byte* payload, unsigned int length);
-void VerificaConexoesWiFIEMQTT(void);
-void initOutput(void);
-void setupRelays();
-void setupFlipSwitches();
-void setupSinricPro();
-void WiFiManager();
-
-/*Implementações das funções*/
-void setup() {
-  // Inicializações:
-  initOutput();
-  initSerial();
-  initWiFi();
-  initMQTT();
-  dht.begin();
-  setupRelays();
-  setupFlipSwitches();
-  setupSinricPro();
-  WiFiManager();
-
+void initSPIFFS() {
   // Initialize SPIFFS
   if (!SPIFFS.begin(true)) {
     Serial.println("An Error has occurred while mounting SPIFFS");
@@ -318,10 +419,59 @@ void setup() {
 
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
-    request->send(SPIFFS, "/index.html", String(), false);
+    if (!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send_P(200, "text/html", index_html);
+  });
+
+  server.on("/logout", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send(401);
+  });
+
+  server.on("/logged-out", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send_P(200, "text/html", logout_html);
+  });
+
+  server.on("/up", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send(401);
+  });
+
+  server.on("/updateOTA", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send_P(200, "text/html", up_html);
+  });
+
+  server.on("/temperaturahumidade", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send(401);
+  });
+
+  server.on("/TempUmid", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send_P(200, "text/html", temphumid_html);
+  });
+
+  // Send a GET request to <ESP_IP>/update?state=<inputMessage>
+  server.on("/upgrade", HTTP_GET, [](AsyncWebServerRequest* request) {
+    if (!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    String inputMessage;
+    String inputParam;
+    // GET input1 value on <ESP_IP>/update?state=<inputMessage>
+    if (request->hasParam(PARAM_INPUT_1)) {
+      inputMessage = request->getParam(PARAM_INPUT_1)->value();
+      inputParam = PARAM_INPUT_1;
+    } else {
+      inputMessage = "No message sent";
+      inputParam = "none";
+    }
+    Serial.println(inputMessage);
+    request->send(200, "text/plain", "OK");
   });
 
   server.serveStatic("/", SPIFFS, "/");
+
+  // Route for root / web page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send(SPIFFS, "/index.html", String(), false);
+  });
 
   // Request for the latest sensor readings
   server.on("/readings", HTTP_GET, [](AsyncWebServerRequest* request) {
@@ -358,6 +508,35 @@ void setup() {
 
   // Start server
   server.begin();
+}
+
+// Prototypes
+void initSerial();
+void initWiFi();
+void initMQTT();
+void reconectWiFi();
+void mqtt_callback(char* topic, byte* payload, unsigned int length);
+void VerificaConexoesWiFIEMQTT(void);
+void initOutput(void);
+void setupRelays();
+void setupFlipSwitches();
+void setupSinricPro();
+void WiFiManager();
+void initSPIFFS();
+
+/*Implementações das funções*/
+void setup() {
+  // Inicializações:
+  initOutput();
+  initSerial();
+  initWiFi();
+  initMQTT();
+  dht.begin();
+  setupRelays();
+  setupFlipSwitches();
+  setupSinricPro();
+  WiFiManager();
+  initSPIFFS();
 }
 
 // Função: inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
