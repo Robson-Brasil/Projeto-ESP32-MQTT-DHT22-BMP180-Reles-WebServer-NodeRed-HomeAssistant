@@ -28,10 +28,8 @@
 #include <DNSServer.h>  // DNSServer Library:          https://github.com/zhouhan0126/DNSServer---esp32
 #include "SPIFFS.h"
 #include "ESPAsyncWebServer.h"
-#include <ESPAsyncWiFiManager.h>  //https://github.com/tzapu/WiFiManager
 #include <AsyncTCP.h>
 #include <AsyncElegantOTA.h>
-#include <Esp32WifiManager.h>
 #include <Arduino_JSON.h>
 #include <WebSerial.h>
 #include <ESPmDNS.h>
@@ -39,15 +37,15 @@
 
 // Configurações do WIFI
 const char* SSID = "RVR 2,4GHz";                // SSID / nome da rede WI-FI que deseja se conectar
-const char* PASSWORD = "RodrigoValRobson2022";  // Senha da rede WI-FI que deseja se conectar
+const char* PASSWORD = "RodrigoValRobson2021";  // Senha da rede WI-FI que deseja se conectar
 
 // Configurações do Broker MQTT
 const char* BROKER_MQTT = "192.168.15.10";  // URL do broker MQTT que se deseja utilizar
 const char* mqttUserName = "RobsonBrasil";  // MQTT UserName
-const char* mqttPwd = "LoboAlfa";           // MQTT Password
+const char* mqttPwd = "loboalfa";           // MQTT Password
 int BROKER_PORT = 1883;                     // Porta do Broker MQTT
 
-#define ID_MQTT "ESP32-IoT" /* ID MQTT (para identificação de seção)           \
+#define ID_MQTT "ESP32-2-IoT" /* ID MQTT (para identificação de seção)           \
                             IMPORTANTE: Este deve ser único no broker (ou seja, \
                             se um client MQTT tentar entrar com o mesmo         \
                             ID de outro já conectado ao broker, o broker        \
@@ -59,7 +57,6 @@ const char* http_password = "loboalfa";
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 DNSServer dns;
-WifiManager manager;
 
 // Create an Event Source on /events
 AsyncEventSource events("/events");
@@ -96,13 +93,8 @@ const char* pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                //
 const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
 const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
 
-//Tópicos do Sensor de Movimento
-const char* motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";  // Somente por MQTT
-const char* inTopic = "ESP32/MinhaCasa/QuartoRobson/inTopic";      // Somente por MQTT
-const char* outTopic = "ESP32/MinhaCasa/QuartoRobson/outTopic";    // Somente por MQTT
-
 // IP Estático
-IPAddress local_IP(192, 168, 15, 50);
+IPAddress local_IP(192, 168, 15, 30);
 IPAddress gateway(192, 168, 15, 1);
 IPAddress subnet(255, 255, 255, 0);
 
@@ -110,6 +102,11 @@ IPAddress primaryDNS(8, 8, 8, 8);
 IPAddress secondaryDNS(8, 8, 4, 4);
 
 float diff = 1.0;
+
+//Tópicos do Sensor de Movimento
+const char* motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";  // Somente por MQTT
+const char* inTopic = "ESP32/MinhaCasa/QuartoRobson/inTopic";      // Somente por MQTT
+const char* outTopic = "ESP32/MinhaCasa/QuartoRobson/outTopic";    // Somente por MQTT
 
 unsigned long delayTime;
 int pirPin = 17;
@@ -121,7 +118,7 @@ int val;
 
 //Enter the device IDs here
 #define device_ID_1 "62da1ebf0aec232058001ec7"  //Site https://portal.sinric.pro/ para conseguir a ID Device
-#define device_ID_2 "62da1f140aec232058001f15"  //Site https://portal.sinric.pro/ para conseguir a ID Device
+#define device_ID_2 "6369b088333d12dd2ae96e48"  //Site https://portal.sinric.pro/ para conseguir a ID Device
 #define device_ID_3 "62da1dea0aec232058001e4f"  //Site https://portal.sinric.pro/ para conseguir a ID Device
 
 // Defines - Mapeamento de pinos do NodeMCU Relays
@@ -137,11 +134,16 @@ int val;
 // WiFi Status Relé
 #define wifiLed 0  // D0
 #define DEBOUNCE_TIME 250
+#define BAUD_RATE   115200
 
 // DHT22 para leitura dos valores  de Temperatura e Umidade
 #define DHTPIN 16
 #define DHTTYPE DHT22  // DHT 22
 DHT dht(DHTPIN, DHTTYPE);
+
+#define SwitchPin6 13  //D13
+#define SwitchPin7 12  //D12
+#define SwitchPin8 14  //D14
 
 // Get Sensor Readings and return JSON object
 String getSensorReadings() {
@@ -290,10 +292,10 @@ typedef struct {  // struct for the std::map below
 } deviceConfig_t;
 
 std::map<String, deviceConfig_t> devices = {
-  //{deviceId, {relayPIN,  flipSwitchPIN}}
-  { device_ID_1, { RelayPin6 } },
-  { device_ID_2, { RelayPin7 } },
-  { device_ID_3, { RelayPin8 } }
+    //{deviceId, {relayPIN,  flipSwitchPIN}}
+    {device_ID_1, {  RelayPin6, SwitchPin6 }},
+    {device_ID_2, {  RelayPin7, SwitchPin7 }},
+    {device_ID_3, {  RelayPin8, SwitchPin8 }}
 };
 
 typedef struct {  // struct for the std::map below
@@ -337,31 +339,31 @@ bool onPowerState(String deviceId, bool& state) {
 }
 
 void handleFlipSwitches() {
-  unsigned long actualMillis = millis();  // get actual millis
-
-  for (auto& flipSwitch : flipSwitches) {                                         // for each flipSwitch in flipSwitches map
+  unsigned long actualMillis = millis();                                          // get actual millis
+  for (auto &flipSwitch : flipSwitches) {                                         // for each flipSwitch in flipSwitches map
     unsigned long lastFlipSwitchChange = flipSwitch.second.lastFlipSwitchChange;  // get the timestamp when flipSwitch was pressed last time (used to debounce / limit events)
 
-    if (actualMillis - lastFlipSwitchChange > DEBOUNCE_TIME) {  // if time is > debounce time...
+    if (actualMillis - lastFlipSwitchChange > DEBOUNCE_TIME) {                    // if time is > debounce time...
 
-      int flipSwitchPIN = flipSwitch.first;                              // get the flipSwitch pin from configuration
-      bool lastFlipSwitchState = flipSwitch.second.lastFlipSwitchState;  // get the lastFlipSwitchState
-      bool flipSwitchState = digitalRead(flipSwitchPIN);                 // read the current flipSwitch state
+      int flipSwitchPIN = flipSwitch.first;                                       // get the flipSwitch pin from configuration
+      bool lastFlipSwitchState = flipSwitch.second.lastFlipSwitchState;           // get the lastFlipSwitchState
+      bool flipSwitchState = digitalRead(flipSwitchPIN);                          // read the current flipSwitch state
+      if (flipSwitchState != lastFlipSwitchState) {                               // if the flipSwitchState has changed...
+#ifdef TACTILE_BUTTON
+        if (flipSwitchState) {                                                    // if the tactile button is pressed 
+#endif      
+          flipSwitch.second.lastFlipSwitchChange = actualMillis;                  // update lastFlipSwitchChange time
+          String deviceId = flipSwitch.second.deviceId;                           // get the deviceId from config
+          int relayPIN = devices[deviceId].relayPIN;                              // get the relayPIN from config
+          bool newRelayState = !digitalRead(relayPIN);                            // set the new relay State
+          digitalWrite(relayPIN, newRelayState);                                  // set the trelay to the new state
 
-      if (flipSwitchState != lastFlipSwitchState) {  // if the flipSwitchState has changed...
-
-        if (flipSwitchState) {  // if the tactile button is pressed
-          //#endif
-          flipSwitch.second.lastFlipSwitchChange = actualMillis;  // update lastFlipSwitchChange time
-          String deviceId = flipSwitch.second.deviceId;           // get the deviceId from config
-          int relayPIN = devices[deviceId].relayPIN;              // get the relayPIN from config
-          bool newRelayState = !digitalRead(relayPIN);            // set the new relay State
-          digitalWrite(relayPIN, newRelayState);                  // set the relay to the new state
-
-          SinricProSwitch& mySwitch = SinricPro[deviceId];  // get Switch device from SinricPro
-          mySwitch.sendPowerStateEvent(!newRelayState);     // send the event
+          SinricProSwitch &mySwitch = SinricPro[deviceId];                        // get Switch device from SinricPro
+          mySwitch.sendPowerStateEvent(!newRelayState);                            // send the event
+#ifdef TACTILE_BUTTON
         }
-        flipSwitch.second.lastFlipSwitchState = flipSwitchState;  // update lastFlipSwitchState
+#endif      
+        flipSwitch.second.lastFlipSwitchState = flipSwitchState;                  // update lastFlipSwitchState
       }
     }
   }
@@ -390,17 +392,6 @@ char str_tempF_data[10];
 #define MSG_BUFFER_SIZE (1000)
 unsigned long lastMsg = 0;
 int value = 0;
-
-void WiFiManager() {
-  //Configuração do Wi-Fi Manager
-  AsyncWiFiManager wifiManager(&server, &dns);  //Cria os objetos dos servidores
-  wifiManager.resetSettings();                  //Reseta as configurações do gerenciador
-  //  wifiManager.setSTAStaticIPConfig(local_IP, gateway, subnet);
-  wifiManager.autoConnect("ESP32 - Access Point");  //Cria o ponto de acesso
-  //  wifiManager.setBreakAfterConfig(true);
-  //  manager.setupAP();
-  //  manager.setupScan();
-}
 
 void recvMsg(uint8_t* data, size_t len) {
   WebSerial.println("Received Data...");
@@ -521,7 +512,6 @@ void initOutput(void);
 void setupRelays();
 void setupFlipSwitches();
 void setupSinricPro();
-void WiFiManager();
 void initSPIFFS();
 
 /*Implementações das funções*/
@@ -535,7 +525,6 @@ void setup() {
   setupRelays();
   setupFlipSwitches();
   setupSinricPro();
-  WiFiManager();
   initSPIFFS();
 }
 
@@ -841,6 +830,9 @@ void initOutput(void) {
 
 void loop() {
 
+  SinricPro.handle();
+  handleFlipSwitches();  
+
   if ((millis() - lastTime) > timerDelay) {
     // Send Events to the client with the Sensor Readings Every 10 seconds
     events.send("ping", NULL, millis());
@@ -931,8 +923,6 @@ void loop() {
       MQTT.publish(motion_topic, "Movimento Detectado");
     }
   }
-  SinricPro.handle();
-  handleFlipSwitches();
 
   // Garante funcionamento das conexões WiFi e ao Broker MQTT
   VerificaConexoesWiFIEMQTT();
