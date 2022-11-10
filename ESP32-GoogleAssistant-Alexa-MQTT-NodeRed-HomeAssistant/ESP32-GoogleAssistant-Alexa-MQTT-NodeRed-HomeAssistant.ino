@@ -103,15 +103,6 @@ IPAddress secondaryDNS(8, 8, 4, 4);
 
 float diff = 1.0;
 
-//Tópicos do Sensor de Movimento
-const char* motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";  // Somente por MQTT
-const char* inTopic = "ESP32/MinhaCasa/QuartoRobson/inTopic";      // Somente por MQTT
-const char* outTopic = "ESP32/MinhaCasa/QuartoRobson/outTopic";    // Somente por MQTT
-
-unsigned long delayTime;
-int pirPin = 17;
-int val;
-
 //Configurações SinricPro
 #define APP_KEY "4914a0d0-327e-4815-8128-822b7a80713d"                                          //Site https://portal.sinric.pro/ para conseguir a APP-KEY
 #define APP_SECRET "b73f409a-fcc5-4c60-8cf4-d86d9b4e2bae-e7fc2fe6-1b4a-4b71-aa38-de61ad019107"  //Site https://portal.sinric.pro/ para conseguir a APP-SECRET
@@ -141,9 +132,9 @@ int val;
 #define DHTTYPE DHT22  // DHT 22
 DHT dht(DHTPIN, DHTTYPE);
 
-#define SwitchPin6 13  //D13
-#define SwitchPin7 12  //D12
-#define SwitchPin8 14  //D14
+#define SwitchPin1 13  //D13
+#define SwitchPin2 12  //D12
+#define SwitchPin3 14  //D14
 
 // Get Sensor Readings and return JSON object
 String getSensorReadings() {
@@ -293,9 +284,9 @@ typedef struct {  // struct for the std::map below
 
 std::map<String, deviceConfig_t> devices = {
   //{deviceId, {relayPIN,  flipSwitchPIN}}
-  { device_ID_1, { RelayPin6, SwitchPin6 } },
-  { device_ID_2, { RelayPin7, SwitchPin7 } },
-  { device_ID_3, { RelayPin8, SwitchPin8 } }
+  { device_ID_1, { RelayPin1, SwitchPin1 } },
+  { device_ID_2, { RelayPin2, SwitchPin2 } },
+  { device_ID_3, { RelayPin8, SwitchPin3 } }
 };
 
 typedef struct {  // struct for the std::map below
@@ -745,7 +736,6 @@ void reconnectMQTT() {
       MQTT.subscribe(sub6);
       MQTT.subscribe(sub7);
       MQTT.subscribe(sub8);
-      MQTT.subscribe(inTopic);
     } else {
       Serial.println("Falha ao reconectar no broker.");
       Serial.print(MQTT.state());
@@ -912,15 +902,6 @@ void loop() {
       MQTT.publish(pub0, "1");
     } else {
       MQTT.publish(pub0, "0");
-    }
-
-    val = digitalRead(pirPin);
-    if (val == LOW) {
-      // Serial.println("Sem Movimento");
-      MQTT.publish(motion_topic, "Sem Movimento");
-    } else {
-      Serial.println("Movimento Detectado");
-      MQTT.publish(motion_topic, "Movimento Detectado");
     }
   }
 
