@@ -88,7 +88,7 @@ int toggleState_8 = 1;  // Define integer to remember the toggle state for relay
 int status_todos = 0;   // Define integer to remember the toggle state for todos
 
 // DHT22 para leitura dos valores  de Temperatura e Umidade
-#define DHTPIN 16
+#define DHTPIN 4
 #define DHTTYPE DHT22  // DHT 22
 DHT dht(DHTPIN, DHTTYPE);
 
