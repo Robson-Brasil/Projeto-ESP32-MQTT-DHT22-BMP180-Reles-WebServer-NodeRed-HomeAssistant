@@ -10,8 +10,8 @@ Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
 Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
 Home Assistant
 Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-Versão : 15 - Alfa
-Última Modificação : 27/12/2022
+Versão : 20 - Alfa
+Última Modificação : 15/22/2023
 **********************************************************************************/
 
 // Bibliotecas
@@ -528,7 +528,7 @@ void VerificaConexoesWiFIEMQTT(void) {
   if (!MQTT.connected())
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
 
-  reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita
+    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
 }
 
 // Função: inicializa o output em nível lógico baixo
