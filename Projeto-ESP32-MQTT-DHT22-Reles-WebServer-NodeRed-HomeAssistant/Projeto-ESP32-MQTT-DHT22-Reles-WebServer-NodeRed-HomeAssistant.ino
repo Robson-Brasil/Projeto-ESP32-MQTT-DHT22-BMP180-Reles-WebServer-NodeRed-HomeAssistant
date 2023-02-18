@@ -97,7 +97,7 @@ const char* SSID = "RVR 2,4GHz";                // SSID / nome da rede WI-FI que
 const char* PASSWORD = "RodrigoValRobson2021";  // Senha da rede WI-FI que deseja se conectar
 
 // Configurações do Broker MQTT
-const char* BROKER_MQTT = "192.168.15.35";  // URL do broker MQTT que se deseja utilizar
+const char* BROKER_MQTT = "192.168.15.10";  // URL do broker MQTT que se deseja utilizar
 const char* mqttUserName = "RobsonBrasil";  // MQTT UserName
 const char* mqttPwd = "loboalfa";           // MQTT Password
 int BROKER_PORT = 1883;                     // Porta do Broker MQTT

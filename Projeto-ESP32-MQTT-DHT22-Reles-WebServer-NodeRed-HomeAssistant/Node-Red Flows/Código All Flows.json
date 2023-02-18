@@ -1,16 +1,24 @@
 [
     {
-        "id": "8e600a1d9cc6877a",
+        "id": "78ed59b77e4e7d29",
         "type": "tab",
-        "label": "ESP32 e Google Assistant",
+        "label": "Temas",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
-        "id": "cdd71bb10907d967",
+        "id": "d9d240a5586aa2ce",
         "type": "tab",
-        "label": "Interruptores",
+        "label": "MQTT Broker",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8e600a1d9cc6877a",
+        "type": "tab",
+        "label": "ESP32 e Google Assistant",
         "disabled": false,
         "info": "",
         "env": []
@@ -35,14 +43,14 @@
         "id": "0f257e850b1b1272",
         "type": "mqtt-broker",
         "name": "MQTT Home Assistant",
-        "broker": "192.168.15.40",
+        "broker": "192.168.15.10",
         "port": "1883",
         "clientid": "Node-Red",
         "autoConnect": true,
         "usetls": false,
         "protocolVersion": "4",
         "keepalive": "60",
-        "cleansession": false,
+        "cleansession": true,
         "birthTopic": "",
         "birthQos": "0",
         "birthPayload": "",
@@ -72,43 +80,32 @@
         "sendDeviceNameAndLocation": false
     },
     {
-        "id": "8ce3d9b036e27527",
+        "id": "d092f2a1bbaf2ca8",
         "type": "ui_group",
         "name": "Interruptores",
-        "tab": "e9f688342e59d92a",
+        "tab": "d37c8ab8f38ebded",
         "order": 1,
         "disp": true,
-        "width": "10",
+        "width": "18",
         "collapse": false,
         "className": ""
     },
     {
-        "id": "a390c74d1c28c0f9",
-        "type": "ui_group",
-        "name": "Lâmpadas da Bancada",
-        "tab": "e9f688342e59d92a",
-        "order": 3,
-        "disp": true,
-        "width": "6",
-        "collapse": false,
-        "className": ""
-    },
-    {
-        "id": "d25175695ee4a040",
+        "id": "294aa6e3f8adace6",
         "type": "ui_base",
         "theme": {
             "name": "theme-dark",
             "lightTheme": {
                 "default": "#0094CE",
                 "baseColor": "#0094CE",
-                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "baseFont": "Impact,Impact,Charcoal,sans-serif",
                 "edited": true,
                 "reset": false
             },
             "darkTheme": {
                 "default": "#097479",
                 "baseColor": "#097479",
-                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "baseFont": "Arial Black,Arial Black,Gadget,sans-serif",
                 "edited": true,
                 "reset": false
             },
@@ -161,7 +158,7 @@
                     "edited": false
                 },
                 "base-font": {
-                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                    "value": "Arial Black,Arial Black,Gadget,sans-serif"
                 }
             },
             "angularTheme": {
@@ -173,15 +170,15 @@
             }
         },
         "site": {
-            "name": "Node-RED Dashboard",
+            "name": "Automação Residencial",
             "hideToolbar": "false",
             "allowSwipe": "false",
             "lockMenu": "false",
-            "allowTempTheme": "true",
+            "allowTempTheme": "false",
             "dateFormat": "DD/MM/YYYY",
             "sizes": {
-                "sx": 50,
-                "sy": 50,
+                "sx": 48,
+                "sy": 48,
                 "gx": 6,
                 "gy": 6,
                 "cx": 6,
@@ -192,43 +189,89 @@
         }
     },
     {
-        "id": "581ca02956cb349b",
-        "type": "ui_group",
-        "name": "DHT22",
-        "tab": "e9f688342e59d92a",
-        "order": 2,
-        "disp": true,
-        "width": "11",
-        "collapse": false,
-        "className": ""
-    },
-    {
-        "id": "e9f688342e59d92a",
+        "id": "d37c8ab8f38ebded",
         "type": "ui_tab",
-        "name": "Meu Qaurto",
+        "name": "IoT - Internet das Coisas",
         "icon": "dashboard",
         "disabled": false,
         "hidden": false
     },
     {
-        "id": "f54bb6601b801541",
-        "type": "ui_spacer",
-        "z": "cdd71bb10907d967",
-        "name": "spacer",
-        "group": "5342338ddff81d3c",
+        "id": "7d1d0825c7d45375",
+        "type": "ui_group",
+        "name": "Sensores",
+        "tab": "d37c8ab8f38ebded",
         "order": 2,
-        "width": "6",
-        "height": "3"
+        "disp": true,
+        "width": "18",
+        "collapse": false,
+        "className": ""
     },
     {
-        "id": "022a79453301ddf0",
-        "type": "ui_spacer",
-        "z": "cdd71bb10907d967",
-        "name": "spacer",
-        "group": "9089c28c0ce879aa",
-        "order": 3,
-        "width": "1",
-        "height": "1"
+        "id": "915e9aeef9322789",
+        "type": "ui_template",
+        "z": "78ed59b77e4e7d29",
+        "d": true,
+        "group": "",
+        "name": "Tema 1",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* cuida de imagens e cores do fundo da pagina */\n    body {\n        background-image: url(\"https://img.freepik.com/vetores-gratis/fundo-abstrato-aquarela_23-2149056656.jpg?w=2000\") !important;\n        background-repeat: no-repeat !important;\n        background-size: cover !important;\n        background-position: center centet !important;\n    }\n\n    /* cuida da transparencia da barra de titulo */\n    body.nr-dashboard-theme md-toolbar {\n        background-color: transparent !important;\n    }\n\n    /* cuida da transperancia dos botões dos cartões */\n    body.nr-dashboard-theme md-content md-card {\n        background-color: transparent !important;\n    }\n\n    /* cuida da transparencia de fundo do menu */\n    body.nr-dashboard-theme md-sidenav {\n        background-color: transparent !important;\n    }\n\n    /* cuida do arredondamento do item selecionado no menu */\n    button.md-no-style {\n        border-radius: 10px !important;\n    }\n\n    /* cuida da cor da seleção do item selecionado no menu */\n    .nr-menu-item-active div button {\n        border-right: 4px solid #000000 !important;\n    }\n\n    /* cuida das configurações do menu */\n    body.nr-dashboard-theme md-sidenav div.md-list-item-inner {\n        color: #000000 !important;\n        /* cor das letras dos itens do menu */\n        background-color: #ffffff !important;\n        /* cor do fundo dos itens do menu */\n        border-radius: 10px !important;\n        /* cuida da curva dos cantos dos itens do menu */\n\n    }\n\n    /* cuida das configurações dos cartões de grupo */\n    ui-card-panel {\n        background-color: #00000040 !important;\n        /* cuida da cor do fundo dos grupos do menu */\n        border-radius: 10px !important;\n        /* cuida da curva dos cantos do cartão de grupo */\n    }\n\n    /* cuida da cor do nome do cartão de grupo */\n    .nr-dashboard-theme ui-card-panel p.nr-dashboard-cardtitle {\n        color: #000000 !important;\n    }\n\n    /* cuida da cor do titulo da pagina */\n    body.nr-dashboard-theme md-toolbar .md-toolbar-tools {\n        color: #030303 !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "className": "",
+        "x": 100,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6252598091f4387c",
+        "type": "ui_template",
+        "z": "78ed59b77e4e7d29",
+        "d": true,
+        "group": "",
+        "name": "Tema 2",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* cuida de imagens e cores do fundo da pagina */\n    body {\n        background-image: url(\"https://static.vecteezy.com/system/resources/thumbnails/002/019/901/original/matrix-digital-background-free-video.jpg\") !important;\n        background-repeat: no-repeat !important;\n        background-size: cover !important;\n        background-position: center centet !important;\n    }\n\n    /* cuida da transparencia da barra de titulo */\n    body.nr-dashboard-theme md-toolbar {\n        background-color: transparent !important;\n    }\n\n    /* cuida da transparencia dos botões dos cartões */\n    body.nr-dashboard-theme md-content md-card {\n        background-color: transparent !important;\n    }\n\n    /* cuida da transperencia de fundo do menu */\n    body.nr-dashboard-theme md-sidenav {\n        background-color: transparent !important;\n    }\n\n    /* cuida do arredondamento do item selecionado no menu */\n    button.md-no-style {\n        border-radius: 10px !important;\n    }\n\n    /* cuida da cor da seleção do item selecionado no menu */\n    .nr-menu-item-active div button {\n        border-right: 4px solid #000000 !important;\n    }\n\n    /* cuida das configurações do menu */\n    body.nr-dashboard-theme md-sidenav div.md-list-item-inner {\n        color: #85E665 !important;\n        /* cor das letras dos itens do menu */\n        background-color: #34592795 !important;\n        /* cor do fundo dos itens do menu */\n        border-radius: 10px !important;\n        /* cuida da curva dos cantos dos itens do menu */\n    }\n\n    /* cuida das configurações dos cartões de grupo */\n    ui-card-panel {\n        background-color: #34592795 !important;\n        /* cuida da cor do fundo dos grupos do menu */\n        border-radius: 10px !important;\n        /* cuida da curva dos cantos do cartão de grupo */\n    }\n\n    /* cuida da cor do nome do cartão de grupo */\n    .nr-dashboard-theme ui-card-panel p.nr-dashboard-cardtitle {\n        color: #85E665 !important;\n    }\n\n    /* cuida da cor do titulo da pagina */\n    body.nr-dashboard-theme md-toolbar .md-toolbar-tools {\n        color: #85E665 !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "className": "",
+        "x": 160,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ecaa7f1877f227e0",
+        "type": "ui_template",
+        "z": "78ed59b77e4e7d29",
+        "d": true,
+        "group": "",
+        "name": "Tema 3",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* cuida de imagens e cores do fundo da pagina */\n    body {\n        background-image: url(\"https://abstartups.com.br/wp-content/uploads/2021/01/office-wallpaper.jpg\") !important;\n        background-repeat: no-repeat !important;\n        background-size: cover !important;\n        background-position: center centet !important;\n    }\n\n    /* cuida da transparencia da barra de titulo */\n    body.nr-dashboard-theme md-toolbar {\n        background-color: transparent !important;\n    }\n\n    /* cuida da transparencia dos botões dos cartões */\n    body.nr-dashboard-theme md-content md-card {\n        background-color: transparent !important;\n    }\n\n    /* cuida da transparencia de fundo do menu */\n    body.nr-dashboard-theme md-sidenav {\n        background-color: transparent !important;\n    }\n\n    /* cuida do arredondamento do item selecionado no menu */\n    button.md-no-style {\n        border-radius: 10px !important;\n    }\n\n    /* cuida da cor da seleção do item selecionado no menu */\n    .nr-menu-item-active div button {\n        border-right: 4px solid #000000 !important;\n    }\n\n    /* cuida das configurações do menu */\n    body.nr-dashboard-theme md-sidenav div.md-list-item-inner {\n        color: #E6CB49 !important;\n        /* cor das letras dos itens do menu */\n        background-color: #E6CB4940 !important;\n        /* cor do fundo dos itens do menu */\n        border-radius: 10px !important;\n        /* cuida da curva dos cantos dos itens do menu */\n    }\n\n    /* cuida das configurações dos cartões de grupo */\n    ui-card-panel {\n        background-color: #E6CB4940 !important;\n        /* cuida da cor do fundo dos grupos do menu */\n        border-radius: 10px !important;\n        /* cuida da curva dos cantos do cartão de grupo */\n    }\n\n    /* cuida da cor do nome do cartão de grupo */\n    .nr-dashboard-theme ui-card-panel p.nr-dashboard-cardtitle {\n        color: #5C521D !important;\n    }\n\n    /* cuida da cor do titulo da pagina */\n    body.nr-dashboard-theme md-toolbar .md-toolbar-tools {\n        color: #E6CB49 !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "className": "",
+        "x": 220,
+        "y": 200,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "13e2b7aeb791786d",
@@ -243,8 +286,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 640,
-        "y": 280,
+        "x": 1020,
+        "y": 340,
         "wires": []
     },
     {
@@ -252,7 +295,7 @@
         "type": "mqtt out",
         "z": "8e600a1d9cc6877a",
         "name": "Envia ao Broker",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando",
         "qos": "2",
         "retain": "true",
         "respTopic": "",
@@ -261,8 +304,8 @@
         "correl": "",
         "expiry": "",
         "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 340,
+        "x": 760,
+        "y": 440,
         "wires": []
     },
     {
@@ -279,8 +322,8 @@
         "correl": "",
         "expiry": "",
         "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 280,
+        "x": 760,
+        "y": 320,
         "wires": []
     },
     {
@@ -297,8 +340,8 @@
         "correl": "",
         "expiry": "",
         "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 220,
+        "x": 760,
+        "y": 200,
         "wires": []
     },
     {
@@ -306,7 +349,7 @@
         "type": "mqtt out",
         "z": "8e600a1d9cc6877a",
         "name": "Envia ao Broker",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando",
         "qos": "2",
         "retain": "true",
         "respTopic": "",
@@ -315,8 +358,8 @@
         "correl": "",
         "expiry": "",
         "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 400,
+        "x": 760,
+        "y": 560,
         "wires": []
     },
     {
@@ -325,16 +368,16 @@
         "z": "8e600a1d9cc6877a",
         "name": "Envia ao Broker",
         "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando",
-        "qos": "2",
-        "retain": "true",
+        "qos": "0",
+        "retain": "false",
         "respTopic": "",
         "contentType": "",
         "userProps": "",
         "correl": "",
         "expiry": "",
         "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 160,
+        "x": 760,
+        "y": 80,
         "wires": []
     },
     {
@@ -354,7 +397,7 @@
         "name": "Lâmpada Bancada Forte",
         "colortype": "hsv",
         "nora": "bf2335351d119ded",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando",
         "onvalue": "1",
         "onvalueType": "str",
         "offvalue": "0",
@@ -364,12 +407,14 @@
         "twofactor": "off",
         "twofactorpin": "",
         "filter": false,
-        "x": 110,
-        "y": 20,
+        "x": 490,
+        "y": 140,
         "wires": [
             [
                 "13e2b7aeb791786d",
-                "fe0e8995374b95d4"
+                "fe0e8995374b95d4",
+                "c4d2c16fd13a9478",
+                "cf2bb914cd8a6e16"
             ]
         ],
         "inputLabels": [
@@ -403,12 +448,14 @@
         "twofactor": "off",
         "twofactorpin": "",
         "filter": false,
-        "x": 120,
-        "y": 160,
+        "x": 500,
+        "y": 260,
         "wires": [
             [
                 "13e2b7aeb791786d",
-                "677f73033bfdea01"
+                "677f73033bfdea01",
+                "997a0904eda1a8fc",
+                "70b667d6dbd6671e"
             ]
         ]
     },
@@ -416,7 +463,7 @@
         "id": "7950712dd4c9cd16",
         "type": "noraf-light",
         "z": "8e600a1d9cc6877a",
-        "devicename": "Interruptor 4",
+        "devicename": "Som Bluetooth",
         "lightcolor": false,
         "brightnesscontrol": false,
         "commandonlycolor": false,
@@ -425,11 +472,11 @@
         "errorifstateunchaged": false,
         "statepayload": true,
         "brightnessoverride": "",
-        "roomhint": "Interruptor 4",
-        "name": "Interruptor 4",
+        "roomhint": "Som Bluetooth",
+        "name": "Som Bluetooth",
         "colortype": "hsv",
         "nora": "bf2335351d119ded",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado",
         "onvalue": "1",
         "onvalueType": "num",
         "offvalue": "0",
@@ -439,12 +486,14 @@
         "twofactor": "off",
         "twofactorpin": "",
         "filter": false,
-        "x": 70,
-        "y": 400,
+        "x": 460,
+        "y": 500,
         "wires": [
             [
                 "13e2b7aeb791786d",
-                "94d5e78081efbff1"
+                "94d5e78081efbff1",
+                "b38bf86e35f8652a",
+                "4c2276eeb1420dcb"
             ]
         ]
     },
@@ -452,7 +501,7 @@
         "id": "d5d6febd84ac0471",
         "type": "noraf-light",
         "z": "8e600a1d9cc6877a",
-        "devicename": "Interruptor 3",
+        "devicename": "Cooler",
         "lightcolor": false,
         "brightnesscontrol": false,
         "commandonlycolor": false,
@@ -462,7 +511,7 @@
         "statepayload": false,
         "brightnessoverride": "",
         "roomhint": "Interruptor 3",
-        "name": "Interruptor 3",
+        "name": "Cooler",
         "colortype": "hsv",
         "nora": "bf2335351d119ded",
         "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado",
@@ -475,12 +524,14 @@
         "twofactor": "off",
         "twofactorpin": "",
         "filter": false,
-        "x": 70,
-        "y": 280,
+        "x": 430,
+        "y": 380,
         "wires": [
             [
                 "13e2b7aeb791786d",
-                "50c566708019f05b"
+                "50c566708019f05b",
+                "91b5a2cb55b54d08",
+                "16801185c9d8e482"
             ]
         ]
     },
@@ -488,7 +539,7 @@
         "id": "7370dfbd73b8395c",
         "type": "noraf-light",
         "z": "8e600a1d9cc6877a",
-        "devicename": "Interruptor 5",
+        "devicename": "Lâmpada do Quarto",
         "lightcolor": false,
         "brightnesscontrol": false,
         "commandonlycolor": false,
@@ -498,10 +549,10 @@
         "statepayload": true,
         "brightnessoverride": "",
         "roomhint": "Interruptor 5",
-        "name": "Interruptor 5",
+        "name": "Lâmpada do Quarto",
         "colortype": "hsv",
         "nora": "bf2335351d119ded",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado",
         "onvalue": "1",
         "onvalueType": "num",
         "offvalue": "0",
@@ -511,434 +562,52 @@
         "twofactor": "off",
         "twofactorpin": "",
         "filter": false,
-        "x": 70,
-        "y": 540,
+        "x": 480,
+        "y": 620,
         "wires": [
             [
                 "13e2b7aeb791786d",
-                "666fe101703abe94"
+                "666fe101703abe94",
+                "7991694f48021482",
+                "c1b5ff30dbfa6cae"
             ]
         ]
     },
     {
-        "id": "65bd7cd9c7a0f8df",
-        "type": "mqtt out",
-        "z": "cdd71bb10907d967",
-        "name": "Envia ao Broker",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando",
+        "id": "6d7c3e0aa89db469",
+        "type": "mqtt in",
+        "z": "8e600a1d9cc6877a",
+        "name": "Luz Forte da Bancada",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado",
         "qos": "2",
-        "retain": "true",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
+        "datatype": "auto-detect",
         "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 400,
-        "wires": []
-    },
-    {
-        "id": "7326824d600bfbc1",
-        "type": "mqtt out",
-        "z": "cdd71bb10907d967",
-        "name": "Envia ao Broker",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando",
-        "qos": "2",
-        "retain": "true",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 460,
-        "wires": []
-    },
-    {
-        "id": "486f3ea8979e6c0b",
-        "type": "mqtt out",
-        "z": "cdd71bb10907d967",
-        "name": "Envia ao Broker",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando",
-        "qos": "2",
-        "retain": "true",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 520,
-        "wires": []
-    },
-    {
-        "id": "73115187dc99e3ea",
-        "type": "debug",
-        "z": "cdd71bb10907d967",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": true,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 640,
-        "y": 320,
-        "wires": []
-    },
-    {
-        "id": "236a3c8d6dc19f41",
-        "type": "mqtt out",
-        "z": "cdd71bb10907d967",
-        "name": "Envia ao Broker",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Comando",
-        "qos": "2",
-        "retain": "true",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 160,
-        "wires": []
-    },
-    {
-        "id": "ec95c0bd3d97fb89",
-        "type": "mqtt out",
-        "z": "cdd71bb10907d967",
-        "name": "Envia ao Broker",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Comando",
-        "qos": "2",
-        "retain": "true",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 220,
-        "wires": []
-    },
-    {
-        "id": "ade65d833efb42d9",
-        "type": "mqtt out",
-        "z": "cdd71bb10907d967",
-        "name": "Envia ao Broker",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando",
-        "qos": "2",
-        "retain": "true",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 280,
-        "wires": []
-    },
-    {
-        "id": "610a8454c54b1a66",
-        "type": "mqtt out",
-        "z": "cdd71bb10907d967",
-        "name": "Envia ao Broker",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando",
-        "qos": "2",
-        "retain": "true",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 100,
-        "wires": []
-    },
-    {
-        "id": "2b8dd13dd6028ab2",
-        "type": "mqtt out",
-        "z": "cdd71bb10907d967",
-        "name": "Envia ao Broker",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando",
-        "qos": "2",
-        "retain": "true",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "0f257e850b1b1272",
-        "x": 440,
-        "y": 340,
-        "wires": []
-    },
-    {
-        "id": "4c2276eeb1420dcb",
-        "type": "ui_switch",
-        "z": "cdd71bb10907d967",
-        "name": "interruptor 6",
-        "label": "Interruptor 6",
-        "tooltip": "",
-        "group": "8ce3d9b036e27527",
-        "order": 6,
-        "width": 0,
-        "height": 0,
-        "passthru": true,
-        "decouple": "false",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado",
-        "topicType": "str",
-        "style": "",
-        "onvalue": "1",
-        "onvalueType": "num",
-        "onicon": "Ligado",
-        "oncolor": "",
-        "offvalue": "0",
-        "offvalueType": "num",
-        "officon": "Desligado",
-        "offcolor": "",
-        "animate": true,
-        "className": "",
-        "x": 70,
-        "y": 400,
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 220,
+        "y": 80,
         "wires": [
             [
-                "65bd7cd9c7a0f8df",
-                "73115187dc99e3ea"
-            ]
-        ]
-    },
-    {
-        "id": "1e554fab9352f0d8",
-        "type": "ui_switch",
-        "z": "cdd71bb10907d967",
-        "name": "Interruptor 7",
-        "label": "Interruptor 7",
-        "tooltip": "",
-        "group": "8ce3d9b036e27527",
-        "order": 7,
-        "width": 0,
-        "height": 0,
-        "passthru": true,
-        "decouple": "false",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado",
-        "topicType": "str",
-        "style": "",
-        "onvalue": "1",
-        "onvalueType": "num",
-        "onicon": "Ligado",
-        "oncolor": "",
-        "offvalue": "0",
-        "offvalueType": "num",
-        "officon": "Desligado",
-        "offcolor": "",
-        "animate": true,
-        "className": "",
-        "x": 70,
-        "y": 480,
-        "wires": [
-            [
-                "7326824d600bfbc1",
-                "73115187dc99e3ea"
-            ]
-        ]
-    },
-    {
-        "id": "c1b5ff30dbfa6cae",
-        "type": "ui_switch",
-        "z": "cdd71bb10907d967",
-        "name": "Interruptor 8",
-        "label": "Interruptor 8",
-        "tooltip": "",
-        "group": "8ce3d9b036e27527",
-        "order": 8,
-        "width": 0,
-        "height": 0,
-        "passthru": true,
-        "decouple": "false",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado",
-        "topicType": "str",
-        "style": "",
-        "onvalue": "1",
-        "onvalueType": "num",
-        "onicon": "Ligado",
-        "oncolor": "",
-        "offvalue": "0",
-        "offvalueType": "num",
-        "officon": "Desligado",
-        "offcolor": "",
-        "animate": true,
-        "className": "",
-        "x": 70,
-        "y": 560,
-        "wires": [
-            [
-                "486f3ea8979e6c0b",
-                "73115187dc99e3ea"
-            ]
-        ]
-    },
-    {
-        "id": "997a0904eda1a8fc",
-        "type": "ui_switch",
-        "z": "cdd71bb10907d967",
-        "name": "",
-        "label": "Lâmpada da Bancada Fraca",
-        "tooltip": "",
-        "group": "8ce3d9b036e27527",
-        "order": 2,
-        "width": 0,
-        "height": 0,
-        "passthru": true,
-        "decouple": "false",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado",
-        "topicType": "str",
-        "style": "",
-        "onvalue": "1",
-        "onvalueType": "num",
-        "onicon": "Ligado",
-        "oncolor": "",
-        "offvalue": "0",
-        "offvalueType": "num",
-        "officon": "Desligado",
-        "offcolor": "",
-        "animate": true,
-        "className": "",
-        "x": 120,
-        "y": 100,
-        "wires": [
-            [
-                "236a3c8d6dc19f41",
-                "73115187dc99e3ea"
-            ]
-        ]
-    },
-    {
-        "id": "91b5a2cb55b54d08",
-        "type": "ui_switch",
-        "z": "cdd71bb10907d967",
-        "name": "Interruptor 3",
-        "label": "Interruptor 3",
-        "tooltip": "",
-        "group": "8ce3d9b036e27527",
-        "order": 3,
-        "width": 0,
-        "height": 0,
-        "passthru": true,
-        "decouple": "false",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado",
-        "topicType": "str",
-        "style": "",
-        "onvalue": "1",
-        "onvalueType": "num",
-        "onicon": "Ligado",
-        "oncolor": "",
-        "offvalue": "0",
-        "offvalueType": "num",
-        "officon": "Desligado",
-        "offcolor": "",
-        "animate": true,
-        "className": "",
-        "x": 70,
-        "y": 180,
-        "wires": [
-            [
-                "ec95c0bd3d97fb89",
-                "73115187dc99e3ea"
-            ]
-        ]
-    },
-    {
-        "id": "6bb6e61bcf656346",
-        "type": "ui_switch",
-        "z": "cdd71bb10907d967",
-        "name": "Interruptor 4",
-        "label": "Interruptor 4",
-        "tooltip": "",
-        "group": "8ce3d9b036e27527",
-        "order": 4,
-        "width": 0,
-        "height": 0,
-        "passthru": true,
-        "decouple": "false",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado",
-        "topicType": "str",
-        "style": "",
-        "onvalue": "1",
-        "onvalueType": "num",
-        "onicon": "Ligado",
-        "oncolor": "",
-        "offvalue": "0",
-        "offvalueType": "num",
-        "officon": "Desligado",
-        "offcolor": "",
-        "animate": true,
-        "className": "",
-        "x": 70,
-        "y": 260,
-        "wires": [
-            [
-                "ade65d833efb42d9",
-                "73115187dc99e3ea"
-            ]
-        ]
-    },
-    {
-        "id": "93b53f2266eebe6c",
-        "type": "ui_switch",
-        "z": "cdd71bb10907d967",
-        "name": "Interruptor 5",
-        "label": "Interruptor 5",
-        "tooltip": "",
-        "group": "8ce3d9b036e27527",
-        "order": 5,
-        "width": 0,
-        "height": 0,
-        "passthru": true,
-        "decouple": "false",
-        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado",
-        "topicType": "str",
-        "style": "",
-        "onvalue": "1",
-        "onvalueType": "num",
-        "onicon": "Ligao",
-        "oncolor": "",
-        "offvalue": "0",
-        "offvalueType": "num",
-        "officon": "Desligado",
-        "offcolor": "",
-        "animate": true,
-        "className": "",
-        "x": 70,
-        "y": 320,
-        "wires": [
-            [
-                "2b8dd13dd6028ab2",
-                "73115187dc99e3ea"
+                "c4d2c16fd13a9478",
+                "2b3a5e6c865b5a25"
             ]
         ]
     },
     {
         "id": "c4d2c16fd13a9478",
         "type": "ui_switch",
-        "z": "cdd71bb10907d967",
-        "name": "",
+        "z": "8e600a1d9cc6877a",
+        "name": "Lâmpada da Bancada Forte",
         "label": "Lâmpada da Bancada Forte",
         "tooltip": "",
-        "group": "8ce3d9b036e27527",
+        "group": "d092f2a1bbaf2ca8",
         "order": 1,
         "width": "0",
         "height": "0",
-        "passthru": true,
-        "decouple": "false",
+        "passthru": false,
+        "decouple": "true",
         "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando",
         "topicType": "str",
         "style": "",
@@ -952,15 +621,548 @@
         "offcolor": "#FFAAAA",
         "animate": true,
         "className": "",
-        "x": 120,
-        "y": 20,
+        "x": 500,
+        "y": 80,
         "wires": [
             [
-                "73115187dc99e3ea",
-                "610a8454c54b1a66"
+                "fe0e8995374b95d4",
+                "2b3a5e6c865b5a25"
             ]
         ],
         "icon": "node-red/light.svg"
+    },
+    {
+        "id": "2174d2af145c9701",
+        "type": "mqtt in",
+        "z": "8e600a1d9cc6877a",
+        "name": "Luz Fraca da Bancada",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 220,
+        "y": 200,
+        "wires": [
+            [
+                "997a0904eda1a8fc"
+            ]
+        ]
+    },
+    {
+        "id": "cf2bb914cd8a6e16",
+        "type": "mqtt out",
+        "z": "8e600a1d9cc6877a",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 760,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "997a0904eda1a8fc",
+        "type": "ui_switch",
+        "z": "8e600a1d9cc6877a",
+        "name": "Lâmpada da Bancada Fraca",
+        "label": "Lâmpada da Bancada Fraca",
+        "tooltip": "",
+        "group": "d092f2a1bbaf2ca8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Comando",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "Ligado",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "Desligado",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 500,
+        "y": 200,
+        "wires": [
+            [
+                "677f73033bfdea01",
+                "645fe0a9ccf3ec8b"
+            ]
+        ]
+    },
+    {
+        "id": "91b5a2cb55b54d08",
+        "type": "ui_switch",
+        "z": "8e600a1d9cc6877a",
+        "name": "Cooler do Notebook",
+        "label": "Cooler do Notebook",
+        "tooltip": "",
+        "group": "d092f2a1bbaf2ca8",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "passthru": false,
+        "decouple": "true",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Comando",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "Ligado",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "Desligado",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 480,
+        "y": 320,
+        "wires": [
+            [
+                "50c566708019f05b",
+                "d5d6febd84ac0471"
+            ]
+        ]
+    },
+    {
+        "id": "4c2276eeb1420dcb",
+        "type": "ui_switch",
+        "z": "8e600a1d9cc6877a",
+        "name": "Som Bluetooh",
+        "label": "Som Bluetooth",
+        "tooltip": "",
+        "group": "d092f2a1bbaf2ca8",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "Ligado",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "Desligado",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 460,
+        "y": 440,
+        "wires": [
+            [
+                "7950712dd4c9cd16",
+                "94d5e78081efbff1"
+            ]
+        ]
+    },
+    {
+        "id": "1e554fab9352f0d8",
+        "type": "ui_switch",
+        "z": "8e600a1d9cc6877a",
+        "name": "Interruptor 7",
+        "label": "Interruptor 7",
+        "tooltip": "",
+        "group": "d092f2a1bbaf2ca8",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "Ligado",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "Desligado",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 250,
+        "y": 820,
+        "wires": [
+            [
+                "67b1d69dcb4201de"
+            ]
+        ]
+    },
+    {
+        "id": "c1b5ff30dbfa6cae",
+        "type": "ui_switch",
+        "z": "8e600a1d9cc6877a",
+        "name": "Luz do Quarto",
+        "label": "Lâmpada do Qaurto",
+        "tooltip": "",
+        "group": "d092f2a1bbaf2ca8",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "Ligado",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "Desligado",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 460,
+        "y": 560,
+        "wires": [
+            [
+                "666fe101703abe94",
+                "7370dfbd73b8395c"
+            ]
+        ]
+    },
+    {
+        "id": "70b667d6dbd6671e",
+        "type": "mqtt out",
+        "z": "8e600a1d9cc6877a",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 760,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "b17887573c360a06",
+        "type": "mqtt in",
+        "z": "8e600a1d9cc6877a",
+        "name": "Cooler Notebook",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 200,
+        "y": 320,
+        "wires": [
+            [
+                "91b5a2cb55b54d08"
+            ]
+        ]
+    },
+    {
+        "id": "16801185c9d8e482",
+        "type": "mqtt out",
+        "z": "8e600a1d9cc6877a",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 760,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "b38bf86e35f8652a",
+        "type": "mqtt out",
+        "z": "8e600a1d9cc6877a",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 760,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "4ef0accfecc379ed",
+        "type": "mqtt in",
+        "z": "8e600a1d9cc6877a",
+        "name": "Interruptor 7",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 820,
+        "wires": [
+            [
+                "1e554fab9352f0d8"
+            ]
+        ]
+    },
+    {
+        "id": "7991694f48021482",
+        "type": "mqtt out",
+        "z": "8e600a1d9cc6877a",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 760,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "6606292f1520d6bf",
+        "type": "mqtt in",
+        "z": "8e600a1d9cc6877a",
+        "name": "Interruptor 5",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 760,
+        "wires": [
+            [
+                "93b53f2266eebe6c"
+            ]
+        ]
+    },
+    {
+        "id": "6bb6e61bcf656346",
+        "type": "ui_switch",
+        "z": "8e600a1d9cc6877a",
+        "name": "Interruptor 4",
+        "label": "Interruptor 4",
+        "tooltip": "",
+        "group": "d092f2a1bbaf2ca8",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "Ligado",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "Desligado",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 250,
+        "y": 700,
+        "wires": [
+            [
+                "c8c0b504f471049b"
+            ]
+        ]
+    },
+    {
+        "id": "e8bf933d23548460",
+        "type": "mqtt in",
+        "z": "8e600a1d9cc6877a",
+        "name": "Som Bluetooh",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 190,
+        "y": 440,
+        "wires": [
+            [
+                "4c2276eeb1420dcb"
+            ]
+        ]
+    },
+    {
+        "id": "93b53f2266eebe6c",
+        "type": "ui_switch",
+        "z": "8e600a1d9cc6877a",
+        "name": "Interruptor 5",
+        "label": "Interruptor 5",
+        "tooltip": "",
+        "group": "d092f2a1bbaf2ca8",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "Ligao",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "Desligado",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 250,
+        "y": 760,
+        "wires": [
+            [
+                "c70d235b82bd3b6d"
+            ]
+        ]
+    },
+    {
+        "id": "07d401040eefdf9b",
+        "type": "mqtt in",
+        "z": "8e600a1d9cc6877a",
+        "name": "Quarto do Robson",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 210,
+        "y": 560,
+        "wires": [
+            [
+                "c1b5ff30dbfa6cae"
+            ]
+        ]
+    },
+    {
+        "id": "b43a6794cee786e5",
+        "type": "mqtt in",
+        "z": "8e600a1d9cc6877a",
+        "name": "Interruptor 5",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 700,
+        "wires": [
+            [
+                "6bb6e61bcf656346"
+            ]
+        ]
+    },
+    {
+        "id": "c8c0b504f471049b",
+        "type": "mqtt out",
+        "z": "8e600a1d9cc6877a",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 440,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "c70d235b82bd3b6d",
+        "type": "mqtt out",
+        "z": "8e600a1d9cc6877a",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 440,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "67b1d69dcb4201de",
+        "type": "mqtt out",
+        "z": "8e600a1d9cc6877a",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 440,
+        "y": 820,
+        "wires": []
     },
     {
         "id": "de4a7195364be274",
@@ -994,8 +1196,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1115,
-        "y": 365,
+        "x": 1110,
+        "y": 280,
         "wires": []
     },
     {
@@ -1042,7 +1244,7 @@
         "id": "8403ed80.4a367",
         "type": "ui_template",
         "z": "4e991a1eb1b88819",
-        "group": "581ca02956cb349b",
+        "group": "7d1d0825c7d45375",
         "name": "Humidade Backlight",
         "order": 2,
         "width": "6",
@@ -1056,16 +1258,18 @@
         "x": 480,
         "y": 280,
         "wires": [
-            []
+            [
+                "d9cd3de181d33a1c"
+            ]
         ]
     },
     {
         "id": "f1d7ed10.48792",
         "type": "ui_template",
         "z": "4e991a1eb1b88819",
-        "group": "581ca02956cb349b",
+        "group": "7d1d0825c7d45375",
         "name": "Temperatura Backlight",
-        "order": 2,
+        "order": 1,
         "width": "6",
         "height": "6",
         "format": "<div id=\"{{'gauge_'+$id}}\" class=\"g-container\"\n    style=\"--gauge-value:0; --container-size:6; --gn-distance:14; --ga-tick-count:10; --ga-subtick-count:100; --g-unit:'°C'\">\n    <div id=\"bgr\" class=\"g-body\">\n        <div class=\"g-ring\">\n            <div class=\"g-rivets\">\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n            </div>\n            <div class=\"g-plate-bright\">\n                <div class=\"g-ticks\">\n                    <div class=\"g-tick\" style=\"--ga-tick:1;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:2;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:3;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:4;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:5;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:6;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:7;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:8;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:9;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:10;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:11;\"></div>\n                </div>\n                <div class=\"g-ticks\">\n                    <div class=\"g-subtick\" style=\"--ga-tick:2;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:3;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:4;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:5;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:6;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:7;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:8;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:9;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:10;\"></div>\n\n                    <div class=\"g-subtick\" style=\"--ga-tick:12;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:13;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:14;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:15;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:16;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:17;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:18;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:19;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:20;\"></div>\n\n                    <div class=\"g-subtick\" style=\"--ga-tick:22;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:23;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:24;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:25;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:26;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:27;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:28;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:29;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:30;\"></div>\n\n                    <div class=\"g-subtick\" style=\"--ga-tick:32;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:33;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:34;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:35;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:36;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:37;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:38;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:39;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:40;\"></div>\n\n                    <div class=\"g-subtick\" style=\"--ga-tick:42;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:43;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:44;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:45;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:46;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:47;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:48;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:49;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:50;\"></div>\n\n                    <div class=\"g-subtick\" style=\"--ga-tick:52;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:53;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:54;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:55;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:56;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:57;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:58;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:59;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:60;\"></div>\n\n                    <div class=\"g-subtick\" style=\"--ga-tick:62;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:63;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:64;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:65;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:66;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:67;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:68;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:69;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:70;\"></div>\n\n                    <div class=\"g-subtick\" style=\"--ga-tick:72;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:73;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:74;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:75;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:76;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:77;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:78;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:79;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:80;\"></div>\n\n                    <div class=\"g-subtick\" style=\"--ga-tick:82;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:83;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:84;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:85;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:86;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:87;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:88;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:89;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:90;\"></div>\n\n                    <div class=\"g-subtick\" style=\"--ga-tick:92;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:93;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:94;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:95;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:96;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:97;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:98;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:99;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:100;\"></div>\n                </div>\n                <div class=\"g-nums\">\n                    <div class=\"g-num\" style=\"--ga-tick:1;\">0</div>\n                    <div class=\"g-num\" style=\"--ga-tick:2;\">10</div>\n                    <div class=\"g-num\" style=\"--ga-tick:3;\">20</div>\n                    <div class=\"g-num\" style=\"--ga-tick:4;\">30</div>\n                    <div class=\"g-num\" style=\"--ga-tick:5;\">40</div>\n                    <div class=\"g-num\" style=\"--ga-tick:6;\">50</div>\n                    <div class=\"g-num\" style=\"--ga-tick:7;\">60</div>\n                    <div class=\"g-num\" style=\"--ga-tick:8;\">70</div>\n                    <div class=\"g-num\" style=\"--ga-tick:9;\">80</div>\n                    <div class=\"g-num\" style=\"--ga-tick:10;\">90</div>\n                    <div class=\"g-num\" style=\"--ga-tick:11;\">100</div>\n                </div>\n                <div class=\"g-label\">Temperatura</div>\n                <div class=\"g-needle\"></div>\n                <div class=\"g-needle-ring\"></div>\n                <div id=\"{{'gauge_val_'+$id}}\" class=\"g-val\"></div>\n            </div>\n        </div>\n    </div>\n</div>\n<script>\n    (function(scope) {\n    let min = 0;\n    let max = 100;\n  scope.$watch('msg', function(msg) {\n    if (msg) {\n      // Do something when msg arrives\n        const v = Math.floor(((msg.payload - min) / (max - min)) * 100);\n        document.getElementById('gauge_'+scope.$id).style.setProperty('--gauge-value', v);\n        document.getElementById('gauge_val_'+scope.$id).innerText = v;\n    }\n   \n  });\n})(scope);\n</script>",
@@ -1077,16 +1281,18 @@
         "x": 480,
         "y": 120,
         "wires": [
-            []
+            [
+                "d9cd3de181d33a1c"
+            ]
         ]
     },
     {
         "id": "274cbd1ed8d8c170",
         "type": "ui_template",
         "z": "4e991a1eb1b88819",
-        "group": "581ca02956cb349b",
+        "group": "7d1d0825c7d45375",
         "name": "Sensção Térmica Backlight",
-        "order": 2,
+        "order": 3,
         "width": "6",
         "height": "6",
         "format": "<div id=\"{{'gauge_'+$id}}\" class=\"g-container\" style=\"--gauge-value:0; --container-size:6; --gn-distance:14; --ga-tick-count:10; --ga-subtick-count:100; --g-unit:'°C'\">\n    <div id=\"bgr\" class=\"g-body\">\n        <div class=\"g-ring\">\n            <div class=\"g-rivets\">\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n            </div>\n            <div class=\"g-plate-bright\">\n                <div class=\"g-ticks\">\n                    <div class=\"g-tick\" style=\"--ga-tick:1;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:2;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:3;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:4;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:5;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:6;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:7;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:8;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:9;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:10;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:11;\"></div>\n                </div>\n                <div class=\"g-ticks\">\n                    <div class=\"g-subtick\" style=\"--ga-tick:2;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:3;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:4;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:5;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:6;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:7;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:8;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:9;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:10;\"></div>\n                    \n                    <div class=\"g-subtick\" style=\"--ga-tick:12;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:13;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:14;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:15;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:16;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:17;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:18;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:19;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:20;\"></div>\n                    \n                    <div class=\"g-subtick\" style=\"--ga-tick:22;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:23;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:24;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:25;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:26;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:27;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:28;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:29;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:30;\"></div>\n                    \n                    <div class=\"g-subtick\" style=\"--ga-tick:32;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:33;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:34;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:35;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:36;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:37;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:38;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:39;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:40;\"></div>\n                    \n                    <div class=\"g-subtick\" style=\"--ga-tick:42;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:43;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:44;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:45;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:46;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:47;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:48;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:49;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:50;\"></div>\n                    \n                    <div class=\"g-subtick\" style=\"--ga-tick:52;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:53;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:54;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:55;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:56;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:57;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:58;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:59;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:60;\"></div>\n                    \n                    <div class=\"g-subtick\" style=\"--ga-tick:62;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:63;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:64;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:65;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:66;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:67;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:68;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:69;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:70;\"></div>\n                    \n                    <div class=\"g-subtick\" style=\"--ga-tick:72;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:73;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:74;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:75;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:76;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:77;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:78;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:79;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:80;\"></div>\n                    \n                    <div class=\"g-subtick\" style=\"--ga-tick:82;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:83;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:84;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:85;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:86;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:87;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:88;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:89;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:90;\"></div>\n                    \n                    <div class=\"g-subtick\" style=\"--ga-tick:92;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:93;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:94;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:95;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:96;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:97;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:98;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:99;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:100;\"></div>\n                </div>\n               <div class=\"g-nums\">\n                    <div class=\"g-num\" style=\"--ga-tick:1;\" >0</div>\n                    <div class=\"g-num\" style=\"--ga-tick:2;\">10</div>\n                    <div class=\"g-num\" style=\"--ga-tick:3;\">20</div>\n                    <div class=\"g-num\" style=\"--ga-tick:4;\">30</div>\n                    <div class=\"g-num\" style=\"--ga-tick:5;\">40</div>\n                    <div class=\"g-num\" style=\"--ga-tick:6;\">50</div>\n                    <div class=\"g-num\" style=\"--ga-tick:7;\">60</div>\n                    <div class=\"g-num\" style=\"--ga-tick:8;\">70</div>\n                    <div class=\"g-num\" style=\"--ga-tick:9;\">80</div>\n                    <div class=\"g-num\" style=\"--ga-tick:10;\">90</div>\n                    <div class=\"g-num\" style=\"--ga-tick:11;\">100</div>\n                </div>\n                <div class=\"g-label\">Sensação Térmica</div>\n                <div class=\"g-needle\"></div>\n                <div class=\"g-needle-ring\"></div>\n                <div id=\"{{'gauge_val_'+$id}}\" class=\"g-val\"></div>\n            </div>\n        </div>\n    </div>\n</div>\n<script>\n(function(scope) {\n    let min = 0;\n    let max = 100;\n  scope.$watch('msg', function(msg) {\n    if (msg) {\n      // Do something when msg arrives\n        const v = Math.floor(((msg.payload - min) / (max - min)) * 100);\n        document.getElementById('gauge_'+scope.$id).style.setProperty('--gauge-value', v);\n        document.getElementById('gauge_val_'+scope.$id).innerText = v;\n    }\n   \n  });\n})(scope);\n</script>\n",
@@ -1098,7 +1304,9 @@
         "x": 500,
         "y": 420,
         "wires": [
-            []
+            [
+                "d9cd3de181d33a1c"
+            ]
         ]
     },
     {
@@ -1312,6 +1520,7 @@
         ],
         "seg1": "28",
         "seg2": "30",
+        "diff": false,
         "className": "",
         "x": 90,
         "y": 100,
@@ -1339,6 +1548,7 @@
         ],
         "seg1": "30",
         "seg2": "80",
+        "diff": false,
         "className": "",
         "x": 60,
         "y": 60,
@@ -1366,6 +1576,7 @@
         ],
         "seg1": "28",
         "seg2": "30",
+        "diff": false,
         "className": "",
         "x": 70,
         "y": 20,
