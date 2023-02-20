@@ -1,6 +1,7 @@
 {
   "C_Cpp.errorSquiggles": "Disabled",
-  "arduino.commandPath": "arduino.exe",
-  "arduino.path": "C:\\Arduino",
-  "arduino.openPDEFiletype": true
+  "arduino.commandPath": "Arduino IDE.exe",
+  "arduino.path": "C:/Program Files/Arduino IDE/Arduino IDE.exe",
+  "arduino.openPDEFiletype": true,
+  "outDir": "build"
 }

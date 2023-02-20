@@ -7,7 +7,9 @@
       "cStandard": "c17",
       "cppStandard": "c++17",
       "intelliSenseMode": "${default}",
-      "configurationProvider": "ms-vscode.cpptools"
+      "configurationProvider": "ms-vscode.cpptools",
+      "outDir": "build",
+
     }
   ],
   "version": 4

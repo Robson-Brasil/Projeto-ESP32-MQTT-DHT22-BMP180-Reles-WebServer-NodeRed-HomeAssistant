@@ -14,7 +14,9 @@
             "cppStandard": "c++17",
             "intelliSenseMode": "${default}",
             "configurationProvider": "ms-vscode.cpptools",
-            "compilerPath": "C:\\MinGW\\bin\\g++.exe"
+            "compilerPath": "C:\\MinGW\\bin\\g++.exe",
+            "outDir": "build"
+
         }
     ],
     "version": 4
