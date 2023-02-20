@@ -1,0 +1,247 @@
+[
+    {
+        "id": "5be47f9a6a36563d",
+        "type": "inject",
+        "z": "21b213583fe2216f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "-8",
+        "payloadType": "num",
+        "x": 80,
+        "y": 170,
+        "wires": [
+            [
+                "58bada2924a21caf",
+                "57b622aa4c87dd2c",
+                "b5ca1ee28d1027ef",
+                "efcc5e0e7fbf7fa7"
+            ]
+        ]
+    },
+    {
+        "id": "610142f5868cf553",
+        "type": "inject",
+        "z": "21b213583fe2216f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "12",
+        "payloadType": "num",
+        "x": 80,
+        "y": 205,
+        "wires": [
+            [
+                "58bada2924a21caf",
+                "57b622aa4c87dd2c",
+                "b5ca1ee28d1027ef",
+                "efcc5e0e7fbf7fa7"
+            ]
+        ]
+    },
+    {
+        "id": "595193e6c2e2132a",
+        "type": "inject",
+        "z": "21b213583fe2216f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "22",
+        "payloadType": "num",
+        "x": 80,
+        "y": 240,
+        "wires": [
+            [
+                "58bada2924a21caf",
+                "57b622aa4c87dd2c",
+                "b5ca1ee28d1027ef",
+                "efcc5e0e7fbf7fa7"
+            ]
+        ]
+    },
+    {
+        "id": "58bada2924a21caf",
+        "type": "function",
+        "z": "21b213583fe2216f",
+        "name": "gauge_data",
+        "func": "let gzone = []; let gtick2 = [];\n\nvalue = msg.payload\nmsg.min = -50; // минимальное значение / min\nmsg.max = 50; // максимальное значение / max\nmsg.gtick_count = 10; // количество больших засечек шкалы / count tick\nmsg.gsubtick_count = msg.gtick_count*10; // количество маленьких засечек шкалы / count subtick\nmsg.gnum_count = 5; //количество подписей / count num\nmsg.dec = 0; // количество знаков после запятой / count dec\nmsg.unit = \"ppm.\"; // unit\nmsg.label=\"CO₂\" // label\nmsg.gbody = \"left\" // направление право/лево / left/right/circle\nmsg.containersize = 4; //container size\nmsg.needlecolor = \"#001100\"; //цвет стрелки / colour \nmsg.tickcolor = \"#000000a1\"; //цвет шкалы / colour scale\n// окрашивание зон / zone color\ngzone[0] = {start:0,end:10,color:\"#ff5d4ebf\"};\ngzone[1] = {start:10,end:20,color:\"#ffb52d8c\"};\ngzone[2] = {start:20,end:25,color:\"#91ff4e85\"};\ngzone[3] = {start:25,end:100,color:\"#4ec3ff85\"};\n\n// tick / subtick / num - posicion and color\n\ngtick2[0] = {start:80,end:100,color:\"#ff0000ff\"};\ngtick2[1] = {start:0,end:50,color:\"#0000ffff\"};\n\n\n\n\n\n\n// ----------------------------------------------------------------\n\nlet gtick = []; let gsubtick = []; let gnum = [];\nGauge = (start,end) => {\n        let x1 = 100*Math.tan((90-90/msg.gsubtick_count*start)*Math.PI/180);\n        if ((90/msg.gsubtick_count*start) <= 45) {x1=100;}\n        let x2 = 100*Math.tan((90-90/msg.gsubtick_count*end)*Math.PI/180);\n        if ((90/msg.gsubtick_count*end) <= 45) {x2=100;}\n    if (msg.gbody == \"left\") {\n        x1 = 100-100*Math.tan((90-90/msg.gsubtick_count*start)*Math.PI/180);\n        if ((90/msg.gsubtick_count*start) <= 45) {x1=0;}\n        x2 = 100-100*Math.tan((90-90/msg.gsubtick_count*end)*Math.PI/180);\n        if ((90/msg.gsubtick_count*end) <= 45) {x2=0;}\n    }\n\n    let y1 = 100-100*Math.tan(90/msg.gsubtick_count*start*Math.PI/180);\n    if (y1 < 0) {y1=0;}\n    let y2 = 100-100*Math.tan((90/msg.gsubtick_count*end)*Math.PI/180);\n    if (y2 < 0) {y2=0;}\n    \n    if (msg.gbody == \"left\") {\n    topic = \"clip-path: polygon(\"+x1+\"% \"+y1+\"%, 100% 100%, \"+x2+\"% \"+y2+\"%, 0% 0%)\";\n    } else {\n    topic = \"clip-path: polygon(\"+x1+\"% \"+y1+\"%, 100% 0%, \"+x2+\"% \"+y2+\"%, 0% 100%)\";\n    }\n    return topic;\n}\nmsg.bord = Math.floor(7/4*msg.containersize);\nif (msg.gbody == \"left\") {\n    msg.bt = msg.bord;\n    msg.br = 0;\n    msg.bl = msg.bord;\n    msg.ll = 8;\n    msg.br1 = 100;\n    msg.br2 = 0;\n} else {\n    msg.bt = msg.bord;\n    msg.br = msg.bord;\n    msg.bl = 0;\n    msg.ll = 10;\n    msg.br1 = 0;\n    msg.br2 = 100;\n}\nif (msg.gbody == \"right\" || msg.gbody == \"left\") {\n    for (let i = 0; i < gzone.length; i++) {\n        gzone[i].zone = Gauge(gzone[i].start,gzone[i].end);\n    }\n    msg.gbody2 = \"quarter-top-\" + msg.gbody\n    msg.gval = \"\"\n    msg.gvalring = \"g-val-ring\";\n    msg.gvalplate = \"g-val-plate\";\n    msg.gaugevalue = 100;\n    msg.gndistance = 28;\n    msg.grivet = \"\";\n    msg.gzone = gzone;\n    \n}else{\n    di =  gzone.length;\n    dd =  gzone.length;\n    for (let i = 0; i < dd; i++) {\n        gzonep = 134.7+gzone[i].start*(270/msg.gsubtick_count);\n        gzone[i].zone = gzonep;\n        zonem = 90-(gzone[i].end-gzone[i].start)*(270/msg.gsubtick_count);\n        if (zonem < -45) {\n            gzone[i].zone2 = -45;\n            gzone[di] = {color:gzone[i].color, zone:gzonep+135,zone2:zonem+135};\n            di++;\n        } else {\n            gzone[i].zone2 = 90-(gzone[i].end-gzone[i].start)*(270/msg.gsubtick_count);\n        }\n    }\n    msg.gbody2 = \"\";\n    msg.gvalring = \"\";\n    msg.gvalplate = \"\";\n    msg.gval = \"top: 65%; right:50%-calc(calc(var(--container-size) * 7%) / calc(var(--container-size)/4)); border-radius:0%\";\n    msg.gaugevalue = 0;\n    msg.gndistance = 13;\n    msg.grivet = \"g-rivet\";\n    msg.gzone2 = gzone;\n\n}\ndds = gtick2.length;\ncot = msg.gsubtick_count/msg.gtick_count; // количество маленьких тиков между большими\ncot2 = msg.gsubtick_count/msg.gnum_count;\n// массив маленькой шкалы\nfor (let i = 1; i <= msg.gsubtick_count+1; i++) {\n    color = msg.tickcolor;\n    if (msg.gbody == \"right\") {ii=msg.gsubtick_count+2-i;} else {ii=i;}\n    for (let j = 0; j < dds; j++) {\n        if (gtick2[j].start == 0) (gtick2[j].start = -1)\n        if ( ii >= gtick2[j].start+1 && ii <= gtick2[j].end+1) {color=gtick2[j].color} \n    }\n    if (msg.gbody == \"right\" || msg.gbody == \"left\") {\n        bg = \"background: linear-gradient(270deg,\"+color+\" 0%, \"+color+\" 5%, rgba(0, 0, 0, 0) 5%);\"\n    } else {\n        bg = \"background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 2%, \"+color+\" 2%, \"+color+\" 6%, rgba(0, 0, 0, 0) 6%);\"\n    }\ngsubtick[i-1] = {ga:i, bg:bg};\n}\nmsg.gsubtick = gsubtick;\n// массив большой шкалы\nfor (let i = 1; i <= msg.gtick_count+1; i++) {\n    color = msg.tickcolor;\n    if (msg.gbody == \"right\") {ii=msg.gtick_count+2-i;} else {ii=i;}\n    for (let j = 0; j < dds; j++) {\n        kstart = Math.ceil(gtick2[j].start/cot);\n        kend = Math.floor(gtick2[j].end/cot);\n        if (kstart == 0) (kstart = -1)\n        if ( ii >= kstart+1 && ii <= kend+1) {color=gtick2[j].color} \n    }    \n    if (msg.gbody == \"right\" || msg.gbody == \"left\") {\n        bg = \"background: linear-gradient(270deg,\"+color+\" 0%, \"+color+\" 9%, rgba(0, 0, 0, 0) 9%);\"\n    } else {\n        bg = \"background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 2%, \"+color+\" 2%, \"+color+\" 10%, rgba(0, 0, 0, 0) 10%);\"\n    }\ngtick[i-1] = {ga:i, bg:bg};\n}\nmsg.gtick = gtick;\n// массив цифр\nlet color2 = [];\n\nfor (let i = 1; i <= msg.gnum_count+1; i++) {\n    color2[i] = \"color:\"+msg.tickcolor;\n    for (let j = 0; j < dds; j++) {\n        kstart = Math.ceil(gtick2[j].start/cot2);\n        kend = Math.floor(gtick2[j].end/cot2);\n        if ( i >= kstart+1 && i <= kend+1) {color2[i]=\"color:\"+gtick2[j].color; }\n    } \n\n}\nfor (let i = 1; i <= msg.gnum_count+1; i++) {\n    if (msg.gbody == \"right\") {ii=i; iii=msg.gnum_count+2-i;} else {ii=msg.gnum_count+2-i; iii=msg.gnum_count+2-i;}\n    if (i==1) {\n        gnum[i-1] = {ga:ii,gs:msg.gnum_count,value:msg.max,color:color2[iii]};\n    } else {\n        gnum[i-1] = {ga:ii,gs:msg.gnum_count,value:msg.max-(msg.max-msg.min)/msg.gnum_count*(i-1),color:color2[iii]};\n    }\n}\nmsg.gnum = gnum;\nmsg.payload = value * 1;\nif (msg.payload > msg.max+msg.max/msg.gsubtick_count*3){\n    msg.value = msg.max+msg.max/msg.gsubtick_count*3;\n} else if (msg.payload < msg.min-msg.max/msg.gsubtick_count*3) {\n    msg.value = msg.min-msg.max/msg.gsubtick_count*3;\n} else {\n    msg.value = msg.payload;\n}\nif (msg.gbody == \"right\") {\nmsg.v = 100 - (((msg.value - msg.min) / (msg.max - msg.min)) * 100);\n} else if (msg.gbody == \"left\") {\nmsg.v = 100 + (((msg.value - msg.min) / (msg.max - msg.min)) * 100);\n} else {\nmsg.v = ((msg.value - msg.min) / (msg.max - msg.min)) * 100;\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 165,
+        "wires": [
+            [
+                "3217ea08302f210c"
+            ]
+        ]
+    },
+    {
+        "id": "3217ea08302f210c",
+        "type": "ui_template",
+        "z": "21b213583fe2216f",
+        "group": "9f213c40125a5160",
+        "name": "gauge",
+        "order": 3,
+        "width": "4",
+        "height": "4",
+        "format": "<script>\n(function(scope) {\n  scope.$watch('msg', function(msg) {\n    if (msg) {\n      // Do something when msg arrives\n        const val = msg.payload\n        const v = msg.v;\n        document.getElementById('gauge_'+scope.$id).style.setProperty('--gauge-value', v);\n        document.getElementById('gauge_val_'+scope.$id).innerText = val.toFixed(msg.dec);\n    }\n   \n  });\n})(scope);\n</script>\n\n\n<div class=\"g-wrapper g-wrapper-label-0\">\n<div id=\"{{'gauge_'+$id}}\" class=\"g-container\" style=\"--needle-color: {{msg.needlecolor}}; --gauge-value:{{msg.gaugevalue}}; --container-size:{{msg.containersize}}; --gn-distance:{{msg.gndistance}}; --ga-tick-count:{{msg.gtick_count}}; --ga-subtick-count:{{msg.gsubtick_count}}; --g-unit:'{{msg.unit}}'\">\n    <div id=\"bgr\" class=\"g-body {{msg.gbody2}}\">\n        <div class=\"g-ring\">\n            <div class=\"g-rivets\">\n                <div class={{msg.grivet}}></div>\n                <div class={{msg.grivet}}></div>\n                <div class={{msg.grivet}}></div>\n                <div class={{msg.grivet}}></div>\n            </div>\n            <div class=\"g-plate\">\n                <div ng-repeat=\"gzone2 in msg.gzone2\" style=\"width: 100%; height: 100%; position: absolute; top: 50%; left: 50%; transform-origin: 0 0; background:{{gzone2.color}}; transform: rotate({{gzone2.zone}}deg) skew({{gzone2.zone2}}deg, 0deg); \"></div>\n                <div class=\"g-zone\" ng-repeat=\"gzone in msg.gzone\" style= \"border-top: {{msg.bt}}px solid; left: {{msg.ll}}%; border-radius: {{msg.br1}}% {{msg.br2}}% 0% 0%; border-right: {{msg.br}}px solid; border-left: {{msg.bl}}px solid; clip-path: polygon(0% 0%, 100% 0%, 0% 0%, 0% 100% ); border-color: {{gzone.color}}; {{gzone.zone}}; \"></div>\n                <div class=\"g-ticks\">\n                    <div class=\"g-tick\" ng-repeat=\"gtick in msg.gtick\" style=\"{{gtick.bg}} --ga-tick:{{gtick.ga}};\"> </div>\n                </div>\n                <div class=\"g-ticks\">\n                    <div class=\"g-subtick\" ng-repeat=\"gsubtick in msg.gsubtick\" style=\"{{gsubtick.bg}} --ga-tick:{{gsubtick.ga}};\"> </div>\n                </div>\n                <div class=\"g-nums\">\n                    <div class=\"g-num\" ng-repeat=\"gnum in msg.gnum\" style=\"--ga-tick:{{gnum.ga}};  --ga-tick-count:{{gnum.gs}}; {{gnum.color}};\" >{{gnum.value}}</div>\n                </div>\n                <div class=\"g-label\">{{msg.label}}</div>\n                <div class=\"g-needle\"></div>\n                <div class=\"g-needle-ring\"></div>\n            </div>\n            <div class=\"{{msg.gvalring}}\">\n                <div class=\"{{msg.gvalplate}}\"></div>\n                <div id=\"{{'gauge_val_'+$id}}\" class=\"g-val\"></div>\n            </div>\n        </div>\n    </div>\n</div>\n</div>\n\n",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 465,
+        "y": 165,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "091248b359f978c7",
+        "type": "ui_template",
+        "z": "21b213583fe2216f",
+        "group": "f5e2c3bf3d5a99b2",
+        "name": "gauge-style-advanced",
+        "order": 30,
+        "width": 10,
+        "height": 1,
+        "format": "<!--<link rel=\"stylesheet\" href=\"/css/hotnipi-gauge.css\">-->\n<style>\n:root {\n    --needle-color: #001100;\n    --needle-color-secondary: #ffdd30;\n    --target-needle-color: #ffa500;\n    --red-ticks: 9;\n    --zone-color-high: #ff5d4ebf;\n    --zone-color-warn: #ffb52d8c;\n    --zone-color-normal: #91ff4e85;\n    --zone-color-low: #4ec3ff85\n}\n.g-zone {\n    position: absolute;\n    width: 82%;\n    height: 82%;\n    top: 8%;\n    left: 10%;\n    box-sizing: border-box;\n    border-radius: 0 100% 0 0;\n    border-color: var(--zone-color-normal);\n    border-top: 7px solid;\n    border-right: 7px solid;\n    clip-path: polygon(0% 0%, 100% 0%, 0% 0%, 0% 100% );\n}\n.g-zone.high {\n    border-color: var(--zone-color-high);\n    clip-path: polygon(0% 0%, 100% 0%, 16% 0%, 0% 100% );\n}\n.g-zone.warn {\n    border-color: var(--zone-color-warn);\n    clip-path: polygon(16% 0%, 100% 0%, 73% 0%, 0% 100% );\n}\n.g-zone.normal {\n    border-color: var(--zone-color-normal);\n    clip-path: polygon(0% 50%, 100% 0%, 100% 67%, 0% 100% );\n}\n.g-zone.low {\n    border-color: var(--zone-color-low);\n    clip-path: polygon(100% 68%, 100% 0%, 100% 100%, 0% 100% );\n}\n\n.g-wrapper-label-0 {\n    grid-template-rows: 1fr;\n}\n\n.g-wrapper-label-3 {\n    grid-template-rows: 1fr 3fr;\n}\n\n.g-wrapper-label-4 {\n    grid-template-rows: 1fr 4fr;\n}\n\n.g-wrapper {\n    display: grid;\n    width: 100%;\n    height: 100%;\n    align-content: center;\n    align-items: center;\n    justify-items: center;\n}\n\n.g-header {\n    display: flex;\n    text-align: center;\n}\n\n.g-wrapper-label-0 .g-container {\n    height: calc(100% - 6px);\n}\n\n.g-container {\n    position: relative;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    user-select: none;\n    width: 100%;\n    height: calc(100% - 10.5px);\n}\n\n.g-body {\n    position: relative;\n    display: flex;\n    align-content: center;\n    align-items: center;\n    justify-content: center;\n    height: 98%;\n    width: 98%;\n    border-radius: 15%;\n    box-shadow: 0px 5px 8px #00000045;\n    background: linear-gradient(0deg, rgba(78, 78, 78, 1) 0%, rgba(215, 215, 215, 1) 99%, rgba(236, 236, 236, 1) 100%);\n}\n\n.g-body::before {\n    content: \"\";\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    bottom: 0px;\n    left: 0px;\n    opacity: 0.1;\n    border-radius: 15%;\n    background-image: url(\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc1JyBoZWlnaHQ9JzUnPgogIDxyZWN0IHdpZHRoPSc1JyBoZWlnaHQ9JzUnIGZpbGw9J3doaXRlJy8+CiAgPHBhdGggZD0nTTAgNUw1IDBaTTYgNEw0IDZaTS0xIDFMMSAtMVonIHN0cm9rZT0nIzg4OCcgc3Ryb2tlLXdpZHRoPScxJy8+Cjwvc3ZnPg==\");\n    background-repeat: repeat;\n}\n\n.g-ring {\n    position: relative;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    align-content: center;\n    width: 94%;\n    height: 94%;\n    border-radius: 50%;\n    background: linear-gradient(180deg, rgba(78, 78, 78, 1) 0%, rgba(215, 215, 215, 1) 99%, rgba(236, 236, 236, 1) 100%);\n}\n\n.quarter-top-right>.g-ring {\n    width: 90%;\n    height: 90%;\n    border-radius: 15% 85% 15% 15%;\n}\n.quarter-top-left>.g-ring {\n    width: 90%;\n    height: 90%;\n    border-radius: 85% 15% 15% 15%;\n}\n\n.g-plate {\n    position: relative;\n    overflow: hidden;\n    width: 93%;\n    height: 93%;\n    border-radius: 50%;\n    box-shadow: inset 0 0 15px #000000a3;\n    background: radial-gradient(circle, rgb(196 205 209) 0%, rgb(177 183 186) 40%, rgb(191 193 194) 100%);\n}\n\n.quarter-top-right *>.g-plate {\n    width: 95%;\n    height: 95%;\n    border-radius: 15% 100% 15% 15%;\n    background: radial-gradient(farthest-corner at 24% 70%, rgb(207 209 211) 0%, rgb(177 183 186) 50%, rgb(191 193 194) 129%);\n}\n.quarter-top-left *>.g-plate {\n    width: 95%;\n    height: 95%;\n    border-radius: 100% 15% 15% 15%;\n    background: radial-gradient(farthest-corner at 24% 70%, rgb(207 209 211) 0%, rgb(177 183 186) 50%, rgb(191 193 194) 129%);\n}\n\n.g-sector-high {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    top: 50%;\n    left: 50%;\n    background: #ff00004f;\n    transform-origin: 0 0;\n    transform: rotate(328deg) skew(12deg, 23deg);\n}\n\n.g-ticks {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    filter: drop-shadow(2px 4px 6px black);\n}\n\n.quarter-top-right *>.g-ticks {\n    top: -10%;\n    left: 10%;\n}\n.quarter-top-left *>.g-ticks {\n    top: -10%;\n    left: -10%;\n    transform: rotate(270deg);\n}\n\n\n.g-tick {\n    position: relative;\n    left: 0;\n    top: 50%;\n    width: 100%;\n    height: 1px;\n    margin-bottom: -1px;\n    background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 2%, rgb(0 0 0 / 60%) 2%, rgb(0 0 0 / 60%) 10%, rgba(0, 0, 0, 0) 10%);\n    transform: rotate(calc(calc(270deg / var(--ga-tick-count)) * var(--ga-tick) - calc(calc(270deg / var(--ga-tick-count)) + 45deg)));\n}\n\n.quarter-top-right *>.g-tick {\n    width: 86%;\n    position: absolute;\n    left: 0;\n    top: 100%;\n    background: linear-gradient(270deg,rgb(0 0 0 / 60%) 0%, rgb(0 0 0 / 60%) 9%, rgba(0, 0, 0, 0) 9%);\n    transform: rotate(calc(calc(90deg / var(--ga-tick-count)) * var(--ga-tick) - calc(calc(90deg / var(--ga-tick-count)) - 270deg)));\n    transform-origin: 0% 0%;\n}\n.quarter-top-left *>.g-tick {\n    width: 86%;\n    position: absolute;\n    left: 0;\n    top: 100%;\n    background: linear-gradient(270deg,rgb(0 0 0 / 60%) 0%, rgb(0 0 0 / 60%) 9%, rgba(0, 0, 0, 0) 9%);\n    transform: rotate(calc(calc(90deg / var(--ga-tick-count)) * var(--ga-tick) - calc(calc(90deg / var(--ga-tick-count)) - 270deg)));\n    transform-origin: -0.5% 0%;\n}\n\n.g-tick.clock {\n    transform: rotate(calc(calc(360deg / var(--ga-tick-count)) * var(--ga-tick) - calc(calc(360deg / var(--ga-tick-count)) +270deg)));\n}\n\n.g-subtick {\n    position: relative;\n    left: 0;\n    top: 50%;\n    width: 100%;\n    height: 1px;\n    margin-bottom: -1px;\n    background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 2%, rgb(0 0 0 / 40%) 2%, rgb(0 0 0 / 40%) 6%, rgba(0, 0, 0, 0) 6%);\n    transform: rotate(calc(calc(270deg / var(--ga-subtick-count)) * var(--ga-tick) - calc(calc(270deg / var(--ga-subtick-count)) + 45deg)));\n}\n\n.quarter-top-right *>.g-subtick {\n    width: 86%;\n    position: absolute;\n    left: 0;\n    top: 100%;\n    background: linear-gradient(270deg,rgb(0 0 0 / 60%) 0%, rgb(0 0 0 / 60%) 5%, rgba(0, 0, 0, 0) 5%);\n    transform: rotate(calc(calc(90deg / var(--ga-subtick-count)) * var(--ga-tick) - calc(calc(90deg / var(--ga-subtick-count)) - 270deg)));\n    transform-origin: 0% 0%;\n}\n.quarter-top-left *>.g-subtick {\n    width: 86%;\n    position: absolute;\n    left: 0;\n    top: 100%;\n    background: linear-gradient(270deg,rgb(0 0 0 / 60%) 0%, rgb(0 0 0 / 60%) 5%, rgba(0, 0, 0, 0) 5%);\n    transform: rotate(calc(calc(90deg / var(--ga-subtick-count)) * var(--ga-tick) - calc(calc(90deg / var(--ga-subtick-count)) - 270deg)));\n    transform-origin: -0.5% 0%;\n}\n\n.g-subtick.clock {\n    transform: rotate(calc(calc(360deg / var(--ga-subtick-count)) * var(--ga-tick) - calc(calc(360deg / var(--ga-subtick-count)) + 270deg)));\n}\n\n.g-num {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    text-align: center;\n    transform: translate(-50%, -50%) rotate(calc(calc(270deg / var(--ga-tick-count)) * var(--ga-tick) - calc(calc(270deg / var(--ga-tick-count)) + 45deg))) translate(calc(-1px * var(--container-size) * var(--gn-distance))) rotate(calc(calc(270deg / var(--ga-tick-count)) * var(--ga-tick) *-1 - calc(calc(270deg / var(--ga-tick-count))*-1 - 45deg)));\n}\n\n.quarter-top-right *>.g-num {\n    transform: translate(-50%, -50%) rotate(calc(calc(90deg / var(--ga-tick-count)) * var(--ga-tick) - calc(calc(90deg / var(--ga-tick-count)) - 90deg))) translate(calc(-1px * var(--container-size) * var(--gn-distance))) rotate(calc(calc(90deg / var(--ga-tick-count)) * var(--ga-tick) *-1 - calc(calc(90deg / var(--ga-tick-count))*-1 - 270deg)));\n}\n.quarter-top-left *>.g-num {\n    transform: translate(-50%, -50%) rotate(calc(calc(90deg / var(--ga-tick-count)) * var(--ga-tick) - calc(calc(90deg / var(--ga-tick-count)) - 90deg))) translate(calc(-1px * var(--container-size) * var(--gn-distance))) rotate(calc(calc(90deg / var(--ga-tick-count)) * var(--ga-tick) *-1 - calc(calc(90deg / var(--ga-tick-count))*-1 - 360deg)));\n}\n\n.g-num.clock {\n    transform: translate(-50%, -50%) rotate(calc(calc(360deg / var(--ga-tick-count)) * var(--ga-tick) - calc(calc(360deg / var(--ga-tick-count)) + 270deg))) translate(calc(-1px * var(--container-size) * var(--gn-distance))) rotate(calc(calc(360deg / var(--ga-tick-count)) * var(--ga-tick) *-1 - calc(calc(360deg / var(--ga-tick-count))*-1 - 270deg)));\n}\n\n.g-nums {\n    position: absolute;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    color: #000000a1;\n    font-size: calc(var(--container-size) * 20%);\n    font-weight: 500;\n    filter: drop-shadow(2px 4px 10px black);\n}\n\n.quarter-top-right *>.g-nums {\n    top: 40%;\n    left: -40%;\n}\n\n.quarter-top-left *>.g-nums {\n    top: 40%;\n    left: 40%;\n    transform: rotate(270deg);\n}\n.g-needle {\n    position: absolute;\n    left: 0;\n    top: 49%;\n    width: 100%;\n    height: 2%;\n    filter: drop-shadow(0px 1px 3px #00000080);\n    background: linear-gradient(90deg, rgba(2, 0, 36, 0) 0, rgba(0, 0, 0, 0) 15%, var(--needle-color) 15%, var(--needle-color) 50%, rgba(0, 0, 0, 0) 50%);\n    transform: rotate(calc(270deg * calc(var(--gauge-value, 0deg) / 100) - 45deg));\n    transition: transform 1s;\n}\n\n.g-needle-secondary {\n    position: absolute;\n    left: 0;\n    top: 49%;\n    width: 100%;\n    height: 2%;\n    filter: drop-shadow(0px 1px 3px #00000080);\n    background: linear-gradient(90deg, rgba(2, 0, 36, 0) 0, rgba(0, 0, 0, 0) 15%, var(--needle-color-secondary) 15%, var(--needle-color-secondary) 50%, rgba(0, 0, 0, 0) 50%);\n    transform: rotate(calc(270deg * calc(var(--gauge-value-secondary, 0deg) / 100) - 45deg));\n    transition: transform 1s;    \n}\n\n.g-target-needle {\n    position: absolute;\n    left: 0;\n    top: 49%;\n    width: 100%;\n    height: 1.5%;\n    transform: rotate(calc(270deg * calc(var(--gauge-target, 0deg) / 100) - 45deg));\n    transition: transform 1s;\n}\n\n.g-target-needle:before {\n    content: \"►\";\n    position: absolute;\n    left: -1%;\n    top: calc(var(--container-size) * 1%);\n    line-height: 0;\n    font-size: calc(var(--container-size) * 35%);\n    color: #ffdc2d;\n    text-shadow: 0 0 3px black;\n}\n\n.quarter-top-right *>.g-needle {\n    position: absolute;\n    width: 74%;\n    height: 2%;\n    top: 89.5%;\n    left: 10%;\n    background: var(--needle-color);\n    transform: rotate(calc(90deg * calc(var(--gauge-value, 0deg) / 100) - 90deg));\n    transform-origin: 0% 50%;\n}\n\n.quarter-top-left *>.g-needle {\n    position: absolute;\n    width: 74%;\n    height: 2%;\n    top: 89.5%;\n    left: 90%;\n    background: var(--needle-color);\n    transform: rotate(calc(90deg * calc(var(--gauge-value, 0deg) / 100) - 270deg));\n    transform-origin: 0% 50%;\n}\n\n.g-needle.hour {\n    background: linear-gradient(90deg, rgba(2, 0, 36, 0) 0, rgba(0, 0, 0, 0) 20%, var(--needle-color) 20%, var(--needle-color) 50%, rgba(0, 0, 0, 0) 50%);\n    transition: unset;\n    transform: rotate(var(--time-hour));\n}\n\n.g-needle.minute {\n    top: 49.25%;\n    height: 1.5%;\n    background: linear-gradient(90deg, rgba(2, 0, 36, 0) 0, rgba(0, 0, 0, 0) 15%, var(--needle-color) 15%, var(--needle-color) 50%, rgba(0, 0, 0, 0) 50%);\n    transition: unset;\n    transform: rotate(var(--time-minute));\n}\n\n.g-needle.second {\n    top: 49.5%;\n    height: 0.5%;\n    background: linear-gradient(90deg, rgba(2, 0, 36, 0) 0, rgba(0, 0, 0, 0) 10%, var(--needle-color) 10%, var(--needle-color) 50%, rgba(0, 0, 0, 0) 50%);\n    transform: rotate(var(--time-second));\n    transition: unset;\n}\n\n.g-needle-ring {\n    position: absolute;\n    width: calc(var(--container-size) * 1.5%);\n    height: calc(var(--container-size) * 1.5%);\n    top: 50%;\n    left: 50%;\n    border-radius: 50%;\n    box-shadow: 0 1px 4px #0000009c;\n    background: var(--needle-color);\n    transform: translate(-50%, -50%);\n}\n\n.quarter-top-right *>.g-needle-ring {\n    top: 90%;\n    left: 10%;\n}\n.quarter-top-left *>.g-needle-ring {\n    top: 90%;\n    left: 90%;\n}\n\n.g-val {\n    position: absolute;\n    text-align: center;\n    left: 50%;\n    bottom: 8%;\n    width: 80px;\n    font-family: monospace;\n    font-size: calc(var(--container-size) * 40%);\n    color: #000000a1;\n    filter: drop-shadow(2px 3px 2px #00000050);\n    transform: translateX(-50%);\n}\n\n.quarter-top-right *>.g-val {\n    width: 100%;\n    bottom: calc(calc(var(--container-size) * 8%) / calc(var(--container-size)/4));\n    font-size: calc(var(--container-size) * 25%);\n}\n.quarter-top-left *>.g-val {\n    width: 100%;\n    bottom: calc(calc(var(--container-size) * 8%) / calc(var(--container-size)/4));\n    font-size: calc(var(--container-size) * 25%);\n}\n.g-val-ring {\n    position: absolute;\n    right: 0%;\n    top: 0%;\n    width: calc(calc(var(--container-size) * 7%) / calc(var(--container-size)/4));\n    height: calc(calc(var(--container-size) * 6%) / calc(var(--container-size)/4));\n    border-radius: 50%;\n    background: linear-gradient(180deg, rgba(78, 78, 78, 1) 0%, rgba(215, 215, 215, 1) 99%, rgba(236, 236, 236, 1) 100%);\n}\n\n.quarter-top-right *> .g-val-ring {\n    right: 0%;\n}\n.quarter-top-left *> .g-val-ring {\n    left:0%;\n}\n.g-val-plate {\n    position: absolute;\n    right: 0%;\n    top: 0%;\n    width: 90%;\n    height: 90%;\n    border-radius: 50%;\n    background: #e4e9ee;\n    box-shadow: inset 0 0 15px #000000a3;\n    transform: translate(-5%, 5%);\n}\n\n.g-label {\n    position: absolute;\n    left: 50%;\n    top: 58%;\n    width: 100%;\n    font-family: monospace;\n    font-size: calc(var(--container-size) * 18%);\n    text-align: center;\n    color: #000000a1;\n    filter: drop-shadow(2px 3px 2px #00000080);\n    transform: translateX(-50%);\n}\n\n.quarter-top-right *>.g-label {\n    left: 35%;\n    top: 60%;\n    width: 70%;\n}\n\n.quarter-top-left *>.g-label {\n    left: 65%;\n    top: 60%;\n    width: 70%;\n}\n\n.g-label::after {\n    position: absolute;\n    content: var(--g-unit);\n    left: 0;\n    top: 100%;\n    width: 100%;\n    height: 100%;\n    font-size: clamp(1em, calc(var(--container-size) * 40%), 1.5em);\n}\n\n.g-rivets {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n}\n\n.g-rivet {\n    position: absolute;\n    width: calc(var(--container-size) * 2px);\n    height: calc(var(--container-size) * 2px);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 50px;\n    box-shadow: 0px 2px 4px #000, -1px -1px 5px rgba(0, 0, 0, 0.2);\n    background: linear-gradient(135deg, #adadad 0%, #d3d3d3 51%, #d1d1d1 68%, #8c8c8c 100%);\n}\n\n.g-rivet:nth-child(1) {\n    top: calc(var(--container-size) * 1.5px);\n    left: calc(var(--container-size) * 1.5px);\n}\n\n.g-rivet:nth-child(2) {\n    top: calc(var(--container-size) * 1.5px);\n    right: calc(var(--container-size) * 1.5px);\n}\n\n.g-rivet:nth-child(3) {\n    bottom: calc(var(--container-size) * 1.5px);\n    left: calc(var(--container-size) * 1.5px);\n}\n\n.g-rivet:nth-child(4) {\n    bottom: calc(var(--container-size) * 1.5px);\n    right: calc(var(--container-size) * 1.5px);\n}\n\n.g-rivet::before {\n    content: '';\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    width: calc(var(--container-size) * 10%);\n    height: calc(var(--container-size) * 10%);\n    border-radius: 50%;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.3);\n    box-shadow: inset 0px 1px 2px #222;\n    transform: translate(-50%, -50%);\n}\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "className": "",
+        "x": 415,
+        "y": 85,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "40e3e3e1b8cd7df8",
+        "type": "ui_template",
+        "z": "21b213583fe2216f",
+        "group": "9f213c40125a5160",
+        "name": "gauge clock",
+        "order": 21,
+        "width": "2",
+        "height": "2",
+        "format": "<div class=\"g-wrapper g-wrapper-label-0\">\n<div id=\"{{'gauge_'+$id}}\" class=\"g-container\" style=\"--gauge-value:0; --container-size:2; --gn-distance:13.5; --ga-tick-count:12; --ga-subtick-count:60; --g-unit:''; --time-hour:0; --time-minute:0; --time-second:0; \">\n    <div id=\"bgr\" class=\"g-body\">\n        <div class=\"g-ring\">\n            <div class=\"g-rivets\">\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n            </div>\n            <div class=\"g-plate\">\n                <div class=\"g-ticks\">\n                    <div class=\"g-tick clock\" style=\"--ga-tick:1;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:2;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:3;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:4;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:5;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:6;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:7;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:8;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:9;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:10;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:11;\"></div>\n                    <div class=\"g-tick clock\" style=\"--ga-tick:12;\"></div>\n                </div>\n                <div class=\"g-ticks\">\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:2;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:3;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:4;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:5;\"></div>\n\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:7;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:8;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:9;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:10;\"></div>\n                   \n                    <div class=\"g-subtick clock\" style=\"--ga-tick:12;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:13;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:14;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:15;\"></div>\n                    \n                    <div class=\"g-subtick clock\" style=\"--ga-tick:17;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:18;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:19;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:20;\"></div>\n\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:22;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:23;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:24;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:25;\"></div>\n\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:27;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:28;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:29;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:30;\"></div>\n\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:32;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:33;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:34;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:35;\"></div>\n\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:37;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:38;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:39;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:40;\"></div>\n\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:42;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:43;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:44;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:45;\"></div>\n\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:47;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:48;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:49;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:50;\"></div>\n\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:52;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:53;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:54;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:55;\"></div>\n\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:57;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:58;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:59;\"></div>\n                    <div class=\"g-subtick clock\" style=\"--ga-tick:60;\"></div>\n                </div>\n               <div class=\"g-nums\">\n                    <div class=\"g-num clock\" style=\"--ga-tick:1;\" >12</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:2;\">1</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:3;\">2</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:4;\">3</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:5;\">4</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:6;\">5</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:7;\">6</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:8;\">7</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:9;\">8</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:10;\">9</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:11;\">10</div>\n                    <div class=\"g-num clock\" style=\"--ga-tick:12;\">11</div>\n                    \n                </div>\n                <div class=\"g-label\">{{msg.payload | date:'dd.MM.yyyy'}}</div>\n                <div class=\"g-needle hour\"></div>\n                <div class=\"g-needle second\"></div>\n                <div class=\"g-needle minute\"></div>\n                <div class=\"g-needle-ring\"></div>\n                <div id=\"{{'gauge_val_'+$id}}\" class=\"g-val\"></div>\n            </div>\n        </div>\n    </div>\n</div>\n</div>\n\n<script>\n(function(scope) {\n  scope.$watch('msg', function(msg) {\n    if (msg) {\n\n        const now = new Date()        \n        const sec = now.getSeconds();\n        const secDeg = ''+(((sec / 60) * 360) + 90)+'deg';        \n        const mins = now.getMinutes();\n        const minsDeg = ''+(((mins / 60) * 360) + ((sec/60)*6) + 90)+'deg';        \n        const hour = now.getHours();\n        const hourDeg = ''+(((hour / 12) * 360) + ((mins/60)*30) + 90)+'deg';\n        \n        document.getElementById('gauge_'+scope.$id).style.setProperty('--time-hour', hourDeg);\n        document.getElementById('gauge_'+scope.$id).style.setProperty('--time-minute', minsDeg);\n        document.getElementById('gauge_'+scope.$id).style.setProperty('--time-second', secDeg);\n    }\n   \n  });\n})(scope);\n</script>\n",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 440,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "370627f593f600a9",
+        "type": "inject",
+        "z": "21b213583fe2216f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 340,
+        "wires": [
+            [
+                "40e3e3e1b8cd7df8"
+            ]
+        ]
+    },
+    {
+        "id": "9f213c40125a5160",
+        "type": "ui_group",
+        "name": "gauge",
+        "tab": "7471c7e5ac36c878",
+        "order": 2,
+        "disp": false,
+        "width": "8",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f5e2c3bf3d5a99b2",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "f56a25b32de4d274",
+        "order": 1,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "7471c7e5ac36c878",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "f56a25b32de4d274",
+        "type": "ui_tab",
+        "name": "old",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
