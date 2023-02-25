@@ -1,6 +1,6 @@
 Esse é meu primeiro projeto de IoT-Automação Residencial.
 
-Nesse projeto usei o ESP32, DHT22, Sensor PIR e Módulo Relé de 8 Canais.
+Nesse projeto usei o ESP32, DHT22 e Módulo Relé de 8 Canais.
 
 Como estou sem recursos financeiros para a compra de equipamentos específicos para um bom funcionamento, estou usando o Broker MQTT rodando em um celular.
 
