@@ -89,12 +89,12 @@ int status_todos = 0;   // Definir inteiro para lembrar o estado de alternância
 
 // DHT22 para leitura dos valores  de Temperatura e Umidade
 #define DHTPIN 4
-#define DHTTYPE DHT22  // DHT 22
+#define DHTTYPE DHT11  // DHT 22
 DHT dht(DHTPIN, DHTTYPE);
 
 // Configurações do WIFI
-const char* SSID = "RVR 2,4GHz";                // SSID nome da rede WI-FI que deseja se conectar
-const char* PASSWORD = "RodrigoValRobson2021";  // Senha da rede WI-FI que deseja se conectar
+const char* SSID = "IoT";                // SSID nome da rede WI-FI que deseja se conectar
+const char* PASSWORD = "@IoT@S3nh@S3gur@";  // Senha da rede WI-FI que deseja se conectar
 
 // Configurações do Broker MQTT
 const char* BROKER_MQTT = "192.168.15.10";  // URL do broker MQTT que se deseja utilizar
@@ -133,7 +133,7 @@ const char* PARAM_INPUT_2 = "state";
 AsyncWebServer server(80);
 
 const char login_html[] PROGMEM = R"rawliteral(
-
+<!DOCTYPE HTML><html>
 <script>function toggleCheckbox(element) {
   var xhr = new XMLHttpRequest();
   if(element.checked){ xhr.open("GET", "/update?output="+element.id+"&state=0", true); }
