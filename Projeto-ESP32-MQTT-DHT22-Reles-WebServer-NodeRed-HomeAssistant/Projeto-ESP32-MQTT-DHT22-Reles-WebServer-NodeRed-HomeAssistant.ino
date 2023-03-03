@@ -130,7 +130,7 @@ const char* PARAM_INPUT_1 = "output";
 const char* PARAM_INPUT_2 = "state";
 
 // Configuração da Porta Usada Pelo AsyncWebServer
-AsyncWebServer server(80);
+AsyncWebServer server(3232);
 
 const char login_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
