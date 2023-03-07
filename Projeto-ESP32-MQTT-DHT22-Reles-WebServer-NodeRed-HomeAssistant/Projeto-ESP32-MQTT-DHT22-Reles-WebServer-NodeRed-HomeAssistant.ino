@@ -24,6 +24,8 @@ Versão : 20 - Alfa
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 DNSServer dns;
 
@@ -88,9 +90,9 @@ int toggleState_7 = 1;  // Definir inteiro para lembrar o estado de alternância
 int toggleState_8 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 8
 int status_todos = 0;   // Definir inteiro para lembrar o estado de alternância para todos
 
-// DHT22 para leitura dos valores  de Temperatura e Umidade
+// DHT11 ou DHT22 para leitura dos valores  de Temperatura e Umidade
 #define DHTPIN 4
-#define DHTTYPE DHT11  // DHT 22
+#define DHTTYPE DHT11  // DHT11 ou DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
 // Configurações do WIFI
@@ -500,8 +502,9 @@ Caso contrário, são efetuadas tentativas de conexão*/
   }
 
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
     Serial.print(".");
+    delay(500);
+    
   }
   Serial.println();
   Serial.print("Conectado com sucesso na rede ");
@@ -559,8 +562,14 @@ void initOutput(void) {
 
 void loop() {
 
+  // Garante funcionamento das conexões WiFi e ao Broker MQTT
+  VerificaConexoesWiFIEMQTT();
+
+  //Keep-Alive da comunicação com Broker MQTT
+  MQTT.loop();  
+
   unsigned long now = millis();
-  if (now - lastMsg > 5000) {
+  if (now - lastMsg > 2000) {
 
     float temp_data = dht.readTemperature();  // ou dht.readTemperature(true) para Fahrenheit
     dtostrf(temp_data, 4, 2, str_temp_data);
@@ -580,13 +589,13 @@ void loop() {
     /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
 
     lastMsg = now;
-
+  
     MQTT.publish(pub9, str_temp_data);
 
     MQTT.publish(pub10, str_hum_data);
 
     MQTT.publish(pub11, str_tempterm_data);
-
+  
     if (digitalRead(RelayPin1) == HIGH) {
       MQTT.publish(pub1, "0");
     } else {
@@ -632,11 +641,5 @@ void loop() {
     } else {
       MQTT.publish(pub0, "0");
     }
-  }
-
-  // Garante funcionamento das conexões WiFi e ao Broker MQTT
-  VerificaConexoesWiFIEMQTT();
-
-  //Keep-Alive da comunicação com Broker MQTT
-  MQTT.loop();
+  } 
 }
