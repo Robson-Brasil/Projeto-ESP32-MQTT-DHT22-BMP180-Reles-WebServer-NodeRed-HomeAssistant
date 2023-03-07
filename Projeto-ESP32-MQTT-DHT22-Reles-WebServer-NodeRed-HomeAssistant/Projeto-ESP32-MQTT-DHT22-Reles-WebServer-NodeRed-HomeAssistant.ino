@@ -48,6 +48,7 @@ const char* pub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado";        //
 const char* pub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado";        // Ligados ao MQTT/Alexa
 const char* pub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado";        // Ligados ao MQTT/Alexa
 const char* pub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado";        // Ligados ao MQTT/Alexa
+
 const char* pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                // Somente por MQTT
 const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
 const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
@@ -93,14 +94,14 @@ int status_todos = 0;   // Definir inteiro para lembrar o estado de alternância
 DHT dht(DHTPIN, DHTTYPE);
 
 // Configurações do WIFI
-const char* SSID = "IoT";                // SSID nome da rede WI-FI que deseja se conectar
+const char* SSID = "IoT";                   // SSID nome da rede WI-FI que deseja se conectar
 const char* PASSWORD = "@IoT@S3nh@S3gur@";  // Senha da rede WI-FI que deseja se conectar
 
 // Configurações do Broker MQTT
-const char* BROKER_MQTT = "192.168.15.10";  // URL do broker MQTT que se deseja utilizar
+const char* BrokerMQTT = "192.168.15.10";  // URL do broker MQTT que se deseja utilizar
 const char* mqttUserName = "RobsonBrasil";  // MQTT UserName
 const char* mqttPwd = "loboalfa";           // MQTT Password
-int BROKER_PORT = 1883;                     // Porta do Broker MQTT
+int PortaBroker = 1883;                     // Porta do Broker MQTT
 
 // IP Estático
 IPAddress local_IP(192, 168, 15, 50);
@@ -219,7 +220,7 @@ void setup() {
   dht.begin();
 
   if (!SPIFFS.begin(true)) {
-    Serial.println("An Error has occurred while mounting SPIFFS");
+    Serial.println("Ocorreu um erro ao montar o SPIFFS");
     return;
   }
 
@@ -275,7 +276,7 @@ void initWiFi() {
 
 // Função: inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
 void initMQTT() {
-  MQTT.setServer(BROKER_MQTT, BROKER_PORT);  // Informa qual broker e porta deve ser conectado
+  MQTT.setServer(BrokerMQTT, PortaBroker);  // Informa qual broker e porta deve ser conectado
   MQTT.setCallback(mqtt_callback);           // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
 }
 
@@ -462,7 +463,7 @@ em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeit
 void reconnectMQTT() {
   while (!MQTT.connected()) {
     Serial.print("* Tentando se conectar ao Broker MQTT: ");
-    Serial.println(BROKER_MQTT);
+    Serial.println(BrokerMQTT);
     if (MQTT.connect(ID_MQTT, mqttUserName, mqttPwd)) {
       Serial.println("Conectado com sucesso ao broker MQTT!");
       MQTT.subscribe(sub0);
