@@ -10,8 +10,8 @@ Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
 Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
 Home Assistant
 Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-Versão : 20 - Alfa
-Última Modificação : 15/22/2023
+Versão : 23 - Alfa
+Última Modificação : 09/03/2023
 **********************************************************************************/
 
 // Bibliotecas
@@ -51,13 +51,12 @@ const char* pub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado";        //
 const char* pub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado";        // Ligados ao MQTT/Alexa
 const char* pub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado";        // Ligados ao MQTT/Alexa
 
-const char* pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                // Somente por MQTT
-const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
-const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
+const char* pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";       // Somente por MQTT
+const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";          // Somente por MQTT
+const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";  // Somente por MQTT
+const char* pub12 = "ESP32/MinhaCasa/QuartoRobson/UltimaLeitura";  // Somente por MQTT
 
 float diff = 1.0;
-
-unsigned long delayTime;
 
 #define ID_MQTT "ESP32-IoT-1" /* ID MQTT (para identificação de seção)           \
                             IMPORTANTE: Este deve ser único no broker (ou seja, \
@@ -92,15 +91,15 @@ int status_todos = 0;   // Definir inteiro para lembrar o estado de alternância
 
 // DHT11 ou DHT22 para leitura dos valores  de Temperatura e Umidade
 #define DHTPIN 4
-#define DHTTYPE DHT11  // DHT11 ou DHT22
+#define DHTTYPE DHT22  // DHT11 ou DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
 // Configurações do WIFI
-const char* SSID = "IoT";                   // SSID nome da rede WI-FI que deseja se conectar
-const char* PASSWORD = "@IoT@S3nh@S3gur@";  // Senha da rede WI-FI que deseja se conectar
+const char* ssid = "IoT";                   // SSID nome da rede WI-FI que deseja se conectar
+const char* password = "@IoT@S3nh@S3gur@";  // Senha da rede WI-FI que deseja se conectar
 
 // Configurações do Broker MQTT
-const char* BrokerMQTT = "192.168.15.10";  // URL do broker MQTT que se deseja utilizar
+const char* BrokerMQTT = "192.168.15.10";   // URL do broker MQTT que se deseja utilizar
 const char* mqttUserName = "RobsonBrasil";  // MQTT UserName
 const char* mqttPwd = "loboalfa";           // MQTT Password
 int PortaBroker = 1883;                     // Porta do Broker MQTT
@@ -109,6 +108,7 @@ int PortaBroker = 1883;                     // Porta do Broker MQTT
 IPAddress local_IP(192, 168, 15, 50);
 IPAddress gateway(192, 168, 15, 1);
 IPAddress subnet(255, 255, 255, 0);
+
 // DNS Estático
 IPAddress primaryDNS(8, 8, 8, 8);
 IPAddress secondaryDNS(8, 8, 4, 4);
@@ -126,7 +126,7 @@ char str_tempF_data[10];
 unsigned long lastMsg = 0;
 int value = 0;
 
-//WebServer
+// WebServer
 const char* http_username = "Robson Brasil";
 const char* http_password = "@Lobo#Alfa@";
 const char* PARAM_INPUT_1 = "output";
@@ -169,7 +169,6 @@ String processor(const String& var) {
     buttons += "<h4>Interruptor 4</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"19\" " + outputState(19) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
-
   if (var == "BUTTONPLACEHOLDER5") {
     String buttons = "";
     buttons += "<h4>Interruptor 5</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"18\" " + outputState(18) + "><span class=\"slider\"></span></label>";
@@ -190,7 +189,6 @@ String processor(const String& var) {
     buttons += "<h4>Luz do Quarto</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"26\" " + outputState(26) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
-
   return String();
 }
 String outputState(int output) {
@@ -210,16 +208,15 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length);
 void VerificaConexoesWiFIEMQTT(void);
 void initOutput(void);
 
-/*
-Implementações das funções
- */
+// Implementações das funções
 void setup() {
   // Inicializações:
   initOutput();
   initSerial();
   initWiFi();
   initMQTT();
-  dht.begin();
+  // Chama a função setup1()
+  setup1();
 
   if (!SPIFFS.begin(true)) {
     Serial.println("Ocorreu um erro ao montar o SPIFFS");
@@ -264,24 +261,21 @@ void setup() {
 void initSerial() {
   Serial.begin(115200);
 }
-
 // Função: inicializa e conecta-se na rede WI-FI desejada
 void initWiFi() {
   delay(10);
   Serial.println("------Conexao WI-FI------");
   Serial.print("Conectando-se na rede: ");
-  Serial.println(SSID);
+  Serial.println(ssid);
   Serial.println("Aguarde");
 
   reconectWiFi();
 }
-
 // Função: inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
 void initMQTT() {
   MQTT.setServer(BrokerMQTT, PortaBroker);  // Informa qual broker e porta deve ser conectado
-  MQTT.setCallback(mqtt_callback);           // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
+  MQTT.setCallback(mqtt_callback);          // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
 }
-
 // Função: Função de callback, esta função é chamada toda vez que uma informação de um dos tópicos subescritos chega.
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 
@@ -459,7 +453,6 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     }
   }
 }
-
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
 em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
 void reconnectMQTT() {
@@ -477,6 +470,10 @@ void reconnectMQTT() {
       MQTT.subscribe(sub6);
       MQTT.subscribe(sub7);
       MQTT.subscribe(sub8);
+      MQTT.subscribe(pub9);
+      MQTT.subscribe(pub10);
+      MQTT.subscribe(pub11);
+      MQTT.subscribe(pub12);
     } else {
       Serial.println("Falha ao reconectar no broker.");
       Serial.print(MQTT.state());
@@ -485,30 +482,27 @@ void reconnectMQTT() {
     }
   }
 }
-
 // Função: reconecta-se ao WiFi
 void reconectWiFi() {
-
   /* Se já está conectado a rede WI-FI, nada é feito.
 Caso contrário, são efetuadas tentativas de conexão*/
   if (WiFi.status() == WL_CONNECTED)
     return;
 
-  WiFi.begin(SSID, PASSWORD);  // Conecta na rede WI-FI
-  Serial.println("\nConectando WiFi " + String(SSID));
+  WiFi.begin(ssid, password);  // Conecta na rede WI-FI
+  Serial.println("\nConectando WiFi " + String(ssid));
 
   if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
-    Serial.println("Configuração Falhou");
+    Serial.println("Conexão Falhou");
   }
 
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(500);
-    
   }
   Serial.println();
   Serial.print("Conectado com sucesso na rede ");
-  Serial.print(SSID);
+  Serial.print(ssid);
   Serial.println("");
   Serial.println("WiFi Conectado");
   Serial.print("Endereço de IP: ");
@@ -522,16 +516,14 @@ Caso contrário, são efetuadas tentativas de conexão*/
   Serial.print("DNS 2: ");
   Serial.println(WiFi.dnsIP(1));
 }
-
 /* Função: verifica o estado das conexões WiFI e ao broker MQTT.
 Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
   if (!MQTT.connected())
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
 
-  reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
+    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
 }
-
 // Função: inicializa o output em nível lógico baixo
 void initOutput(void) {
 
@@ -559,43 +551,19 @@ void initOutput(void) {
   digitalWrite(RelayPin8, HIGH);
 }
 // Programa Principal
-
 void loop() {
-
   // Garante funcionamento das conexões WiFi e ao Broker MQTT
   VerificaConexoesWiFIEMQTT();
-
   //Keep-Alive da comunicação com Broker MQTT
-  MQTT.loop();  
+  MQTT.loop();
+
+  loop1();  
 
   unsigned long now = millis();
-  if (now - lastMsg > 2000) {
+  if (now - lastMsg > 1500) {
 
-    float temp_data = dht.readTemperature();  // ou dht.readTemperature(true) para Fahrenheit
-    dtostrf(temp_data, 4, 2, str_temp_data);
-    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
-    float hum_data = dht.readHumidity();
-    dtostrf(hum_data, 4, 2, str_hum_data);
-    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
-    float tempF_data = dht.readTemperature(true);
-    dtostrf(tempF_data, 4, 2, str_tempF_data);
-    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
-    float tempterm_data = 0;
-    dtostrf(tempterm_data, 4, 2, str_tempterm_data);
-    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
-    tempterm_data = dht.computeHeatIndex(tempF_data, hum_data);
-    tempterm_data = dht.convertFtoC(tempterm_data);
-    dtostrf(tempterm_data, 4, 2, str_tempterm_data);
-    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
+    lastMsg = now;  
 
-    lastMsg = now;
-  
-    MQTT.publish(pub9, str_temp_data);
-
-    MQTT.publish(pub10, str_hum_data);
-
-    MQTT.publish(pub11, str_tempterm_data);
-  
     if (digitalRead(RelayPin1) == HIGH) {
       MQTT.publish(pub1, "0");
     } else {
@@ -641,5 +609,45 @@ void loop() {
     } else {
       MQTT.publish(pub0, "0");
     }
-  } 
+  }    
+}
+
+//Implementação das Funções Principais do Core1 do ESP32
+void setup1() {
+  dht.begin(); // inicializa o sensor DHT11
+}
+
+// Implementação do Programa Principal no Core1 do ESP32
+void loop1() {
+
+  MQTT.loop(); // Verifica se há novas mensagens no Broker MQTT    
+  
+  unsigned long now = millis();
+  if (now - lastMsg > 2500) {
+
+    lastMsg = now;        
+    
+    float temp_data = dht.readTemperature();  // ou dht.readTemperature(true) para Fahrenheit
+    dtostrf(temp_data, 4, 2, str_temp_data);
+    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
+    float hum_data = dht.readHumidity();
+    dtostrf(hum_data, 4, 2, str_hum_data);
+    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
+    float tempF_data = dht.readTemperature(true);
+    dtostrf(tempF_data, 4, 2, str_tempF_data);
+    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
+    float tempterm_data = 0;
+    tempterm_data = dht.computeHeatIndex(tempF_data, hum_data);
+    tempterm_data = dht.convertFtoC(tempterm_data);
+    dtostrf(tempterm_data, 4, 2, str_tempterm_data);
+    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
+
+    char str_UltimaLeitura[10];
+    sprintf(str_UltimaLeitura, "%lu", now);
+
+    MQTT.publish(pub9, str_temp_data);
+    MQTT.publish(pub10, str_hum_data);
+    MQTT.publish(pub11, str_tempterm_data);
+    MQTT.publish(pub12, str_UltimaLeitura);
+  }
 }
