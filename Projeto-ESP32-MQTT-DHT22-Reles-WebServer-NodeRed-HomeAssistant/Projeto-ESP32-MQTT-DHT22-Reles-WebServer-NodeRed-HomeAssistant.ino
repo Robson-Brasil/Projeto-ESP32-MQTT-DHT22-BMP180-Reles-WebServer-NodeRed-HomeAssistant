@@ -25,26 +25,26 @@ Versão : 23 - Alfa
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 #include <TimeLib.h>
-#include "secrets.h"
+#include "LoginsSenhas.h"
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-DNSServer dns;
+int PortaBroker = 1883;    // Porta do Broker MQTT
 
 // Tópicos do Subscribe
-const char* sub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando";  // Somente por MQTT
-const char* sub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando";        // Ligados ao Nora/MQTT
-const char* sub2 = "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Comando";        // Ligados ao Nora/MQTT
-const char* sub3 = "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Comando";        // Ligados ao Nora/MQTT
-const char* sub4 = "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando";        // Ligados ao Nora/MQTT
-const char* sub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando";        // Ligados ao Nora/MQTT
-const char* sub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando";        // Ligados ao MQTT/Alexa
-const char* sub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando";        // Ligados ao MQTT/Alexa
-const char* sub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando";        // Ligados ao MQTT/Alexa
+const char* sub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando"; // Somente por MQTT
+const char* sub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando";       // Ligados ao Nora/MQTT
+const char* sub2 = "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Comando";       // Ligados ao Nora/MQTT
+const char* sub3 = "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Comando";       // Ligados ao Nora/MQTT
+const char* sub4 = "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando";       // Ligados ao Nora/MQTT
+const char* sub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando";       // Ligados ao Nora/MQTT
+const char* sub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando";       // Ligados ao MQTT/Alexa
+const char* sub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando";       // Ligados ao MQTT/Alexa
+const char* sub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando";       // Ligados ao MQTT/Alexa
 
-const char* sub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";       // Somente por MQTT
-const char* sub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";          // Somente por MQTT
-const char* sub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";  // Somente por MQTT
+const char* sub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                // Somente por MQTT
+const char* sub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
+const char* sub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
 
 // Tópicos do Publish
 const char* pub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado";  // Somente por MQTT
@@ -57,9 +57,9 @@ const char* pub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado";        //
 const char* pub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado";        // Ligados ao MQTT/Alexa
 const char* pub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado";        // Ligados ao MQTT/Alexa
 
-const char* pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";       // Somente por MQTT
-const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";          // Somente por MQTT
-const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";  // Somente por MQTT
+const char* pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                // Somente por MQTT
+const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
+const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
 
 float diff = 1.0;
 
@@ -99,6 +99,8 @@ int status_todos = 0;   // Definir inteiro para lembrar o estado de alternância
 #define DHTTYPE DHT11  // DHT11 ou DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
+DNSServer dns;
+
 // IP Estático
 IPAddress local_IP(192, 168, 15, 50);
 IPAddress gateway(192, 168, 15, 1);
@@ -112,13 +114,14 @@ IPAddress secondaryDNS(8, 8, 4, 4);
 WiFiClient espClient;          // Cria o objeto espClient
 PubSubClient MQTT(espClient);  // Instância o Cliente MQTT passando o objeto espClient
 
-char str_hum_data[10];
-char str_temp_data[10];
-char str_tempterm_data[10];
-char str_tempF_data[10];
+char str_hum_data[7];
+char str_temp_data[7];
+char str_tempterm_data[7];
+char str_tempF_data[7];
 
 #define MSG_BUFFER_SIZE (1000)
-unsigned long lastMsg = 0;
+unsigned long lastMsgDHT = 0;
+unsigned long lastMsgMQTT = 0;
 int value = 0;
 
 // WebServer
@@ -256,7 +259,7 @@ void initSerial() {
 }
 // Função: inicializa e conecta-se na rede WI-FI desejada
 void initWiFi() {
-  delay(10);
+  delay(1000);
   Serial.println("------Conexao WI-FI------");
   Serial.print("Conectando-se na rede: ");
   Serial.println(ssid);
@@ -463,14 +466,14 @@ void reconnectMQTT() {
       MQTT.subscribe(sub6, 1);
       MQTT.subscribe(sub7, 1);
       MQTT.subscribe(sub8, 1);
-      MQTT.subscribe(sub9);
-      MQTT.subscribe(sub10);
-      MQTT.subscribe(sub11);
+      //MQTT.subscribe(sub9);
+      //MQTT.subscribe(sub10);
+      //MQTT.subscribe(sub11);
     } else {
       Serial.println("Falha ao reconectar no broker.");
       Serial.print(MQTT.state());
       Serial.println("Haverá nova tentativa de conexão em 2s");
-      delay(1000);
+      delay(2000);
     }
   }
 }
@@ -552,9 +555,9 @@ void loop() {
   loop1();  
 
   unsigned long now = millis();
-  if (now - lastMsg > 1000) {
+  if (now - lastMsgMQTT > 500) {
 
-    lastMsg = now;  
+    lastMsgMQTT = now;  
 
     if (digitalRead(RelayPin1) == HIGH) {
       MQTT.publish(pub1, "0", true);
@@ -606,6 +609,7 @@ void loop() {
 
 //Implementação das Funções Principais do Core1 do ESP32
 void setup1() {
+  initMQTT();
   dht.begin(); // inicializa o sensor DHT11
 }
 
@@ -618,28 +622,27 @@ void loop1() {
   MQTT.loop(); // Verifica se há novas mensagens no Broker MQTT    
   
   unsigned long now = millis();
-  if (now - lastMsg > 1000) {
+  if (now - lastMsgDHT > 10000) {
 
-    lastMsg = now;    
+    lastMsgDHT = now;    
 
     float temp_data = dht.readTemperature();  // ou dht.readTemperature(true) para Fahrenheit
-    dtostrf(temp_data, 4, 2, str_temp_data);
+    dtostrf(temp_data, 6, 2, str_temp_data);
     /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
     float hum_data = dht.readHumidity();
-    dtostrf(hum_data, 4, 2, str_hum_data);
+    dtostrf(hum_data, 6, 2, str_hum_data);
     /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
     float tempF_data = dht.readTemperature(true);
-    dtostrf(tempF_data, 4, 2, str_tempF_data);
+    dtostrf(tempF_data, 6, 2, str_tempF_data);
     /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
     float tempterm_data = 0;
     tempterm_data = dht.computeHeatIndex(tempF_data, hum_data);
     tempterm_data = dht.convertFtoC(tempterm_data);
-    dtostrf(tempterm_data, 4, 2, str_tempterm_data);
+    dtostrf(tempterm_data, 6, 2, str_tempterm_data);
     /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
 
     MQTT.publish(pub9, str_temp_data);
     MQTT.publish(pub10, str_hum_data);
     MQTT.publish(pub11, str_tempterm_data);
-
   }
 }
