@@ -24,6 +24,8 @@ Versão : 23 - Alfa
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
+#include <TimeLib.h>
+#include "secrets.h"
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
@@ -40,6 +42,10 @@ const char* sub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando";        /
 const char* sub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando";        // Ligados ao MQTT/Alexa
 const char* sub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando";        // Ligados ao MQTT/Alexa
 
+const char* sub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";       // Somente por MQTT
+const char* sub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";          // Somente por MQTT
+const char* sub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";  // Somente por MQTT
+
 // Tópicos do Publish
 const char* pub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado";  // Somente por MQTT
 const char* pub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado";        // Ligados ao Nora/MQTT
@@ -54,7 +60,6 @@ const char* pub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado";        //
 const char* pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";       // Somente por MQTT
 const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";          // Somente por MQTT
 const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";  // Somente por MQTT
-const char* pub12 = "ESP32/MinhaCasa/QuartoRobson/UltimaLeitura";  // Somente por MQTT
 
 float diff = 1.0;
 
@@ -91,18 +96,8 @@ int status_todos = 0;   // Definir inteiro para lembrar o estado de alternância
 
 // DHT11 ou DHT22 para leitura dos valores  de Temperatura e Umidade
 #define DHTPIN 4
-#define DHTTYPE DHT22  // DHT11 ou DHT22
+#define DHTTYPE DHT11  // DHT11 ou DHT22
 DHT dht(DHTPIN, DHTTYPE);
-
-// Configurações do WIFI
-const char* ssid = "IoT";                   // SSID nome da rede WI-FI que deseja se conectar
-const char* password = "@IoT@S3nh@S3gur@";  // Senha da rede WI-FI que deseja se conectar
-
-// Configurações do Broker MQTT
-const char* BrokerMQTT = "192.168.15.10";   // URL do broker MQTT que se deseja utilizar
-const char* mqttUserName = "RobsonBrasil";  // MQTT UserName
-const char* mqttPwd = "loboalfa";           // MQTT Password
-int PortaBroker = 1883;                     // Porta do Broker MQTT
 
 // IP Estático
 IPAddress local_IP(192, 168, 15, 50);
@@ -127,8 +122,6 @@ unsigned long lastMsg = 0;
 int value = 0;
 
 // WebServer
-const char* http_username = "Robson Brasil";
-const char* http_password = "@Lobo#Alfa@";
 const char* PARAM_INPUT_1 = "output";
 const char* PARAM_INPUT_2 = "state";
 
@@ -302,7 +295,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       status_todos = 0;
       toggleState_0 = 0;
-      MQTT.publish(pub0, "0");
+      MQTT.publish(pub0, "0", true);
     } else {
       digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
       digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
@@ -314,7 +307,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
       status_todos = 1;
       toggleState_0 = 1;
-      MQTT.publish(pub0, "1");
+      MQTT.publish(pub0, "1", true);
     }
   }
   if (strstr(topic, sub1)) {
@@ -326,11 +319,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_1 = 0;
-      MQTT.publish(pub1, "0");
+      MQTT.publish(pub1, "0", true);
     } else {
       digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_1 = 1;
-      MQTT.publish(pub1, "1");
+      MQTT.publish(pub1, "1", true);
     }
   }
   if (strstr(topic, sub2)) {
@@ -343,11 +336,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_2 = 0;
-      MQTT.publish(pub2, "0");
+      MQTT.publish(pub2, "0", true);
     } else {
       digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_2 = 1;
-      MQTT.publish(pub2, "1");
+      MQTT.publish(pub2, "1", true);
     }
   }
   if (strstr(topic, sub3)) {
@@ -360,11 +353,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin3, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_3 = 0;
-      MQTT.publish(pub3, "0");
+      MQTT.publish(pub3, "0", true);
     } else {
       digitalWrite(RelayPin3, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_3 = 1;
-      MQTT.publish(pub3, "1");
+      MQTT.publish(pub3, "1", true);
     }
   }
   if (strstr(topic, sub4)) {
@@ -377,11 +370,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin4, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_4 = 0;
-      MQTT.publish(pub4, "0");
+      MQTT.publish(pub4, "0", true);
     } else {
       digitalWrite(RelayPin4, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_4 = 1;
-      MQTT.publish(pub4, "1");
+      MQTT.publish(pub4, "1", true);
     }
   }
   if (strstr(topic, sub5)) {
@@ -394,11 +387,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin5, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_5 = 0;
-      MQTT.publish(pub5, "0");
+      MQTT.publish(pub5, "0", true);
     } else {
       digitalWrite(RelayPin5, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_5 = 1;
-      MQTT.publish(pub5, "1");
+      MQTT.publish(pub5, "1", true);
     }
   }
   if (strstr(topic, sub6)) {
@@ -411,11 +404,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin6, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_6 = 0;
-      MQTT.publish(pub6, "0");
+      MQTT.publish(pub6, "0", true);
     } else {
       digitalWrite(RelayPin6, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_6 = 1;
-      MQTT.publish(pub6, "1");
+      MQTT.publish(pub6, "1", true);
     }
   }
   if (strstr(topic, sub7)) {
@@ -428,11 +421,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin7, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_7 = 0;
-      MQTT.publish(pub7, "0");
+      MQTT.publish(pub7, "0", true);
     } else {
       digitalWrite(RelayPin7, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_7 = 1;
-      MQTT.publish(pub7, "1");
+      MQTT.publish(pub7, "1", true);
     }
   }
   if (strstr(topic, sub8)) {
@@ -445,11 +438,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_8 = 0;
-      MQTT.publish(pub8, "0");
+      MQTT.publish(pub8, "0", true);
     } else {
       digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_8 = 1;
-      MQTT.publish(pub8, "1");
+      MQTT.publish(pub8, "1", true);
     }
   }
 }
@@ -461,24 +454,23 @@ void reconnectMQTT() {
     Serial.println(BrokerMQTT);
     if (MQTT.connect(ID_MQTT, mqttUserName, mqttPwd)) {
       Serial.println("Conectado com sucesso ao broker MQTT!");
-      MQTT.subscribe(sub0);
-      MQTT.subscribe(sub1);
-      MQTT.subscribe(sub2);
-      MQTT.subscribe(sub3);
-      MQTT.subscribe(sub4);
-      MQTT.subscribe(sub5);
-      MQTT.subscribe(sub6);
-      MQTT.subscribe(sub7);
-      MQTT.subscribe(sub8);
-      MQTT.subscribe(pub9);
-      MQTT.subscribe(pub10);
-      MQTT.subscribe(pub11);
-      MQTT.subscribe(pub12);
+      MQTT.subscribe(sub0, 1);
+      MQTT.subscribe(sub1, 1);
+      MQTT.subscribe(sub2, 1);
+      MQTT.subscribe(sub3, 1);
+      MQTT.subscribe(sub4, 1);
+      MQTT.subscribe(sub5, 1);
+      MQTT.subscribe(sub6, 1);
+      MQTT.subscribe(sub7, 1);
+      MQTT.subscribe(sub8, 1);
+      MQTT.subscribe(sub9);
+      MQTT.subscribe(sub10);
+      MQTT.subscribe(sub11);
     } else {
       Serial.println("Falha ao reconectar no broker.");
       Serial.print(MQTT.state());
       Serial.println("Haverá nova tentativa de conexão em 2s");
-      delay(2000);
+      delay(1000);
     }
   }
 }
@@ -560,54 +552,54 @@ void loop() {
   loop1();  
 
   unsigned long now = millis();
-  if (now - lastMsg > 1500) {
+  if (now - lastMsg > 1000) {
 
     lastMsg = now;  
 
     if (digitalRead(RelayPin1) == HIGH) {
-      MQTT.publish(pub1, "0");
+      MQTT.publish(pub1, "0", true);
     } else {
-      MQTT.publish(pub1, "1");
+      MQTT.publish(pub1, "1", true);
     }
     if (digitalRead(RelayPin2) == HIGH) {
-      MQTT.publish(pub2, "0");
+      MQTT.publish(pub2, "0", true);
     } else {
-      MQTT.publish(pub2, "1");
+      MQTT.publish(pub2, "1", true);
     }
     if (digitalRead(RelayPin3) == HIGH) {
-      MQTT.publish(pub3, "0");
+      MQTT.publish(pub3, "0", true);
     } else {
-      MQTT.publish(pub3, "1");
+      MQTT.publish(pub3, "1", true);
     }
     if (digitalRead(RelayPin4) == HIGH) {
-      MQTT.publish(pub4, "0");
+      MQTT.publish(pub4, "0", true);
     } else {
-      MQTT.publish(pub4, "1");
+      MQTT.publish(pub4, "1", true);
     }
     if (digitalRead(RelayPin5) == HIGH) {
-      MQTT.publish(pub5, "0");
+      MQTT.publish(pub5, "0", true);
     } else {
-      MQTT.publish(pub5, "1");
+      MQTT.publish(pub5, "1", true);
     }
     if (digitalRead(RelayPin6) == HIGH) {
-      MQTT.publish(pub6, "0");
+      MQTT.publish(pub6, "0", true);
     } else {
-      MQTT.publish(pub6, "1");
+      MQTT.publish(pub6, "1", true);
     }
     if (digitalRead(RelayPin7) == HIGH) {
-      MQTT.publish(pub7, "0");
+      MQTT.publish(pub7, "0", true);
     } else {
-      MQTT.publish(pub7, "1");
+      MQTT.publish(pub7, "1", true);
     }
     if (digitalRead(RelayPin8) == HIGH) {
-      MQTT.publish(pub8, "0");
+      MQTT.publish(pub8, "0", true);
     } else {
-      MQTT.publish(pub8, "1");
+      MQTT.publish(pub8, "1", true);
     }
     if (status_todos == 1) {
-      MQTT.publish(pub0, "1");
+      MQTT.publish(pub0, "1", true);
     } else {
-      MQTT.publish(pub0, "0");
+      MQTT.publish(pub0, "0", true);
     }
   }    
 }
@@ -620,13 +612,16 @@ void setup1() {
 // Implementação do Programa Principal no Core1 do ESP32
 void loop1() {
 
+  // Garante funcionamento das conexões WiFi e ao Broker MQTT
+  VerificaConexoesWiFIEMQTT();
+  //Keep-Alive da comunicação com Broker MQTT
   MQTT.loop(); // Verifica se há novas mensagens no Broker MQTT    
   
   unsigned long now = millis();
-  if (now - lastMsg > 2500) {
+  if (now - lastMsg > 1000) {
 
-    lastMsg = now;        
-    
+    lastMsg = now;    
+
     float temp_data = dht.readTemperature();  // ou dht.readTemperature(true) para Fahrenheit
     dtostrf(temp_data, 4, 2, str_temp_data);
     /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
@@ -642,12 +637,9 @@ void loop1() {
     dtostrf(tempterm_data, 4, 2, str_tempterm_data);
     /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
 
-    char str_UltimaLeitura[10];
-    sprintf(str_UltimaLeitura, "%lu", now);
-
     MQTT.publish(pub9, str_temp_data);
     MQTT.publish(pub10, str_hum_data);
     MQTT.publish(pub11, str_tempterm_data);
-    MQTT.publish(pub12, str_UltimaLeitura);
+
   }
 }

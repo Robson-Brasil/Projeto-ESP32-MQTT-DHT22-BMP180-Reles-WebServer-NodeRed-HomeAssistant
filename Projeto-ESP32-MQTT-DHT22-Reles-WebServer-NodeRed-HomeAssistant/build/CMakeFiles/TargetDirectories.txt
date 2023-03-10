@@ -1,0 +1,2 @@
+D:/GitRepositorio/Projeto-ESP32-MQTT-DHT22-Reles-WebServer-NodeRed-HomeAssistant/Projeto-ESP32-MQTT-DHT22-Reles-WebServer-NodeRed-HomeAssistant/build/CMakeFiles/edit_cache.dir
+D:/GitRepositorio/Projeto-ESP32-MQTT-DHT22-Reles-WebServer-NodeRed-HomeAssistant/Projeto-ESP32-MQTT-DHT22-Reles-WebServer-NodeRed-HomeAssistant/build/CMakeFiles/rebuild_cache.dir
