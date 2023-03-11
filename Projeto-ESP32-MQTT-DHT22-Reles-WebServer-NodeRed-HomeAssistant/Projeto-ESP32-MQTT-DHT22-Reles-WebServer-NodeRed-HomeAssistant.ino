@@ -99,7 +99,7 @@ unsigned long lastMsgDHT = 0;
 unsigned long lastMsgMQTT = 0;
 int value = 0;
 
-byte relayState[4] = {0, 0, 0, 0};
+byte relayState[4] = { 0, 0, 0, 0 };
 
 // WebServer
 const char* PARAM_INPUT_1 = "output";
@@ -201,11 +201,20 @@ void reconectWiFi();
 void mqtt_callback(char* topic, byte* payload, unsigned int length);
 void VerificaConexoesWiFIEMQTT(void);
 void initOutput(void);
-
+String outputState(int output);
 // declaração da função setRelayState
+void handleRelayState(AsyncWebServerRequest* request) {
+  String relayNumber = request->arg("relay");  // obtém o número do relé da requisição HTTP
+  if (relayNumber != "") {
+    int i = relayNumber.toInt() - 1;
+    request->send(200, "text/plain", String(relayState[i]));  // envia o estado do relé para o navegador
+  } else {
+    request->send(400, "text/plain", "Requisição inválida");  // envia uma mensagem de erro se o número do relé não for informado na requisição
+  }
+}
 void setRelayState(int relayNumber, int state) {
-  static byte relayState[4] = {0, 0, 0, 0};
-}  
+  static byte relayState[4] = { 0, 0, 0, 0 };
+}
 
 // Implementações das funções
 void setup() {
@@ -214,6 +223,7 @@ void setup() {
   initSerial();
   initWiFi();
   initMQTT();
+
   // Chama a função setup1()
   setup1();
 
@@ -264,6 +274,12 @@ void setup() {
     buttons += "<h4>Luz do Quarto</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"26\" " + outputState(26) + "><span class=\"slider\"></span></label>";
     request->send(200, "text/html", buttons.c_str());
   });
+
+  void setRelayState(int relayNumber, int state);
+
+  void handleRelayState(AsyncWebServerRequest * request);
+
+  server.on("/relayState", HTTP_GET, handleRelayState);
 
   // Start do Servidor
   server.begin();
@@ -346,14 +362,14 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       MQTT.publish(pub1, "1", true);
     }
     // Altera o estado do relé
-      setRelayState(1, 1); // altera o estado do relé 1 para ON
-      // Inicia a EEPROM e armazena o estado dos relés
-      EEPROM.begin(512);
-      for (int i = 0; i < 4; i++) {
-        EEPROM.write(i, relayState[i]); // Armazena o estado dos relés na EEPROM
-      }
-      EEPROM.commit(); // Salva as alterações na EEPROM
-      EEPROM.end(); // Finaliza a EEPROM
+    setRelayState(1, 1);  // altera o estado do relé 1 para ON
+    // Inicia a EEPROM e armazena o estado dos relés
+    EEPROM.begin(512);
+    for (int i = 0; i < 4; i++) {
+      EEPROM.write(i, relayState[i]);  // Armazena o estado dos relés na EEPROM
+    }
+    EEPROM.commit();  // Salva as alterações na EEPROM
+    EEPROM.end();     // Finaliza a EEPROM
   }
   if (strstr(topic, sub2)) {
     for (unsigned int i = 0; i < length; i++) {
@@ -372,14 +388,14 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       MQTT.publish(pub2, "1", true);
     }
     // Altera o estado do relé
-      setRelayState(1, 1); // altera o estado do relé 1 para ON
-      // Inicia a EEPROM e armazena o estado dos relés
-      EEPROM.begin(512);
-      for (int i = 0; i < 4; i++) {
-        EEPROM.write(i, relayState[i]); // Armazena o estado dos relés na EEPROM
-      }
-      EEPROM.commit(); // Salva as alterações na EEPROM
-      EEPROM.end(); // Finaliza a EEPROM    
+    setRelayState(1, 1);  // altera o estado do relé 1 para ON
+    // Inicia a EEPROM e armazena o estado dos relés
+    EEPROM.begin(512);
+    for (int i = 0; i < 4; i++) {
+      EEPROM.write(i, relayState[i]);  // Armazena o estado dos relés na EEPROM
+    }
+    EEPROM.commit();  // Salva as alterações na EEPROM
+    EEPROM.end();     // Finaliza a EEPROM
   }
   if (strstr(topic, sub3)) {
     for (unsigned int i = 0; i < length; i++) {
@@ -397,15 +413,15 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       toggleState_3 = 1;
       MQTT.publish(pub3, "1", true);
     }
-        // Altera o estado do relé
-      setRelayState(1, 1); // altera o estado do relé 1 para ON
-      // Inicia a EEPROM e armazena o estado dos relés
-      EEPROM.begin(512);
-      for (int i = 0; i < 4; i++) {
-        EEPROM.write(i, relayState[i]); // Armazena o estado dos relés na EEPROM
-      }
-      EEPROM.commit(); // Salva as alterações na EEPROM
-      EEPROM.end(); // Finaliza a EEPROM
+    // Altera o estado do relé
+    setRelayState(1, 1);  // altera o estado do relé 1 para ON
+    // Inicia a EEPROM e armazena o estado dos relés
+    EEPROM.begin(512);
+    for (int i = 0; i < 4; i++) {
+      EEPROM.write(i, relayState[i]);  // Armazena o estado dos relés na EEPROM
+    }
+    EEPROM.commit();  // Salva as alterações na EEPROM
+    EEPROM.end();     // Finaliza a EEPROM
   }
   if (strstr(topic, sub4)) {
     for (unsigned int i = 0; i < length; i++) {
@@ -423,15 +439,15 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       toggleState_4 = 1;
       MQTT.publish(pub4, "1", true);
     }
-        // Altera o estado do relé
-      setRelayState(1, 1); // altera o estado do relé 1 para ON
-      // Inicia a EEPROM e armazena o estado dos relés
-      EEPROM.begin(512);
-      for (int i = 0; i < 4; i++) {
-        EEPROM.write(i, relayState[i]); // Armazena o estado dos relés na EEPROM
-      }
-      EEPROM.commit(); // Salva as alterações na EEPROM
-      EEPROM.end(); // Finaliza a EEPROM
+    // Altera o estado do relé
+    setRelayState(1, 1);  // altera o estado do relé 1 para ON
+    // Inicia a EEPROM e armazena o estado dos relés
+    EEPROM.begin(512);
+    for (int i = 0; i < 4; i++) {
+      EEPROM.write(i, relayState[i]);  // Armazena o estado dos relés na EEPROM
+    }
+    EEPROM.commit();  // Salva as alterações na EEPROM
+    EEPROM.end();     // Finaliza a EEPROM
   }
   if (strstr(topic, sub5)) {
     for (unsigned int i = 0; i < length; i++) {
@@ -449,15 +465,15 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       toggleState_5 = 1;
       MQTT.publish(pub5, "1", true);
     }
-        // Altera o estado do relé
-      setRelayState(1, 1); // altera o estado do relé 1 para ON
-      // Inicia a EEPROM e armazena o estado dos relés
-      EEPROM.begin(512);
-      for (int i = 0; i < 4; i++) {
-        EEPROM.write(i, relayState[i]); // Armazena o estado dos relés na EEPROM
-      }
-      EEPROM.commit(); // Salva as alterações na EEPROM
-      EEPROM.end(); // Finaliza a EEPROM
+    // Altera o estado do relé
+    setRelayState(1, 1);  // altera o estado do relé 1 para ON
+    // Inicia a EEPROM e armazena o estado dos relés
+    EEPROM.begin(512);
+    for (int i = 0; i < 4; i++) {
+      EEPROM.write(i, relayState[i]);  // Armazena o estado dos relés na EEPROM
+    }
+    EEPROM.commit();  // Salva as alterações na EEPROM
+    EEPROM.end();     // Finaliza a EEPROM
   }
   if (strstr(topic, sub6)) {
     for (unsigned int i = 0; i < length; i++) {
@@ -475,15 +491,15 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       toggleState_6 = 1;
       MQTT.publish(pub6, "1", true);
     }
-        // Altera o estado do relé
-      setRelayState(1, 1); // altera o estado do relé 1 para ON
-      // Inicia a EEPROM e armazena o estado dos relés
-      EEPROM.begin(512);
-      for (int i = 0; i < 4; i++) {
-        EEPROM.write(i, relayState[i]); // Armazena o estado dos relés na EEPROM
-      }
-      EEPROM.commit(); // Salva as alterações na EEPROM
-      EEPROM.end(); // Finaliza a EEPROM
+    // Altera o estado do relé
+    setRelayState(1, 1);  // altera o estado do relé 1 para ON
+    // Inicia a EEPROM e armazena o estado dos relés
+    EEPROM.begin(512);
+    for (int i = 0; i < 4; i++) {
+      EEPROM.write(i, relayState[i]);  // Armazena o estado dos relés na EEPROM
+    }
+    EEPROM.commit();  // Salva as alterações na EEPROM
+    EEPROM.end();     // Finaliza a EEPROM
   }
   if (strstr(topic, sub7)) {
     for (unsigned int i = 0; i < length; i++) {
@@ -502,14 +518,14 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       MQTT.publish(pub7, "1", true);
     }
     // Altera o estado do relé
-      setRelayState(1, 1); // altera o estado do relé 1 para ON
-      // Inicia a EEPROM e armazena o estado dos relés
-      EEPROM.begin(512);
-      for (int i = 0; i < 4; i++) {
-        EEPROM.write(i, relayState[i]); // Armazena o estado dos relés na EEPROM
-      }
-      EEPROM.commit(); // Salva as alterações na EEPROM
-      EEPROM.end(); // Finaliza a EEPROM    
+    setRelayState(1, 1);  // altera o estado do relé 1 para ON
+    // Inicia a EEPROM e armazena o estado dos relés
+    EEPROM.begin(512);
+    for (int i = 0; i < 4; i++) {
+      EEPROM.write(i, relayState[i]);  // Armazena o estado dos relés na EEPROM
+    }
+    EEPROM.commit();  // Salva as alterações na EEPROM
+    EEPROM.end();     // Finaliza a EEPROM
   }
   if (strstr(topic, sub8)) {
     for (unsigned int i = 0; i < length; i++) {
@@ -527,15 +543,15 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       toggleState_8 = 1;
       MQTT.publish(pub8, "1", true);
     }
-        // Altera o estado do relé
-      setRelayState(1, 1); // altera o estado do relé 1 para ON
-      // Inicia a EEPROM e armazena o estado dos relés
-      EEPROM.begin(512);
-      for (int i = 0; i < 4; i++) {
-        EEPROM.write(i, relayState[i]); // Armazena o estado dos relés na EEPROM
-      }
-      EEPROM.commit(); // Salva as alterações na EEPROM
-      EEPROM.end(); // Finaliza a EEPROM
+    // Altera o estado do relé
+    setRelayState(1, 1);  // altera o estado do relé 1 para ON
+    // Inicia a EEPROM e armazena o estado dos relés
+    EEPROM.begin(512);
+    for (int i = 0; i < 4; i++) {
+      EEPROM.write(i, relayState[i]);  // Armazena o estado dos relés na EEPROM
+    }
+    EEPROM.commit();  // Salva as alterações na EEPROM
+    EEPROM.end();     // Finaliza a EEPROM
   }
 }
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
