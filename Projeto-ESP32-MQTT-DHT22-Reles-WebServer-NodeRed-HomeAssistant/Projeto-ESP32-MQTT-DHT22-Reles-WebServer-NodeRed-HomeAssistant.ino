@@ -203,7 +203,9 @@ void VerificaConexoesWiFIEMQTT(void);
 void initOutput(void);
 
 // declaração da função setRelayState
-void setRelayState(int relayNumber, int state);
+void setRelayState(int relayNumber, int state) {
+  static byte relayState[4] = {0, 0, 0, 0};
+}  
 
 // Implementações das funções
 void setup() {
