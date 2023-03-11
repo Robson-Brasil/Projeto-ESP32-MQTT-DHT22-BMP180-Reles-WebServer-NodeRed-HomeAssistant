@@ -10,8 +10,8 @@ Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
 Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
 Home Assistant
 Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-Versão : 23 - Alfa
-Última Modificação : 09/03/2023
+Versão : 28 - Alfa
+Última Modificação : 11/03/2023
 **********************************************************************************/
 
 // Bibliotecas
@@ -26,40 +26,14 @@ Versão : 23 - Alfa
 #include <SPIFFS.h>
 #include <TimeLib.h>
 #include "LoginsSenhas.h"
+#include "TopicosMQTT.h"
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-int PortaBroker = 1883;    // Porta do Broker MQTT
+void setup1();  // declaração da função setup1()
+void loop1();   // declaração da função loop1()
 
-// Tópicos do Subscribe
-const char* sub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando"; // Somente por MQTT
-const char* sub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando";       // Ligados ao Nora/MQTT
-const char* sub2 = "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Comando";       // Ligados ao Nora/MQTT
-const char* sub3 = "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Comando";       // Ligados ao Nora/MQTT
-const char* sub4 = "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando";       // Ligados ao Nora/MQTT
-const char* sub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando";       // Ligados ao Nora/MQTT
-const char* sub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando";       // Ligados ao MQTT/Alexa
-const char* sub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando";       // Ligados ao MQTT/Alexa
-const char* sub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando";       // Ligados ao MQTT/Alexa
-
-const char* sub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                // Somente por MQTT
-const char* sub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
-const char* sub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
-
-// Tópicos do Publish
-const char* pub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado";  // Somente por MQTT
-const char* pub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado";        // Ligados ao Nora/MQTT
-const char* pub2 = "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado";        // Ligados ao Nora/MQTT
-const char* pub3 = "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado";        // Ligados ao Nora/MQTT
-const char* pub4 = "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado";        // Ligados ao Nora/MQTT
-const char* pub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado";        // Ligados ao Nora/MQTT
-const char* pub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado";        // Ligados ao MQTT/Alexa
-const char* pub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado";        // Ligados ao MQTT/Alexa
-const char* pub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado";        // Ligados ao MQTT/Alexa
-
-const char* pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                // Somente por MQTT
-const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
-const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
+int PortaBroker = 1883;  // Porta do Broker MQTT
 
 float diff = 1.0;
 
@@ -139,60 +113,81 @@ const char login_html[] PROGMEM = R"rawliteral(
   else { xhr.open("GET", "/update?output="+element.id+"&state=1", true); }
   xhr.send();
 }
+<script>
+window.onload = function() {
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      // atualiza os botões com os novos valores recebidos do servidor
+      document.getElementById("buttonContainer").innerHTML = this.responseText;
+    }
+  };
+  xhr.open("GET", "/getButtonsState", true);
+  xhr.send();
+};
 </script>
-)rawliteral";
+</html>)rawliteral";
 
 // Configuração dos Botões Usados
-String processor(const String& var) {
-  //Serial.println(var);
-  if (var == "BUTTONPLACEHOLDER1") {
-    String buttons = "";
-    buttons += "<h4>Luz Forte</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"23\" " + outputState(23) + "><span class=\"slider\"></span></label>";
-    return buttons;
-  }
-  if (var == "BUTTONPLACEHOLDER2") {
-    String buttons = "";
-    buttons += "<h4>Luz Fraca</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"22\" " + outputState(22) + "><span class=\"slider\"></span></label>";
-    return buttons;
-  }
-  if (var == "BUTTONPLACEHOLDER3") {
-    String buttons = "";
-    buttons += "<h4>Interruptor 3</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"21\" " + outputState(21) + "><span class=\"slider\"></span></label>";
-    return buttons;
-  }
-  if (var == "BUTTONPLACEHOLDER4") {
-    String buttons = "";
-    buttons += "<h4>Interruptor 4</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"19\" " + outputState(19) + "><span class=\"slider\"></span></label>";
-    return buttons;
-  }
-  if (var == "BUTTONPLACEHOLDER5") {
-    String buttons = "";
-    buttons += "<h4>Interruptor 5</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"18\" " + outputState(18) + "><span class=\"slider\"></span></label>";
-    return buttons;
-  }
-  if (var == "BUTTONPLACEHOLDER6") {
-    String buttons = "";
-    buttons += "<h4>Som Bluetooth</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"5\" " + outputState(5) + "><span class=\"slider\"></span></label>";
-    return buttons;
-  }
-  if (var == "BUTTONPLACEHOLDER7") {
-    String buttons = "";
-    buttons += "<h4>Interruptor 7</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"25\" " + outputState(25) + "><span class=\"slider\"></span></label>";
-    return buttons;
-  }
-  if (var == "BUTTONPLACEHOLDER8") {
-    String buttons = "";
-    buttons += "<h4>Luz do Quarto</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"26\" " + outputState(26) + "><span class=\"slider\"></span></label>";
-    return buttons;
-  }
-  return String();
-}
 String outputState(int output) {
   if (digitalRead(output)) {
     return "checked";
   } else {
     return "";
   }
+}
+
+String processor(const String& var) {
+  //Serial.println(var);
+  if (var == "BUTTONPLACEHOLDER1") {
+    String buttons = "";
+    buttons += "<div id=\"buttonContainer\"></div>";
+    buttons += "<h4>Luz Forte</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"23\" " + outputState(23) + "><span class=\"slider\"></span></label>";
+    return buttons;
+  }
+  if (var == "BUTTONPLACEHOLDER2") {
+    String buttons = "";
+    buttons += "<div id=\"buttonContainer\"></div>";
+    buttons += "<h4>Luz Fraca</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"22\" " + outputState(22) + "><span class=\"slider\"></span></label>";
+    return buttons;
+  }
+  if (var == "BUTTONPLACEHOLDER3") {
+    String buttons = "";
+    buttons += "<div id=\"buttonContainer\"></div>";
+    buttons += "<h4>Interruptor 3</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"21\" " + outputState(21) + "><span class=\"slider\"></span></label>";
+    return buttons;
+  }
+  if (var == "BUTTONPLACEHOLDER4") {
+    String buttons = "";
+    buttons += "<div id=\"buttonContainer\"></div>";
+    buttons += "<h4>Interruptor 4</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"19\" " + outputState(19) + "><span class=\"slider\"></span></label>";
+    return buttons;
+  }
+  if (var == "BUTTONPLACEHOLDER5") {
+    String buttons = "";
+    buttons += "<div id=\"buttonContainer\"></div>";
+    buttons += "<h4>Interruptor 5</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"18\" " + outputState(18) + "><span class=\"slider\"></span></label>";
+    return buttons;
+  }
+  if (var == "BUTTONPLACEHOLDER6") {
+    String buttons = "";
+    buttons += "<div id=\"buttonContainer\"></div>";
+    buttons += "<h4>Som Bluetooth</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"5\" " + outputState(5) + "><span class=\"slider\"></span></label>";
+    return buttons;
+  }
+  if (var == "BUTTONPLACEHOLDER7") {
+    String buttons = "";
+    buttons += "<div id=\"buttonContainer\"></div>";
+    buttons += "<h4>Interruptor 7</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"25\" " + outputState(25) + "><span class=\"slider\"></span></label>";
+    return buttons;
+  }
+  if (var == "BUTTONPLACEHOLDER8") {
+    String buttons = "";
+    buttons += "<div id=\"buttonContainer\"></div>";
+    buttons += "<h4>Luz do Quarto</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"26\" " + outputState(26) + "><span class=\"slider\"></span></label>";
+    return buttons;
+  }
+  return String();
 }
 
 // Prototypes
@@ -247,6 +242,19 @@ void setup() {
     Serial.print(" - Set to: ");
     Serial.println(inputMessage2);
     request->send(200, "text/plain", "OK");
+  });
+
+  server.on("/getButtonsState", [](AsyncWebServerRequest* request) {
+    String buttons = "";
+    buttons += "<h4>Luz Forte</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"23\" " + outputState(23) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Luz Fraca</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"22\" " + outputState(22) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 3</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"21\" " + outputState(21) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 4</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"19\" " + outputState(19) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 5</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"18\" " + outputState(18) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Som Bluetooth</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"5\" " + outputState(5) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 7</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"25\" " + outputState(25) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Luz do Quarto</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"26\" " + outputState(26) + "><span class=\"slider\"></span></label>";
+    request->send(200, "text/html", buttons.c_str());
   });
 
   // Start do Servidor
@@ -517,7 +525,7 @@ void VerificaConexoesWiFIEMQTT(void) {
   if (!MQTT.connected())
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
 
-    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
+  reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
 }
 // Função: inicializa o output em nível lógico baixo
 void initOutput(void) {
@@ -552,12 +560,12 @@ void loop() {
   //Keep-Alive da comunicação com Broker MQTT
   MQTT.loop();
 
-  loop1();  
+  loop1();
 
   unsigned long now = millis();
   if (now - lastMsgMQTT > 500) {
 
-    lastMsgMQTT = now;  
+    lastMsgMQTT = now;
 
     if (digitalRead(RelayPin1) == HIGH) {
       MQTT.publish(pub1, "0", true);
@@ -604,13 +612,13 @@ void loop() {
     } else {
       MQTT.publish(pub0, "0", true);
     }
-  }    
+  }
 }
 
 //Implementação das Funções Principais do Core1 do ESP32
 void setup1() {
   initMQTT();
-  dht.begin(); // inicializa o sensor DHT11
+  dht.begin();  // inicializa o sensor DHT11
 }
 
 // Implementação do Programa Principal no Core1 do ESP32
@@ -619,12 +627,12 @@ void loop1() {
   // Garante funcionamento das conexões WiFi e ao Broker MQTT
   VerificaConexoesWiFIEMQTT();
   //Keep-Alive da comunicação com Broker MQTT
-  MQTT.loop(); // Verifica se há novas mensagens no Broker MQTT    
-  
+  MQTT.loop();  // Verifica se há novas mensagens no Broker MQTT
+
   unsigned long now = millis();
   if (now - lastMsgDHT > 10000) {
 
-    lastMsgDHT = now;    
+    lastMsgDHT = now;
 
     float temp_data = dht.readTemperature();  // ou dht.readTemperature(true) para Fahrenheit
     dtostrf(temp_data, 6, 2, str_temp_data);
