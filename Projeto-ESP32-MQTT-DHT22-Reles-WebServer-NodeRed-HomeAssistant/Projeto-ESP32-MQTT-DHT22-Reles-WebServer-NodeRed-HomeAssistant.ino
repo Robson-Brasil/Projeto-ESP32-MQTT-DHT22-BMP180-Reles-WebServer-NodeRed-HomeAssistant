@@ -99,7 +99,11 @@ unsigned long lastMsgDHT = 0;
 unsigned long lastMsgMQTT = 0;
 int value = 0;
 
-byte relayState[4] = { 0, 0, 0, 0 };
+// Definição dos pinos dos relés
+const int relayPins[8] = {26, 27, 14, 12, 13, 25, 33, 32};
+
+// Estado atual dos relés
+bool relayState[8] = {false, false, false, false, false, false, false, false};
 
 // WebServer
 const char* PARAM_INPUT_1 = "output";
@@ -213,8 +217,32 @@ void handleRelayState(AsyncWebServerRequest* request) {
   }
 }
 void setRelayState(int relayNumber, int state) {
-  static byte relayState[4] = { 0, 0, 0, 0 };
+  static byte relayState[4] = {0, 0, 0, 0};
+  int relayIndex = relayNumber - 1;
+  digitalWrite(relayPins[relayIndex], state);
+  relayState[relayIndex] = state;
+  // Inicia a EEPROM e armazena o estado dos relés
+  EEPROM.begin(512);
+  for (int i = 0; i < 4; i++) {
+    EEPROM.write(i, relayState[i]); // Armazena o estado dos relés na EEPROM
+  }
+  EEPROM.commit(); // Salva as alterações na EEPROM
+  EEPROM.end(); // Finaliza a EEPROM
 }
+
+void toggleRelay(int relayNumber) {
+  int relayIndex = relayNumber - 1;
+  digitalWrite(relayPins[relayIndex], !digitalRead(relayPins[relayIndex])); // altera o estado do relé
+  relayState[relayIndex] = digitalRead(relayPins[relayIndex]); // atualiza o estado do relé na matriz
+  // Inicia a EEPROM e armazena o estado dos relés
+  EEPROM.begin(512);
+  for (int i = 0; i < 4; i++) {
+    EEPROM.write(i, relayState[i]); // Armazena o estado dos relés na EEPROM
+  }
+  EEPROM.commit(); // Salva as alterações na EEPROM
+  EEPROM.end(); // Finaliza a EEPROM
+}
+
 
 // Implementações das funções
 void setup() {
@@ -274,8 +302,6 @@ void setup() {
     buttons += "<h4>Luz do Quarto</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"26\" " + outputState(26) + "><span class=\"slider\"></span></label>";
     request->send(200, "text/html", buttons.c_str());
   });
-
-  void setRelayState(int relayNumber, int state);
 
   void handleRelayState(AsyncWebServerRequest * request);
 
