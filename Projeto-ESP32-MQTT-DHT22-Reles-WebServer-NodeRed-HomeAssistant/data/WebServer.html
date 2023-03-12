@@ -1,90 +1,350 @@
 <!DOCTYPE html>
-<html lang="pt-br"></html>
+<html lang="pt-br">
 
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style data-merge-styles="true"></style>
-  <title>ESP32 Web Server</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    html {font-family: Arial; display: inline-flex; text-align: center;}
-    h2 {font-size: 2.0rem;}
-    p {font-size: 2.0rem;}
-    body {max-width: 400px; margin:0px auto; padding-bottom: 25px;}
-    .switch {position: relative; display: inline-block; width: 100px; height: 50px} 
-    .switch input {display: none}
-    .slider {position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgb(255, 0, 0); border-radius: 6px}
-    .slider:before {position: absolute; content: ""; height: 32px; width: 32px; left: 8px; bottom: 8px; background-color: #fff; -webkit-transition: .4s; transition: .4s; border-radius: 3px}
-    input:checked+.slider {background-color: #00ff11}
-    input:checked+.slider:before {-webkit-transform: translateX(52px); -ms-transform: translateX(52px); transform: translateX(52px)}
-  </style>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsivo.css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <meta name="author" content="Robson Brasil">
+    <meta name="keywords"
+        content="iot, internet of things, internet das coisas, automação residencial, programação em C++, home assistant, esp32, alexa, google assistant">
+    <link rel="icon" href="logo-1.png">
+    <title>ESP32 Web Server</title>
+    <style>
+        /* Define fonte base */
+        html {
+            lang: "pt-br"
+                font-family: Arial;
+            font-size: 16px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            /* Defina as propriedades de estilo para o modo escuro aqui */
+            body {
+            background-color: #2b2b2b;
+            color: #fff;
+            }
+        }
+
+        /* Define estilos para telas grandes */
+        @media (min-width: 768px) {
+            body {
+                max-width: 960px;
+                margin: 0 auto;
+            }
+
+            .tg {
+                width: 100%;
+            }
+
+            .tg td,
+            .tg th {
+                font-size: 1.2rem;
+                padding: 10px 5px;
+            }
+        }
+
+        /* Define estilos para telas pequenas */
+        @media (max-width: 767px) {
+            body {
+                padding: 10px;
+            }
+
+            h2,
+            p {
+                font-size: 1.5rem;
+            }
+
+            .switch {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                width: 64px;
+                height: 32px;
+                border-radius: 16px;
+                background-color: grey;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .slider {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 16px;
+                background-color: white;
+                transition: all 0.3s ease;
+            }
+
+            .slider:before {
+                content: "";
+                position: absolute;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background-color: grey;
+                top: 50%;
+                transform: translateY(-50%);
+                left: 4px;
+                transition: all 0.3s ease;
+            }
+
+            .switch.on .slider {
+                background-color: #3cba54;
+            }
+
+            .switch.on .slider:before {
+                transform: translate(28px, -50%);
+                background-color: #fff;
+            }
+
+            .tg td,
+            .tg th {
+                font-size: 1rem;
+                padding: 5px;
+            }
+        }
+
+        html {
+            font-family: Arial;
+            display: inline-flex;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2.0rem;
+        }
+
+        p {
+            font-size: 2.0rem;
+        }
+
+        body {
+            max-width: 960px;
+            margin: 0px auto;
+            padding-bottom: 25px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 100px;
+            height: 50px
+        }
+
+        .switch input {
+            display: none
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgb(255, 0, 0);
+            border-color: #000000;
+            border-style: solid;
+            border-spacing: 0;
+            border-collapse: collapse;
+            border-radius: 7px
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 33px;
+            width: 33px;
+            left: 5px;
+            bottom: 5px;
+            background-color: #fff;
+            border-spacing: 0;
+            border-collapse: collapse;
+            border-color: #000000;
+            border-style: solid;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 7px
+        }
+
+        input:checked+.slider {
+            background-color: #00ff11
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(0px);
+            -ms-transform: translateX(50px);
+            transform: translateX(50px)
+        }
+    </style>
 </head>
-  
+
 <body>
-  <meta charset="utf-8">
-  <div style = "text-align: center"> <font color="#fff"><h2>Automação Residencial</h2></font>
-  <p><font color="#fff"><h2>Com ESP32 - IoT</h2></p></div></div></font>
-  <style type="text/css">
-    html,
-body {
-  
-  background-color: #000;
-}
-.tg  {border-collapse:collapse;border-color:#9ABAD9;border-spacing:0;}
-.tg td{background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:1px;color:#444;
-  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{background-color:#409cff;border-color:#9ABAD9;border-style:solid;border-width:1px;color:rgb(255, 255, 255);
-  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
-.tg .tg-fbeb{background-color:rgb(0, 0, 0);border-color:rgb(0, 0, 0);color:#333333;text-align:left;vertical-align:top}
-.tg .tg-i91a{border-color:inherit;color:#000000;text-align:center;vertical-align:center}
-.tg .tg-0pky{border-color:inherit;text-align:center;vertical-align:center}
-.tg .tg-i91b{border-color:inherit;color:#020000;text-align:center;vertical-align:center}
-.tg .tg-1pky{border-color:inherit;text-align:center;vertical-align:center}
-</style>
+    <div style="text-align: center">
+        <h2 style="color: #fff;">Automação Residencial</h2>
+        <div style="text-align: center">
+            <h2 style="color: #fff;">Com ESP32 - IoT</h2>
+        </div>
+    </div>
+    <style type="text/css">
+        html,
+        body {
+
+            background-color: #000;
+        }
+
+        .tg {
+            border-collapse: collapse;
+            border-color: #000000;
+            border-spacing: 0;
+        }
+
+        .tg td {
+            background-color: #ffffff;
+            border-color: #0080ff;
+            border-style: solid;
+            border-width: 1px;
+            color: #444;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            overflow: hidden;
+            padding: 10px 5px;
+            word-break: normal;
+        }
+
+        .tg th {
+            background-color: #000000;
+            border-color: #0080ff;
+            border-style: solid;
+            border-width: 1px;
+            color: rgb(255, 255, 255);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+            overflow: hidden;
+            padding: 10px 5px;
+            word-break: normal;
+        }
+
+        .tg .tg-c3ow {
+            border-color: inherit;
+            text-align: center;
+            vertical-align: top
+        }
+
+        .tg .tg-fbeb {
+            background-color: rgb(0, 0, 0);
+            border-color: #0080ff;
+            color: #000000;
+            text-align: left;
+            vertical-align: top
+        }
+
+        .tg .tg-i91a {
+            border-color: inherit;
+            color: #000000;
+            text-align: center;
+            vertical-align: center
+        }
+
+        .tg .tg-0pky {
+            border-color: inherit;
+            text-align: center;
+            vertical-align: center
+        }
+
+        .tg .tg-i91b {
+            border-color: inherit;
+            color: #020000;
+            text-align: center;
+            vertical-align: center
+        }
+
+        .tg .tg-1pky {
+            border-color: inherit;
+            text-align: center;
+            vertical-align: center
+        }
+    </style>
 </body>
 
 <table class="tg">
-<thead>
-  <tr>
-    <th class="tg-fbeb"></th>
-    <th class="tg-c3ow" colspan="2">BANCADA</th>
-    <th class="tg-c3ow" colspan="2">BANCADA</th>
-    <th class="tg-c3ow" colspan="2">Interruptor</th>
-    <th class="tg-c3ow" colspan="2">Interruptor</th>
-  </tr>
-</thead>
-
-<tbody>
-  <tr>
-    <td class="tg-i91a"><h4>Conjunto 1</h4></td>
-    <td class="tg-0pky" colspan="1"><h4>Luz Forte</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)" id="23"><span class="slider"></span></label></td>
-    <td class="tg-0pky" colspan="2"><h4>Luz Fraca</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)" id="22"><span class="slider"></span></label></td>
-    <td class="tg-0pky" colspan="2"><h4>Interruptor 3</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)" id="21"><span class="slider"></span></label></td>
-    <td class="tg-0pky" colspan="2"><h4>Interruptor 4</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)" id="19"><span class="slider"></span></label></td>
-    </tr>
     <thead>
-      <tr>
-        <th class="tg-fbeb"></th>
-        <th class="tg-c3ow" colspan="2">Interruptor</th>
-        <th class="tg-c3ow" colspan="2">BLUETOOTH</th>
-        <th class="tg-c3ow" colspan="2">Interruptor</th>
-        <th class="tg-c3ow" colspan="2">QUARTO</th>
-      </tr>
+        <tr>
+            <th></th>
+            <th colspan="2">LUZ FORTE</th>
+            <th colspan="2">LUZ FRACA</th>
+            <th colspan="2">COOLER</th>
+            <th colspan="2">SOM BLUETOOTH</th>
+        </tr>
     </thead>
-    <tr> 
-    <td class="tg-i91b"><h4>Conjunto 2</h4></td>
-    <td class="tg-1pky" colspan="2"><h4>Interruptor 5</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)" id="18"><span class="slider"></span></label></td>
-    <td class="tg-1pky" colspan="2"><h4>Som Bluetooth</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)" id="5"><span class="slider"></span></label></td>
-    <td class="tg-1pky" colspan="2"><h4>Interruptor 7</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)" id="25"><span class="slider"></span></label></td>
-    <td class="tg-1pky" colspan="2"><h4>Luz do Quarto</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)" id="26"><span class="slider"></span></label></td>
-    </tr>
-</tbody>
-</table>
 
+    <tbody>
+        <tr>
+            <td>
+                <h4>Conjunto 1</h4>
+            </td>
+            <td colspan="2">
+                <h4>Luz Forte</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)"
+                        id="23"><span class="slider"></span></label>
+            </td>
+            <td colspan="2">
+                <h4>Luz Fraca</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)"
+                        id="22"><span class="slider"></span></label>
+            </td>
+            <td colspan="2">
+                <h4>Cooler 3</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)"
+                        id="21"><span class="slider"></span></label>
+            </td>
+            <td colspan="2">
+                <h4>Som Bluetooth</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)"
+                        id="19"><span class="slider"></span></label>
+            </td>
+        </tr>
+        <thead>
+            <tr>
+                <th class="tg-fbeb"></th>
+                <th colspan="2">LUZ PRINCIPAL</th>
+                <th colspan="2">INTERRUPTOR</th>
+                <th colspan="2">INTERRUPTOR</th>
+                <th colspan="2">INTERRUPTOR</th>
+            </tr>
+        </thead>
+        <tr>
+            <td>
+                <h4>Conjunto 2</h4>
+            </td>
+            <td colspan="2">
+                <h4>Quarto</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)"
+                        id="20"><span class="slider"></span></label>
+            </td>
+            <td colspan="2">
+                <h4>Interruptor 6</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)"
+                        id="21"><span class="slider"></span></label>
+            </td>
+            <td colspan="2">
+                <h4>Interruptor 7</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)"
+                        id="22"><span class="slider"></span></label>
+            </td>
+            <td colspan="2">
+                <h4>Interruptor 8</h4><label class="switch"><input type="checkbox" onchange="toggleCheckbox(this)"
+                        id="23"><span class="slider"></span></label>
+            </td>
+        </tr>
+    </tbody>
+</table>
 <script>function toggleCheckbox(element) {
-  var xhr = new XMLHttpRequest();
-  if(element.checked){ xhr.open("GET", "/update?output="+element.id+"&state=0", true); }
-  else { xhr.open("GET", "/update?output="+element.id+"&state=1", true); }
-  xhr.send();
-}
-</script>
+        var xhr = new XMLHttpRequest();
+        if (element.checked) { xhr.open("GET", "/update?relay=" + element.id + "&state=1", true); }
+        else { xhr.open("GET", "/update?relay=" + element.id + "&state=0", true); }
+        xhr.send();
+    }</script>
+</body>
+
+</html>

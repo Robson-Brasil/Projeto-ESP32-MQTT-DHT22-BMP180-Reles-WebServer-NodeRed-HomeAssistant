@@ -10,26 +10,15 @@ Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
 Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
 Home Assistant
 Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-Versão : 28 - Alfa
-Última Modificação : 11/03/2023
+Versão : 30 - Alfa
+Última Modificação : 12/03/2023
 **********************************************************************************/
 
-// Bibliotecas
-#include <WiFi.h>          // Importa a Biblioteca WiFi
-#include <PubSubClient.h>  // Importa a Biblioteca PubSubClient
-#include <DHT.h>           // Importa a Biblioteca DHT
-#include <WiFiUdp.h>       // Importa a Biblioteca WiFiUdp
-#include <Arduino.h>       // Biblioteca do ArduinoJson :        https://github.com/bblanchon/ArduinoJson
-#include <DNSServer.h>     // Biblioteca do DNSServer :          https://github.com/zhouhan0126/DNSServer---esp32
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include <SPIFFS.h>
-#include <TimeLib.h>
+//Bibliotecas
 #include "LoginsSenhas.h"
 #include "TopicosMQTT.h"
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-#include <EEPROM.h>
+#include "Bibliotecas.h"
+#include "GPIOs.h"
 
 void setup1();  // declaração da função setup1()
 void loop1();   // declaração da função loop1()
@@ -44,18 +33,6 @@ float diff = 1.0;
                             ID de outro já conectado ao broker, o broker        \
                             irá fechar a conexão de um deles).*/
 
-// Defines - Mapeamento de pinos do NodeMCU Relays
-#define RelayPin1 23  // D23 Ligados ao Nora/MQTT
-#define RelayPin2 22  // D22 Ligados ao Nora/MQTT
-#define RelayPin3 21  // D21 Ligados ao Nora/MQTT
-#define RelayPin4 19  // D19 Ligados ao Nora/MQTT
-#define RelayPin5 18  // D18 Ligados ao Nora/MQTT
-#define RelayPin6 5   // D5  Ligados ao MQTT/Alexa
-#define RelayPin7 25  // D25 Ligados ao MQTT/Alexa
-#define RelayPin8 26  // D26 Ligados ao MQTT/Alexa
-
-// WiFi Status Relé
-#define wifiLed 0  // D0
 #define DEBOUNCE_TIME 250
 
 int toggleState_0 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 0
@@ -70,7 +47,6 @@ int toggleState_8 = 1;  // Definir inteiro para lembrar o estado de alternância
 int status_todos = 0;   // Definir inteiro para lembrar o estado de alternância para todos
 
 // DHT11 ou DHT22 para leitura dos valores  de Temperatura e Umidade
-#define DHTPIN 4
 #define DHTTYPE DHT11  // DHT11 ou DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -100,43 +76,23 @@ unsigned long lastMsgMQTT = 0;
 int value = 0;
 
 // WebServer
-const char* PARAM_INPUT_1 = "output";
+const char* PARAM_INPUT_1 = "relay";
 const char* PARAM_INPUT_2 = "state";
 
 // Configuração da Porta Usada Pelo AsyncWebServer
 AsyncWebServer server(3232);
 
-const char login_html[] PROGMEM = R"rawliteral(
+const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
+  %BUTTONPLACEHOLDER%
 <script>function toggleCheckbox(element) {
   var xhr = new XMLHttpRequest();
-  if(element.checked){ xhr.open("GET", "/update?output="+element.id+"&state=0", true); }
-  else { xhr.open("GET", "/update?output="+element.id+"&state=1", true); }
+  if(element.checked){ xhr.open("GET", "/update?relay="+element.id+"&state=0", true); }
+  else { xhr.open("GET", "/update?relay="+element.id+"&state=1", true); }
   xhr.send();
 }
-<script>
-window.onload = function() {
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      // atualiza os botões com os novos valores recebidos do servidor
-      document.getElementById("buttonContainer").innerHTML = this.responseText;
-    }
-  };
-  xhr.open("GET", "/getButtonsState", true);
-  xhr.send();
-};
 </script>
 </html>)rawliteral";
-
-// Configuração dos Botões Usados
-String outputState(int output) {
-  if (digitalRead(output)) {
-    return "checked";
-  } else {
-    return "";
-  }
-}
 
 String processor(const String& var) {
   //Serial.println(var);
@@ -191,6 +147,15 @@ String processor(const String& var) {
   return String();
 }
 
+// Configuração dos Botões Usados
+String outputState(int output) {
+  if (digitalRead(output)) {
+    return "checked";
+  } else {
+    return "";
+  }
+}
+
 // Prototypes
 void initSerial();
 void initWiFi();
@@ -216,12 +181,9 @@ void setup() {
     return;
   }
 
-  // Print do IP Local do ESP32
-  Serial.println(WiFi.localIP());
+  // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
-    if (!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/WebServer.html", String(), false, processor);
+    request->send(SPIFFS, "/WebServer.html", index_html, processor);
   });
 
   server.serveStatic("/", SPIFFS, "/");
@@ -229,12 +191,16 @@ void setup() {
   // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
   server.on("/update", HTTP_GET, [](AsyncWebServerRequest* request) {
     String inputMessage1;
+    String inputParam1;
     String inputMessage2;
+    String inputParam2;
     // GET input1 value on <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
     if (request->hasParam(PARAM_INPUT_1) && request->hasParam(PARAM_INPUT_2)) {
       inputMessage1 = request->getParam(PARAM_INPUT_1)->value();
+      inputParam1 = PARAM_INPUT_1;
       inputMessage2 = request->getParam(PARAM_INPUT_2)->value();
-      digitalWrite(inputMessage1.toInt(), inputMessage2.toInt());
+      inputParam2 = PARAM_INPUT_2;
+      digitalWrite(inputMessage1.toInt(), !inputMessage2.toInt());
     } else {
       inputMessage1 = "No message sent";
       inputMessage2 = "No message sent";
@@ -244,19 +210,6 @@ void setup() {
     Serial.print(" - Set to: ");
     Serial.println(inputMessage2);
     request->send(200, "text/plain", "OK");
-  });
-
-  server.on("/getButtonsState", [](AsyncWebServerRequest* request) {
-    String buttons = "";
-    buttons += "<h4>Luz Forte</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"23\" " + outputState(23) + "><span class=\"slider\"></span></label>";
-    buttons += "<h4>Luz Fraca</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"22\" " + outputState(22) + "><span class=\"slider\"></span></label>";
-    buttons += "<h4>Interruptor 3</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"21\" " + outputState(21) + "><span class=\"slider\"></span></label>";
-    buttons += "<h4>Interruptor 4</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"19\" " + outputState(19) + "><span class=\"slider\"></span></label>";
-    buttons += "<h4>Interruptor 5</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"18\" " + outputState(18) + "><span class=\"slider\"></span></label>";
-    buttons += "<h4>Som Bluetooth</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"5\" " + outputState(5) + "><span class=\"slider\"></span></label>";
-    buttons += "<h4>Interruptor 7</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"25\" " + outputState(25) + "><span class=\"slider\"></span></label>";
-    buttons += "<h4>Luz do Quarto</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"26\" " + outputState(26) + "><span class=\"slider\"></span></label>";
-    request->send(200, "text/html", buttons.c_str());
   });
 
   // Start do Servidor
