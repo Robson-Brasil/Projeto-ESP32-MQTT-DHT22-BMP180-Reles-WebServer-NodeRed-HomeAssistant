@@ -83,7 +83,8 @@ const char* PARAM_INPUT_2 = "state";
 AsyncWebServer server(3232);
 
 const char index_html[] PROGMEM = R"rawliteral(
-<!DOCTYPE HTML><html>
+<!DOCTYPE HTML>
+<html>
   %BUTTONPLACEHOLDER%
 <script>function toggleCheckbox(element) {
   var xhr = new XMLHttpRequest();
@@ -99,13 +100,14 @@ String processor(const String& var) {
   if (var == "BUTTONPLACEHOLDER1") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Luz Forte</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"23\" " + outputState(23) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 1</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"23\" " + outputState(23) + "><span class=\"slider\"></span></label>";
     return buttons;
-  }
+}
+
   if (var == "BUTTONPLACEHOLDER2") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Luz Fraca</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"22\" " + outputState(22) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 2</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"22\" " + outputState(22) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
   if (var == "BUTTONPLACEHOLDER3") {
@@ -181,7 +183,6 @@ void setup() {
     return;
   }
 
-
 // Serve static files
 server.serveStatic("/", SPIFFS, "/");
 
@@ -198,11 +199,127 @@ server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest* request) {
   request->send(SPIFFS, "/WebServer.css", "text/css");
 });
 
+server.on("/darklmode.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/darkmode.js", "application/javascript");
+});
+
 server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/logo-1.png", "image/png");
 });
 
-  // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
+server.on("/update1", HTTP_GET, [](AsyncWebServerRequest *request){
+  int state = LOW;
+  String inputMessage;
+  if (request->hasParam(PARAM_INPUT_1)) {
+    state = HIGH;
+    inputMessage = "Relé 1 ligado";
+  } else {
+    state = LOW;
+    inputMessage = "Relé 1 desligado";
+  }
+  digitalWrite(RelayPin1, state);
+  request->send(200, "text/plain", inputMessage);
+});
+
+server.on("/update2", HTTP_GET, [](AsyncWebServerRequest *request){
+  int state = LOW;
+  String inputMessage;
+  if (request->hasParam(PARAM_INPUT_2)) {
+    state = HIGH;
+    inputMessage = "Relé 2 ligado";
+  } else {
+    state = LOW;
+    inputMessage = "Relé 2 desligado";
+  }
+  digitalWrite(RelayPin2, state);
+  request->send(200, "text/plain", inputMessage);
+});
+
+server.on("/update3", HTTP_GET, [](AsyncWebServerRequest *request){
+  int state = LOW;
+  String inputMessage;
+  if (request->hasParam(PARAM_INPUT_1)) {
+    state = HIGH;
+    inputMessage = "Relé 3 ligado";
+  } else {
+    state = LOW;
+    inputMessage = "Relé 3 desligado";
+  }
+  digitalWrite(RelayPin3, state);
+  request->send(200, "text/plain", inputMessage);
+});
+
+server.on("/update4", HTTP_GET, [](AsyncWebServerRequest *request){
+  int state = LOW;
+  String inputMessage;
+  if (request->hasParam(PARAM_INPUT_2)) {
+    state = HIGH;
+    inputMessage = "Relé 4 ligado";
+  } else {
+    state = LOW;
+    inputMessage = "Relé 4 desligado";
+  }
+  digitalWrite(RelayPin4, state);
+  request->send(200, "text/plain", inputMessage);
+});
+
+server.on("/update5", HTTP_GET, [](AsyncWebServerRequest *request){
+  int state = LOW;
+  String inputMessage;
+  if (request->hasParam(PARAM_INPUT_1)) {
+    state = HIGH;
+    inputMessage = "Relé 5 ligado";
+  } else {
+    state = LOW;
+    inputMessage = "Relé 5 desligado";
+  }
+  digitalWrite(RelayPin5, state);
+  request->send(200, "text/plain", inputMessage);
+});
+
+server.on("/update6", HTTP_GET, [](AsyncWebServerRequest *request){
+  int state = LOW;
+  String inputMessage;
+  if (request->hasParam(PARAM_INPUT_2)) {
+    state = HIGH;
+    inputMessage = "Relé 6 ligado";
+  } else {
+    state = LOW;
+    inputMessage = "Relé 6 desligado";
+  }
+  digitalWrite(RelayPin6, state);
+  request->send(200, "text/plain", inputMessage);
+});
+
+server.on("/update7", HTTP_GET, [](AsyncWebServerRequest *request){
+  int state = LOW;
+  String inputMessage;
+  if (request->hasParam(PARAM_INPUT_1)) {
+    state = HIGH;
+    inputMessage = "Relé 7 ligado";
+  } else {
+    state = LOW;
+    inputMessage = "Relé 7 desligado";
+  }
+  digitalWrite(RelayPin7, state);
+  request->send(200, "text/plain", inputMessage);
+});
+
+server.on("/update8", HTTP_GET, [](AsyncWebServerRequest *request){
+  int state = LOW;
+  String inputMessage;
+  if (request->hasParam(PARAM_INPUT_2)) {
+    state = HIGH;
+    inputMessage = "Relé 8 ligado";
+  } else {
+    state = LOW;
+    inputMessage = "Relé 8 desligado";
+  }
+  digitalWrite(RelayPin8, state);
+  request->send(200, "text/plain", inputMessage);
+});
+
+ // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
   server.on("/update", HTTP_GET, [](AsyncWebServerRequest* request) {
     String inputMessage1;
     String inputParam1;
