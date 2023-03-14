@@ -1,0 +1,114 @@
+/* Define fonte base */
+html {
+    lang: "pt-br";
+    font-family: Arial;
+    font-size: 20px;
+    display: inline-flex;
+    text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+
+    /* Defina as propriedades de estilo para o modo escuro aqui */
+    body {
+        background-color: #000000;
+        color: #fff;
+    }
+}
+
+/* Estilos responsivos */
+@media (max-width: 510px) {
+    .tg {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .tg {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Estilos para os elementos HTML */
+h2 {
+    font-size: 2.0rem;
+}
+
+p {
+    font-size: 2.0rem;
+}
+
+body {
+    max-width: 960px;
+    margin: 0px auto;
+    padding-bottom: 25px;
+}
+
+/* Estilos para o botão de alternância de tema */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 50px
+}
+
+.switch input {
+    display: none
+}
+
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(255, 0, 0);
+    border-color: #000000;
+    border-style: solid;
+    border-spacing: 0;
+    border-collapse: collapse;
+    border-radius: 7px
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 33px;
+    width: 33px;
+    left: 5px;
+    bottom: 5px;
+    background-color: #fff;
+    border-spacing: 0;
+    border-collapse: collapse;
+    border-color: #000000;
+    border-style: solid;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 7px
+}
+
+input:checked+.slider {
+    background-color: #00ff11
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(0px);
+    -ms-transform: translateX(50px);
+    transform: translateX(50px)
+}
+
+/* Estilos para tabelas */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border-spacing: 10 50px;
+}
+
+/* Estilos para o texto centralizado e branco */
+.centered-text {
+    text-align: center;
+}
+
+.white-text {
+    color: #ffffff;
+}

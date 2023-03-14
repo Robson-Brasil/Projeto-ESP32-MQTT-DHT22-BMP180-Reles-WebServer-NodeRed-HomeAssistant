@@ -8,116 +8,15 @@
     <meta name="keywords"
         content="iot, internet of things, internet das coisas, automação residencial, programação em C++, home assistant, esp32, alexa, google assistant">
     <link rel="icon" href="logo-1.png">
-    <title>ESP32 Web Server</title>
-<style>
-        /* Define fonte base */
-html {
-    lang: "pt-br"
-    font-family: Arial;
-    font-size: 20px;
-    display: inline-flex;
-    text-align: center;
-}
-
-@media (prefers-color-scheme: dark) {
-    /* Defina as propriedades de estilo para o modo escuro aqui */
-    body {
-        background-color: #000000;
-        color: #fff;
-    }
-}
-
-/* Estilos responsivos */
-@media (max-width: 768px) {
-    .tg {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .tg {
-        grid-template-columns: 1fr;
-    }
-}
-
-h2 {
-    font-size: 2.0rem;
-}
-
-p {
-    font-size: 2.0rem;
-}
-
-body {
-    max-width: 960px;
-    margin: 0px auto;
-    padding-bottom: 25px;
-}
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 100px;
-    height: 50px
-}
-
-.switch input {
-    display: none
-}
-
-.slider {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgb(255, 0, 0);
-    border-color: #000000;
-    border-style: solid;
-    border-spacing: 0;
-    border-collapse: collapse;
-    border-radius: 7px
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 33px;
-    width: 33px;
-    left: 5px;
-    bottom: 5px;
-    background-color: #fff;
-    border-spacing: 0;
-    border-collapse: collapse;
-    border-color: #000000;
-    border-style: solid;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 7px
-}
-
-input:checked+.slider {
-    background-color: #00ff11
-}
-
-input:checked+.slider:before {
-    -webkit-transform: translateX(0px);
-    -ms-transform: translateX(50px);
-    transform: translateX(50px)
-}
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    border-spacing: 10 50px;
-}
-</style>
+    <title>WebServer ESP32</title>
+    <link rel="stylesheet" href="WebServer.css">
 </head>
+
 <body>
-    <div style="text-align: center">
-        <h2 style="color: #ffffff;">IoT - AUTOMAÇÃO RESIDENCIAL</h2>
-        <div style="text-align: center">
-            <h2 style="color: #ffffff;">COM ESP32</h2>
+    <div class="centered-text">
+        <h2 class="white-text">IoT - AUTOMAÇÃO RESIDENCIAL</h2>
+        <div class="centered-text">
+            <h2 class="white-text">COM ESP32</h2>
         </div>
     </div>
     <table class="tg">
@@ -159,11 +58,12 @@ table {
         </tr>
     </table>
 </body>
+<script>function toggleCheckbox(element) {
+    var xhr = new XMLHttpRequest();
+    if (element.checked) { xhr.open("GET", "/update?relay=" + element.id + "&state=1", true); }
+    else { xhr.open("GET", "/update?relay=" + element.id + "&state=0", true); }
+    xhr.send();
+}
+</script>
 </html>
 
-<script>function toggleCheckbox(element) {
-        var xhr = new XMLHttpRequest();
-        if (element.checked) { xhr.open("GET", "/update?relay=" + element.id + "&state=1", true); }
-        else { xhr.open("GET", "/update?relay=" + element.id + "&state=0", true); }
-        xhr.send();
-    }</script>

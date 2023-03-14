@@ -8,5 +8,5 @@ const char* mqttUserName = "RobsonBrasil";  // MQTT UserName
 const char* mqttPwd = "loboalfa";           // MQTT Password
 
 // WebServer
-const char* http_username = "Robson Brasil";
-const char* http_password = "@Lobo#Alfa@";
+const char* http_username = "RobsonBrasil";
+const char* http_password = "loboalfa";

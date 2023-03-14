@@ -181,12 +181,26 @@ void setup() {
     return;
   }
 
-  // Route for root / web page
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
-    request->send(SPIFFS, "/WebServer.html", index_html, processor);
+
+// Serve static files
+server.serveStatic("/", SPIFFS, "/");
+
+// Print do IP Local do ESP32
+  Serial.println(WiFi.localIP());
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+      request->send(SPIFFS, "/WebServer.html", String(), false, processor);
   });
 
-  server.serveStatic("/", SPIFFS, "/");
+// Route for dashboard CSS
+server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest* request) {
+  request->send(SPIFFS, "/WebServer.css", "text/css");
+});
+
+server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/logo-1.png", "image/png");
+});
 
   // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
   server.on("/update", HTTP_GET, [](AsyncWebServerRequest* request) {
