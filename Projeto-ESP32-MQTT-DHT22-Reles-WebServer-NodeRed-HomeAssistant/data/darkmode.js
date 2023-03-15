@@ -1,5 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+  function toggleCheckbox(element) {
+    var xhr = new XMLHttpRequest();
+    if (element.checked) { xhr.open("GET", "/update?relay=" + element.id + "&state=1", true); }
+    else { xhr.open("GET", "/update?relay=" + element.id + "&state=0", true); }
+    xhr.send();
+}    
+
+
   const darkModeSwitch = document.getElementById("dark-mode-switch");
   const darkModeImg = document.querySelector(".dark-mode-image");
   const lightModeImg = document.querySelector(".light-mode-image");
@@ -17,7 +25,5 @@ document.addEventListener("DOMContentLoaded", function () {
       darkModeImg.style.display = 'inline-block'; // exibe a imagem do modo escuro
     }
   });
-
-  // outras funções...
 
 });
