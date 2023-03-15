@@ -10,9 +10,18 @@
     <link rel="icon" href="logo-1.png">
     <title>WebServer ESP32</title>
     <link rel="stylesheet" href="WebServer.css">
+    <script src="darkmode.js"></script>
 </head>
 
 <body>
+    <header>
+        <h1>Lobo Alpha Automações</h1>
+        <button id="dark-mode-switch">
+            <span>Dark Mode</span>
+        <img src="darkmode.png" id="dark-mode-image" class="dark-mode-image" hidden>
+        <img src="lightmode.png" id="light-mode-image" class="light-mode-image">
+        </button>
+    </header>
     <div class="centered-text">
         <h2 class="white-text">IoT - AUTOMAÇÃO RESIDENCIAL</h2>
         <div class="centered-text">
@@ -100,11 +109,11 @@
 </body>
 <script>
     function toggleCheckbox(element) {
-    var xhr = new XMLHttpRequest();
-    if (element.checked) { xhr.open("GET", "/update?relay=" + element.id + "&state=1", true); }
-    else { xhr.open("GET", "/update?relay=" + element.id + "&state=0", true); }
-    xhr.send();
-}
+        var xhr = new XMLHttpRequest();
+        if (element.checked) { xhr.open("GET", "/update?relay=" + element.id + "&state=1", true); }
+        else { xhr.open("GET", "/update?relay=" + element.id + "&state=0", true); }
+        xhr.send();
+    }    
 </script>
 </html>
 

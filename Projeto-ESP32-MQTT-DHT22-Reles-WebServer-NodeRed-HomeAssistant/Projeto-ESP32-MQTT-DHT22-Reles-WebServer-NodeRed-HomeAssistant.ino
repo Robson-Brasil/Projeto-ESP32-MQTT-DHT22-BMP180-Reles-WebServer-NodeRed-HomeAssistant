@@ -1,17 +1,17 @@
 /**********************************************************************************
-IoT - Automação Residencial
-Autor : Robson Brasil
-Dispositivos : ESP32 WROOM32, DHT22 e Módulo Relé de 8 Canais
-Preferences--> URLs adicionais do Gerenciador de placas: 
+  IoT - Automação Residencial
+  Autor : Robson Brasil
+  Dispositivos : ESP32 WROOM32, DHT22 e Módulo Relé de 8 Canais
+  Preferences--> URLs adicionais do Gerenciador de placas:
                                   http://arduino.esp8266.com/stable/package_esp8266com_index.json,https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-Download Board ESP32 (2.0.5):
-Broker MQTT
-Node-Red / Google Assistant-Nora:  https://smart-nora.eu/  
-Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
-Home Assistant
-Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-Versão : 30 - Alfa
-Última Modificação : 12/03/2023
+  Download Board ESP32 (2.0.5):
+  Broker MQTT
+  Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
+  Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
+  Home Assistant
+  Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
+  Versão : 30 - Alfa
+  Última Modificação : 12/03/2023
 **********************************************************************************/
 
 //Bibliotecas
@@ -31,7 +31,7 @@ float diff = 1.0;
                             IMPORTANTE: Este deve ser único no broker (ou seja, \
                             se um client MQTT tentar entrar com o mesmo         \
                             ID de outro já conectado ao broker, o broker        \
-                            irá fechar a conexão de um deles).*/
+irá fechar a conexão de um deles).*/
 
 #define DEBOUNCE_TIME 250
 
@@ -82,7 +82,7 @@ const char* PARAM_INPUT_2 = "state";
 // Configuração da Porta Usada Pelo AsyncWebServer
 AsyncWebServer server(3232);
 
-const char index_html[] PROGMEM = R"rawliteral(
+const char login_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML>
 <html>
   %BUTTONPLACEHOLDER%
@@ -102,7 +102,7 @@ String processor(const String& var) {
     buttons += "<div id=\"buttonContainer\"></div>";
     buttons += "<h4>Interruptor 1</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"23\" " + outputState(23) + "><span class=\"slider\"></span></label>";
     return buttons;
-}
+  }
 
   if (var == "BUTTONPLACEHOLDER2") {
     String buttons = "";
@@ -183,144 +183,152 @@ void setup() {
     return;
   }
 
-// Serve static files
-server.serveStatic("/", SPIFFS, "/");
+  // Print do IP Local do ESP32
 
-// Print do IP Local do ESP32
-  Serial.println(WiFi.localIP());
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
+    if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
-      request->send(SPIFFS, "/WebServer.html", String(), false, processor);
+    request->send(SPIFFS, "/WebServer.html", String(), false, processor);
   });
 
-// Route for dashboard CSS
-server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest* request) {
-  request->send(SPIFFS, "/WebServer.css", "text/css");
-});
+  // Serve static files
+  server.serveStatic("/", SPIFFS, "/");
 
-server.on("/darklmode.js", HTTP_GET, [](AsyncWebServerRequest *request){
+  // Route for dashboard CSS
+  server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/WebServer.css", "text/css");
+  });
+
+  server.on("/darklmode.js", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/darkmode.js", "application/javascript");
-});
+  });
 
-server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/darkmode.png", "image/png");
+  });
+
+  server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/lightmode.png", "image/png");
+  });
+
+  server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/logo-1.png", "image/png");
-});
+  });
 
-server.on("/update1", HTTP_GET, [](AsyncWebServerRequest *request){
-  int state = LOW;
-  String inputMessage;
-  if (request->hasParam(PARAM_INPUT_1)) {
-    state = HIGH;
-    inputMessage = "Relé 1 ligado";
-  } else {
-    state = LOW;
-    inputMessage = "Relé 1 desligado";
-  }
-  digitalWrite(RelayPin1, state);
-  request->send(200, "text/plain", inputMessage);
-});
+  server.on("/update1", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_1)) {
+      state = HIGH;
+      inputMessage = "Relé 1 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 1 desligado";
+    }
+    digitalWrite(RelayPin1, state);
+    request->send(200, "text/plain", inputMessage);
+  });
 
-server.on("/update2", HTTP_GET, [](AsyncWebServerRequest *request){
-  int state = LOW;
-  String inputMessage;
-  if (request->hasParam(PARAM_INPUT_2)) {
-    state = HIGH;
-    inputMessage = "Relé 2 ligado";
-  } else {
-    state = LOW;
-    inputMessage = "Relé 2 desligado";
-  }
-  digitalWrite(RelayPin2, state);
-  request->send(200, "text/plain", inputMessage);
-});
+  server.on("/update2", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 2 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 2 desligado";
+    }
+    digitalWrite(RelayPin2, state);
+    request->send(200, "text/plain", inputMessage);
+  });
 
-server.on("/update3", HTTP_GET, [](AsyncWebServerRequest *request){
-  int state = LOW;
-  String inputMessage;
-  if (request->hasParam(PARAM_INPUT_1)) {
-    state = HIGH;
-    inputMessage = "Relé 3 ligado";
-  } else {
-    state = LOW;
-    inputMessage = "Relé 3 desligado";
-  }
-  digitalWrite(RelayPin3, state);
-  request->send(200, "text/plain", inputMessage);
-});
+  server.on("/update3", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_1)) {
+      state = HIGH;
+      inputMessage = "Relé 3 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 3 desligado";
+    }
+    digitalWrite(RelayPin3, state);
+    request->send(200, "text/plain", inputMessage);
+  });
 
-server.on("/update4", HTTP_GET, [](AsyncWebServerRequest *request){
-  int state = LOW;
-  String inputMessage;
-  if (request->hasParam(PARAM_INPUT_2)) {
-    state = HIGH;
-    inputMessage = "Relé 4 ligado";
-  } else {
-    state = LOW;
-    inputMessage = "Relé 4 desligado";
-  }
-  digitalWrite(RelayPin4, state);
-  request->send(200, "text/plain", inputMessage);
-});
+  server.on("/update4", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 4 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 4 desligado";
+    }
+    digitalWrite(RelayPin4, state);
+    request->send(200, "text/plain", inputMessage);
+  });
 
-server.on("/update5", HTTP_GET, [](AsyncWebServerRequest *request){
-  int state = LOW;
-  String inputMessage;
-  if (request->hasParam(PARAM_INPUT_1)) {
-    state = HIGH;
-    inputMessage = "Relé 5 ligado";
-  } else {
-    state = LOW;
-    inputMessage = "Relé 5 desligado";
-  }
-  digitalWrite(RelayPin5, state);
-  request->send(200, "text/plain", inputMessage);
-});
+  server.on("/update5", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_1)) {
+      state = HIGH;
+      inputMessage = "Relé 5 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 5 desligado";
+    }
+    digitalWrite(RelayPin5, state);
+    request->send(200, "text/plain", inputMessage);
+  });
 
-server.on("/update6", HTTP_GET, [](AsyncWebServerRequest *request){
-  int state = LOW;
-  String inputMessage;
-  if (request->hasParam(PARAM_INPUT_2)) {
-    state = HIGH;
-    inputMessage = "Relé 6 ligado";
-  } else {
-    state = LOW;
-    inputMessage = "Relé 6 desligado";
-  }
-  digitalWrite(RelayPin6, state);
-  request->send(200, "text/plain", inputMessage);
-});
+  server.on("/update6", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 6 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 6 desligado";
+    }
+    digitalWrite(RelayPin6, state);
+    request->send(200, "text/plain", inputMessage);
+  });
 
-server.on("/update7", HTTP_GET, [](AsyncWebServerRequest *request){
-  int state = LOW;
-  String inputMessage;
-  if (request->hasParam(PARAM_INPUT_1)) {
-    state = HIGH;
-    inputMessage = "Relé 7 ligado";
-  } else {
-    state = LOW;
-    inputMessage = "Relé 7 desligado";
-  }
-  digitalWrite(RelayPin7, state);
-  request->send(200, "text/plain", inputMessage);
-});
+  server.on("/update7", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_1)) {
+      state = HIGH;
+      inputMessage = "Relé 7 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 7 desligado";
+    }
+    digitalWrite(RelayPin7, state);
+    request->send(200, "text/plain", inputMessage);
+  });
 
-server.on("/update8", HTTP_GET, [](AsyncWebServerRequest *request){
-  int state = LOW;
-  String inputMessage;
-  if (request->hasParam(PARAM_INPUT_2)) {
-    state = HIGH;
-    inputMessage = "Relé 8 ligado";
-  } else {
-    state = LOW;
-    inputMessage = "Relé 8 desligado";
-  }
-  digitalWrite(RelayPin8, state);
-  request->send(200, "text/plain", inputMessage);
-});
+  server.on("/update8", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 8 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 8 desligado";
+    }
+    digitalWrite(RelayPin8, state);
+    request->send(200, "text/plain", inputMessage);
+  });
 
- // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
-  server.on("/update", HTTP_GET, [](AsyncWebServerRequest* request) {
+  // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
+  server.on("/update", HTTP_GET, [](AsyncWebServerRequest * request) {
     String inputMessage1;
     String inputParam1;
     String inputMessage2;
@@ -545,7 +553,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
   }
 }
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
-em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
+  em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
 void reconnectMQTT() {
   while (!MQTT.connected()) {
     Serial.print("* Tentando se conectar ao Broker MQTT: ");
@@ -575,7 +583,7 @@ void reconnectMQTT() {
 // Função: reconecta-se ao WiFi
 void reconectWiFi() {
   /* Se já está conectado a rede WI-FI, nada é feito.
-Caso contrário, são efetuadas tentativas de conexão*/
+    Caso contrário, são efetuadas tentativas de conexão*/
   if (WiFi.status() == WL_CONNECTED)
     return;
 
@@ -607,7 +615,7 @@ Caso contrário, são efetuadas tentativas de conexão*/
   Serial.println(WiFi.dnsIP(1));
 }
 /* Função: verifica o estado das conexões WiFI e ao broker MQTT.
-Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
+  Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
   if (!MQTT.connected())
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
