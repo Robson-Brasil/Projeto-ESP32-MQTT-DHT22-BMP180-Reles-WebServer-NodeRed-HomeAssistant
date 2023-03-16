@@ -198,67 +198,67 @@ table {
 }
 
 /* Estilos responsivos */
-@media (max-width: 350px) {
-  header {
-      grid-template-columns: repeat(2, 1fr);
-  }
+@media (max-width: 450px) {
+    header {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-@media (max-width: 300px) {
-  header {
-      grid-template-columns: 1fr;
-  }
+@media (max-width: 400px) {
+    header {
+        grid-template-columns: 1fr;
+    }
 }
 
-@media (max-width: 350px) {
-  body {
-    font-size: 16px;
+@media (max-width: 450px) {
+    body {
+      font-size: 16px;
+    }
   }
-}
-@media (prefers-color-scheme: dark) {
-  header {
-    background-color: #333;
-    color: #fff;
+  @media (prefers-color-scheme: dark) {
+    header {
+      background-color: #333;
+      color: #fff;
+    }
+    body {
+      background-color: #ffffff;
+      color: #000000;
+    }
   }
-  body {
-    background-color: #ffffff;
-    color: #000000;
+  @media (prefers-color-scheme: light) {
+    .light-mode .dark-mode-image {
+      display: none;
+    }
   }
-}
-@media (prefers-color-scheme: light) {
-  .light-mode .dark-mode-image {
-    display: none;
+  @media (prefers-color-scheme: dark) {
+    .dark-mode .light-mode-image {
+      display: none;
+    }
   }
-}
-@media (prefers-color-scheme: dark) {
-  .dark-mode .light-mode-image {
-    display: none;
+  @media (max-width: 768px) {
+    .dark-mode-image,
+    .light-mode-image {
+      max-width: 80px;
+      max-height: 80px;
+    }
   }
-}
-@media (max-width: 412px) {
-  .dark-mode-image,
-  .light-mode-image {
-    max-width: 80px;
-    max-height: 80px;
+  @media (max-width: 768px) {
+    header {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
   }
-}
-@media (max-width: 412px) {
-  header {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  @media (max-width: 768px) {
+    table {
+      font-size: 14px;
+    }
   }
-  h1 {
-    margin-bottom: 20px;
+  @media (max-width: 768px) {
+    .centered-text {
+      font-size: 18px;
+    }
   }
-}
-@media (max-width: 412px) {
-  table {
-    font-size: 14px;
-  }
-}
-@media (max-width: 412px) {
-  .centered-text {
-    font-size: 18px;
-  }
-}
