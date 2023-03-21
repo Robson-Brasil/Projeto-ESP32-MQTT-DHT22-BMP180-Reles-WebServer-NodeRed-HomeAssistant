@@ -750,7 +750,9 @@ void reconnectMQTT() {
       //MQTT1.subscribe(sub11);
       return; // sai da função, pois já conectou
     }
+  }
 
+  while (!MQTT2.connected()) {    
     Serial.print("* Tentando se conectar ao Broker MQTT: ");
     Serial.println(BrokerMQTT2);
     if (MQTT2.connect(ID_MQTT2, mqttUserName2, mqttPwd2)) {
@@ -812,12 +814,19 @@ void reconectWiFi() {
   Serial.print("DNS 2: ");
   Serial.println(WiFi.dnsIP(1));
 }
+
 /* Função: verifica o estado das conexões WiFI e ao broker MQTT.
   Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
-  if (!MQTT1.connected())
+  if (!MQTT1.connected()) {
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
     reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
+  }
+
+  if (!MQTT2.connected()) {
+    reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
+    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"      
+  }
 }
 
 // Função: inicializa o output em nível lógico baixo
