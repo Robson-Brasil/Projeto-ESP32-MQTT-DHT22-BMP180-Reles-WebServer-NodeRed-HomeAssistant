@@ -1,5 +1,17 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+}
+
 /* Define fonte base */
 body {
+  display:flex;
+  flex-wrap: wrap;
+  flex: 1 1 100vw;
+  margin: 3px;
+  flex-grow: 1;
   lang: "pt-br";
   font-family: Arial;
   font-size: 20px;
@@ -28,16 +40,16 @@ body.dark-mode {
 /* Esconder a imagem de dark mode quando o modo claro está ativado */
 .light-mode .dark-mode-image {
   background-color: #333;
-  max-width: 128px;
-  max-height: 128px;
+  max-width: 50px;
+  max-height: 50px;
   display: inline-block;
 }
 
 /* Esconder a imagem de light mode quando o modo escuro está ativado */
 .dark-mode .light-mode-image {
   background-color: #333;
-  max-width: 128px;
-  max-height: 128px;
+  max-width: 50px;
+  max-height: 50px;
   display: inline-block;
 }
 
@@ -65,8 +77,8 @@ body.dark-mode {
 #dark-mode-switch span {
   display: inline-block;
   margin-left: auto;
-  color: #ffffff;
-  font-size: 30px;
+  color: #fbfbfb;
+  font-size: 15px;
   white-space: nowrap;
 }
 
@@ -77,11 +89,14 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30px;
+  padding: 20px;
+  width: 90%;
+  max-width: 100%;
+  margin: auto;
 }
 
 h1 {
-  margin: 0;
+  margin: auto;
 }
 
 /* Estilos para o botão de alternância de tema */
@@ -183,22 +198,38 @@ table {
 /* Estilos para o texto centralizado e branco */
 .centered-text {
   text-align: center;
+  display:block;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
 }
 
 /* Estilos responsivos */
-@media (max-width: 450px) {
+@media (max-width: 320px) {
   header {
     grid-template-columns: repeat(2, 1fr);
+
+    align-items: center;
+    padding: 20px;
+    width: 90%;
+    max-width: 100%;
+    margin: auto;
   }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 320px) {
   header {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+
+    align-items: center;
+    padding: 20px;
+    width: 90%;
+    max-width: 100%;
+    margin: auto;
   }
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 320px) {
   body {
     font-size: 10px;
   }
@@ -228,8 +259,7 @@ table {
   }
 }
 
-@media (max-width: 300px) {
-
+@media (max-width: 320px) {
   .dark-mode-image,
   .light-mode-image {
     max-width: 10%;
@@ -237,23 +267,22 @@ table {
   }
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 320px) {
   header {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    
   }
-
-  
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 320px) {
   table {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 320px) {
   .centered-text {
     font-size: 18px;
   }
