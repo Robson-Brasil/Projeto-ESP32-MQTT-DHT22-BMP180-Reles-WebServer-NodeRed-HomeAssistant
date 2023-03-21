@@ -730,9 +730,9 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 }
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
   em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
-void reconnectMQTT() {
-  while (!MQTT1.connected()) {
-    Serial.print("* Tentando se conectar ao Broker MQTT: ");
+void reconectMQTT() {
+  if (!MQTT1.connected()) {
+    Serial.print("* Tentando se conectar ao Broker MQTT 1: ");
     Serial.println(BrokerMQTT1);
     if (MQTT1.connect(ID_MQTT1, mqttUserName1, mqttPwd1)) {
       Serial.println("Conectado com sucesso ao broker MQTT 1!");
@@ -748,12 +748,13 @@ void reconnectMQTT() {
       //MQTT1.subscribe(sub9);
       //MQTT1.subscribe(sub10);
       //MQTT1.subscribe(sub11);
-      return; // sai da função, pois já conectou
+    } else {
+      Serial.println("Falha ao se conectar ao broker MQTT 1.");
     }
   }
 
-  while (!MQTT2.connected()) {    
-    Serial.print("* Tentando se conectar ao Broker MQTT: ");
+  if (!MQTT2.connected()) {    
+    Serial.print("* Tentando se conectar ao Broker MQTT 2: ");
     Serial.println(BrokerMQTT2);
     if (MQTT2.connect(ID_MQTT2, mqttUserName2, mqttPwd2)) {
       Serial.println("Conectado com sucesso ao broker MQTT 2!");
@@ -769,14 +770,9 @@ void reconnectMQTT() {
       //MQTT.subscribe(sub9);
       //MQTT.subscribe(sub10);
       //MQTT.subscribe(sub11);
-      return; // sai da função, pois já conectou
+    } else {
+      Serial.println("Falha ao se conectar ao broker MQTT 2.");
     }
-
-    Serial.println("Falha ao reconectar nos brokers.");
-    Serial.print(MQTT1.state());
-    Serial.print(MQTT2.state());
-    Serial.println("Haverá nova tentativa de conexão em 2s");
-    delay(2000);
   }
 }
 
@@ -818,16 +814,11 @@ void reconectWiFi() {
 /* Função: verifica o estado das conexões WiFI e ao broker MQTT.
   Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
-  if (!MQTT1.connected()) {
-    reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
+  if (!MQTT1.connected() || !MQTT2.connected())
+    reconectMQTT();  // se não há conexão com o Broker, a conexão é refeita
     reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
-  }
-
-  if (!MQTT2.connected()) {
-    reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
-    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"      
-  }
 }
+
 
 // Função: inicializa o output em nível lógico baixo
 void initOutput(void) {
