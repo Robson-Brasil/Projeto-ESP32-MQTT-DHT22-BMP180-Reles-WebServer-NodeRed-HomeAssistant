@@ -23,11 +23,18 @@
 void setup1();  // declaração da função setup1()
 void loop1();   // declaração da função loop1()
 
-int PortaBroker = 1883;  // Porta do Broker MQTT
+int PortaBroker1 = 1883;  // Porta do Broker MQTT
+int PortaBroker2 = 1883;  // Porta do Broker MQTT
 
 float diff = 1.0;
 
-#define ID_MQTT "ESP32-IoT-1" /* ID MQTT (para identificação de seção)           \
+#define ID_MQTT1 "ESP32-IoT-Broker1" /* ID MQTT (para identificação de seção)           \
+                            IMPORTANTE: Este deve ser único no broker (ou seja, \
+                            se um client MQTT tentar entrar com o mesmo         \
+                            ID de outro já conectado ao broker, o broker        \
+irá fechar a conexão de um deles).*/
+
+#define ID_MQTT2 "ESP32-IoT-Broker2" /* ID MQTT (para identificação de seção)           \
                             IMPORTANTE: Este deve ser único no broker (ou seja, \
                             se um client MQTT tentar entrar com o mesmo         \
                             ID de outro já conectado ao broker, o broker        \
@@ -63,7 +70,8 @@ IPAddress secondaryDNS(8, 8, 4, 4);
 
 // Variáveis e objetos globais
 WiFiClient espClient;          // Cria o objeto espClient
-PubSubClient MQTT(espClient);  // Instância o Cliente MQTT passando o objeto espClient
+PubSubClient MQTT1(espClient);  // Instância o Cliente MQTT passando o objeto espClient
+PubSubClient MQTT2(espClient);  // Instância o Cliente MQTT passando o objeto espClient
 
 char str_hum_data[7];
 char str_temp_data[7];
@@ -182,8 +190,6 @@ void setup() {
     Serial.println("Ocorreu um erro ao montar o SPIFFS");
     return;
   }
-
-  // Print do IP Local do ESP32
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
@@ -372,8 +378,10 @@ void initWiFi() {
 
 // Função: inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
 void initMQTT() {
-  MQTT.setServer(BrokerMQTT, PortaBroker);  // Informa qual broker e porta deve ser conectado
-  MQTT.setCallback(mqtt_callback);          // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
+  MQTT1.setServer(BrokerMQTT1, PortaBroker1);  // Informa qual broker e porta deve ser conectado
+  MQTT2.setServer(BrokerMQTT2, PortaBroker2);  // Informa qual broker e porta deve ser conectado
+  MQTT1.setCallback(mqtt_callback);          // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
+  MQTT2.setCallback(mqtt_callback);          // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
 }
 // Função: Função de callback, esta função é chamada toda vez que uma informação de um dos tópicos subescritos chega.
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
@@ -401,7 +409,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       status_todos = 0;
       toggleState_0 = 0;
-      MQTT.publish(pub0, "0", true);
+      MQTT1.publish(pub0, "0", true);
     } else {
       digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
       digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
@@ -413,7 +421,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
       status_todos = 1;
       toggleState_0 = 1;
-      MQTT.publish(pub0, "1", true);
+      MQTT1.publish(pub0, "1", true);
     }
   }
   if (strstr(topic, sub1)) {
@@ -425,11 +433,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_1 = 0;
-      MQTT.publish(pub1, "0", true);
+      MQTT1.publish(pub1, "0", true);
     } else {
       digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_1 = 1;
-      MQTT.publish(pub1, "1", true);
+      MQTT1.publish(pub1, "1", true);
     }
   }
   if (strstr(topic, sub2)) {
@@ -442,11 +450,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_2 = 0;
-      MQTT.publish(pub2, "0", true);
+      MQTT1.publish(pub2, "0", true);
     } else {
       digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_2 = 1;
-      MQTT.publish(pub2, "1", true);
+      MQTT1.publish(pub2, "1", true);
     }
   }
   if (strstr(topic, sub3)) {
@@ -459,11 +467,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin3, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_3 = 0;
-      MQTT.publish(pub3, "0", true);
+      MQTT1.publish(pub3, "0", true);
     } else {
       digitalWrite(RelayPin3, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_3 = 1;
-      MQTT.publish(pub3, "1", true);
+      MQTT1.publish(pub3, "1", true);
     }
   }
   if (strstr(topic, sub4)) {
@@ -476,11 +484,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin4, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_4 = 0;
-      MQTT.publish(pub4, "0", true);
+      MQTT1.publish(pub4, "0", true);
     } else {
       digitalWrite(RelayPin4, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_4 = 1;
-      MQTT.publish(pub4, "1", true);
+      MQTT1.publish(pub4, "1", true);
     }
   }
   if (strstr(topic, sub5)) {
@@ -493,11 +501,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin5, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_5 = 0;
-      MQTT.publish(pub5, "0", true);
+      MQTT1.publish(pub5, "0", true);
     } else {
       digitalWrite(RelayPin5, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_5 = 1;
-      MQTT.publish(pub5, "1", true);
+      MQTT1.publish(pub5, "1", true);
     }
   }
   if (strstr(topic, sub6)) {
@@ -510,11 +518,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin6, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_6 = 0;
-      MQTT.publish(pub6, "0", true);
+      MQTT1.publish(pub6, "0", true);
     } else {
       digitalWrite(RelayPin6, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_6 = 1;
-      MQTT.publish(pub6, "1", true);
+      MQTT1.publish(pub6, "1", true);
     }
   }
   if (strstr(topic, sub7)) {
@@ -527,11 +535,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin7, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_7 = 0;
-      MQTT.publish(pub7, "0", true);
+      MQTT1.publish(pub7, "0", true);
     } else {
       digitalWrite(RelayPin7, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_7 = 1;
-      MQTT.publish(pub7, "1", true);
+      MQTT1.publish(pub7, "1", true);
     }
   }
   if (strstr(topic, sub8)) {
@@ -544,42 +552,232 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_8 = 0;
-      MQTT.publish(pub8, "0", true);
+      MQTT1.publish(pub8, "0", true);
     } else {
       digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_8 = 1;
-      MQTT.publish(pub8, "1", true);
+      MQTT1.publish(pub8, "1", true);
+    }
+  }
+
+  if (strstr(topic, sub0)) {
+    for (unsigned int i = 0; i < length; i++) {
+      Serial.print((char)payload[i]);
+      data += (char)payload[i];
+    }
+    Serial.println();
+    if ((char)payload[0] == '0') {
+      digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      digitalWrite(RelayPin3, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      digitalWrite(RelayPin4, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      digitalWrite(RelayPin5, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      digitalWrite(RelayPin6, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      digitalWrite(RelayPin7, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      status_todos = 0;
+      toggleState_0 = 0;
+      MQTT2.publish(pub0, "0", true);
+    } else {
+      digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      digitalWrite(RelayPin3, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      digitalWrite(RelayPin4, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      digitalWrite(RelayPin5, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      digitalWrite(RelayPin6, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      digitalWrite(RelayPin7, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      status_todos = 1;
+      toggleState_0 = 1;
+      MQTT2.publish(pub0, "1", true);
+    }
+  }
+  if (strstr(topic, sub1)) {
+    for (unsigned int i = 0; i < length; i++) {
+      Serial.print((char)payload[i]);
+      data += (char)payload[i];
+    }
+    Serial.println();
+    if ((char)payload[0] == '0') {
+      digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      toggleState_1 = 0;
+      MQTT2.publish(pub1, "0", true);
+    } else {
+      digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      toggleState_1 = 1;
+      MQTT2.publish(pub1, "1", true);
+    }
+  }
+  if (strstr(topic, sub2)) {
+    for (unsigned int i = 0; i < length; i++) {
+      Serial.print((char)payload[i]);
+      data += (char)payload[i];
+    }
+    Serial.println();
+
+    if ((char)payload[0] == '0') {
+      digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      toggleState_2 = 0;
+      MQTT2.publish(pub2, "0", true);
+    } else {
+      digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      toggleState_2 = 1;
+      MQTT2.publish(pub2, "1", true);
+    }
+  }
+  if (strstr(topic, sub3)) {
+    for (unsigned int i = 0; i < length; i++) {
+      Serial.print((char)payload[i]);
+      data += (char)payload[i];
+    }
+    Serial.println();
+
+    if ((char)payload[0] == '0') {
+      digitalWrite(RelayPin3, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      toggleState_3 = 0;
+      MQTT2.publish(pub3, "0", true);
+    } else {
+      digitalWrite(RelayPin3, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      toggleState_3 = 1;
+      MQTT2.publish(pub3, "1", true);
+    }
+  }
+  if (strstr(topic, sub4)) {
+    for (unsigned int i = 0; i < length; i++) {
+      Serial.print((char)payload[i]);
+      data += (char)payload[i];
+    }
+    Serial.println();
+
+    if ((char)payload[0] == '0') {
+      digitalWrite(RelayPin4, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      toggleState_4 = 0;
+      MQTT2.publish(pub4, "0", true);
+    } else {
+      digitalWrite(RelayPin4, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      toggleState_4 = 1;
+      MQTT2.publish(pub4, "1", true);
+    }
+  }
+  if (strstr(topic, sub5)) {
+    for (unsigned int i = 0; i < length; i++) {
+      Serial.print((char)payload[i]);
+      data += (char)payload[i];
+    }
+    Serial.println();
+
+    if ((char)payload[0] == '0') {
+      digitalWrite(RelayPin5, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      toggleState_5 = 0;
+      MQTT2.publish(pub5, "0", true);
+    } else {
+      digitalWrite(RelayPin5, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      toggleState_5 = 1;
+      MQTT2.publish(pub5, "1", true);
+    }
+  }
+  if (strstr(topic, sub6)) {
+    for (unsigned int i = 0; i < length; i++) {
+      Serial.print((char)payload[i]);
+      data += (char)payload[i];
+    }
+    Serial.println();
+
+    if ((char)payload[0] == '0') {
+      digitalWrite(RelayPin6, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      toggleState_6 = 0;
+      MQTT2.publish(pub6, "0", true);
+    } else {
+      digitalWrite(RelayPin6, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      toggleState_6 = 1;
+      MQTT2.publish(pub6, "1", true);
+    }
+  }
+  if (strstr(topic, sub7)) {
+    for (unsigned int i = 0; i < length; i++) {
+      Serial.print((char)payload[i]);
+      data += (char)payload[i];
+    }
+    Serial.println();
+
+    if ((char)payload[0] == '0') {
+      digitalWrite(RelayPin7, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      toggleState_7 = 0;
+      MQTT2.publish(pub7, "0", true);
+    } else {
+      digitalWrite(RelayPin7, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      toggleState_7 = 1;
+      MQTT2.publish(pub7, "1", true);
+    }
+  }
+  if (strstr(topic, sub8)) {
+    for (unsigned int i = 0; i < length; i++) {
+      Serial.print((char)payload[i]);
+      data += (char)payload[i];
+    }
+    Serial.println();
+
+    if ((char)payload[0] == '0') {
+      digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      toggleState_8 = 0;
+      MQTT2.publish(pub8, "0", true);
+    } else {
+      digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      toggleState_8 = 1;
+      MQTT2.publish(pub8, "1", true);
     }
   }
 }
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
   em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
 void reconnectMQTT() {
-  while (!MQTT.connected()) {
+  while (!MQTT1.connected()) {
     Serial.print("* Tentando se conectar ao Broker MQTT: ");
-    Serial.println(BrokerMQTT);
-    if (MQTT.connect(ID_MQTT, mqttUserName, mqttPwd)) {
-      Serial.println("Conectado com sucesso ao broker MQTT!");
-      MQTT.subscribe(sub0, 1);
-      MQTT.subscribe(sub1, 1);
-      MQTT.subscribe(sub2, 1);
-      MQTT.subscribe(sub3, 1);
-      MQTT.subscribe(sub4, 1);
-      MQTT.subscribe(sub5, 1);
-      MQTT.subscribe(sub6, 1);
-      MQTT.subscribe(sub7, 1);
-      MQTT.subscribe(sub8, 1);
+    Serial.println(BrokerMQTT1);
+    if (MQTT1.connect(ID_MQTT1, mqttUserName1, mqttPwd1)) {
+      Serial.println("Conectado com sucesso ao broker MQTT 1!");
+      MQTT1.subscribe(sub0, 1);
+      MQTT1.subscribe(sub1, 1);
+      MQTT1.subscribe(sub2, 1);
+      MQTT1.subscribe(sub3, 1);
+      MQTT1.subscribe(sub4, 1);
+      MQTT1.subscribe(sub5, 1);
+      MQTT1.subscribe(sub6, 1);
+      MQTT1.subscribe(sub7, 1);
+      MQTT1.subscribe(sub8, 1);
+      //MQTT1.subscribe(sub9);
+      //MQTT1.subscribe(sub10);
+      //MQTT1.subscribe(sub11);
+      return; // sai da função, pois já conectou
+    }
+
+    Serial.print("* Tentando se conectar ao Broker MQTT: ");
+    Serial.println(BrokerMQTT2);
+    if (MQTT2.connect(ID_MQTT2, mqttUserName2, mqttPwd2)) {
+      Serial.println("Conectado com sucesso ao broker MQTT 2!");
+      MQTT2.subscribe(sub0, 1);
+      MQTT2.subscribe(sub1, 1);
+      MQTT2.subscribe(sub2, 1);
+      MQTT2.subscribe(sub3, 1);
+      MQTT2.subscribe(sub4, 1);
+      MQTT2.subscribe(sub5, 1);
+      MQTT2.subscribe(sub6, 1);
+      MQTT2.subscribe(sub7, 1);
+      MQTT2.subscribe(sub8, 1);
       //MQTT.subscribe(sub9);
       //MQTT.subscribe(sub10);
       //MQTT.subscribe(sub11);
-    } else {
-      Serial.println("Falha ao reconectar no broker.");
-      Serial.print(MQTT.state());
-      Serial.println("Haverá nova tentativa de conexão em 2s");
-      delay(2000);
+      return; // sai da função, pois já conectou
     }
+
+    Serial.println("Falha ao reconectar nos brokers.");
+    Serial.print(MQTT1.state());
+    Serial.print(MQTT2.state());
+    Serial.println("Haverá nova tentativa de conexão em 2s");
+    delay(2000);
   }
 }
+
 // Função: reconecta-se ao WiFi
 void reconectWiFi() {
   /* Se já está conectado a rede WI-FI, nada é feito.
@@ -617,11 +815,11 @@ void reconectWiFi() {
 /* Função: verifica o estado das conexões WiFI e ao broker MQTT.
   Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
-  if (!MQTT.connected())
+  if (!MQTT1.connected())
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
-
-  reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
+    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
 }
+
 // Função: inicializa o output em nível lógico baixo
 void initOutput(void) {
 
@@ -652,8 +850,11 @@ void initOutput(void) {
 void loop() {
   // Garante funcionamento das conexões WiFi e ao Broker MQTT
   VerificaConexoesWiFIEMQTT();
-  //Keep-Alive da comunicação com Broker MQTT
-  MQTT.loop();
+   // Lide com as mensagens recebidas do primeiro broker MQTT
+  MQTT1.loop();
+  
+  // Lide com as mensagens recebidas do segundo broker MQTT
+  MQTT2.loop();
 
   loop1();
 
@@ -663,49 +864,95 @@ void loop() {
     lastMsgMQTT = now;
 
     if (digitalRead(RelayPin1) == HIGH) {
-      MQTT.publish(pub1, "0", true);
+      MQTT1.publish(pub1, "0", true);
     } else {
-      MQTT.publish(pub1, "1", true);
+      MQTT1.publish(pub1, "1", true);
     }
     if (digitalRead(RelayPin2) == HIGH) {
-      MQTT.publish(pub2, "0", true);
+      MQTT1.publish(pub2, "0", true);
     } else {
-      MQTT.publish(pub2, "1", true);
+      MQTT1.publish(pub2, "1", true);
     }
     if (digitalRead(RelayPin3) == HIGH) {
-      MQTT.publish(pub3, "0", true);
+      MQTT1.publish(pub3, "0", true);
     } else {
-      MQTT.publish(pub3, "1", true);
+      MQTT1.publish(pub3, "1", true);
     }
     if (digitalRead(RelayPin4) == HIGH) {
-      MQTT.publish(pub4, "0", true);
+      MQTT1.publish(pub4, "0", true);
     } else {
-      MQTT.publish(pub4, "1", true);
+      MQTT1.publish(pub4, "1", true);
     }
     if (digitalRead(RelayPin5) == HIGH) {
-      MQTT.publish(pub5, "0", true);
+      MQTT1.publish(pub5, "0", true);
     } else {
-      MQTT.publish(pub5, "1", true);
+      MQTT1.publish(pub5, "1", true);
     }
     if (digitalRead(RelayPin6) == HIGH) {
-      MQTT.publish(pub6, "0", true);
+      MQTT1.publish(pub6, "0", true);
     } else {
-      MQTT.publish(pub6, "1", true);
+      MQTT1.publish(pub6, "1", true);
     }
     if (digitalRead(RelayPin7) == HIGH) {
-      MQTT.publish(pub7, "0", true);
+      MQTT1.publish(pub7, "0", true);
     } else {
-      MQTT.publish(pub7, "1", true);
+      MQTT1.publish(pub7, "1", true);
     }
     if (digitalRead(RelayPin8) == HIGH) {
-      MQTT.publish(pub8, "0", true);
+      MQTT1.publish(pub8, "0", true);
     } else {
-      MQTT.publish(pub8, "1", true);
+      MQTT1.publish(pub8, "1", true);
     }
     if (status_todos == 1) {
-      MQTT.publish(pub0, "1", true);
+      MQTT1.publish(pub0, "1", true);
     } else {
-      MQTT.publish(pub0, "0", true);
+      MQTT1.publish(pub0, "0", true);
+    }
+
+    if (digitalRead(RelayPin1) == HIGH) {
+      MQTT2.publish(pub1, "0", true);
+    } else {
+      MQTT2.publish(pub1, "1", true);
+    }
+    if (digitalRead(RelayPin2) == HIGH) {
+      MQTT2.publish(pub2, "0", true);
+    } else {
+      MQTT2.publish(pub2, "1", true);
+    }
+    if (digitalRead(RelayPin3) == HIGH) {
+      MQTT2.publish(pub3, "0", true);
+    } else {
+      MQTT2.publish(pub3, "1", true);
+    }
+    if (digitalRead(RelayPin4) == HIGH) {
+      MQTT2.publish(pub4, "0", true);
+    } else {
+      MQTT2.publish(pub4, "1", true);
+    }
+    if (digitalRead(RelayPin5) == HIGH) {
+      MQTT2.publish(pub5, "0", true);
+    } else {
+      MQTT2.publish(pub5, "1", true);
+    }
+    if (digitalRead(RelayPin6) == HIGH) {
+      MQTT2.publish(pub6, "0", true);
+    } else {
+      MQTT2.publish(pub6, "1", true);
+    }
+    if (digitalRead(RelayPin7) == HIGH) {
+      MQTT2.publish(pub7, "0", true);
+    } else {
+      MQTT2.publish(pub7, "1", true);
+    }
+    if (digitalRead(RelayPin8) == HIGH) {
+      MQTT2.publish(pub8, "0", true);
+    } else {
+      MQTT2.publish(pub8, "1", true);
+    }
+    if (status_todos == 1) {
+      MQTT2.publish(pub0, "1", true);
+    } else {
+      MQTT2.publish(pub0, "0", true);
     }
   }
 }
@@ -721,8 +968,12 @@ void loop1() {
 
   // Garante funcionamento das conexões WiFi e ao Broker MQTT
   VerificaConexoesWiFIEMQTT();
-  //Keep-Alive da comunicação com Broker MQTT
-  MQTT.loop();  // Verifica se há novas mensagens no Broker MQTT
+
+   // Lide com as mensagens recebidas do primeiro broker MQTT
+  MQTT1.loop();
+  
+  // Lide com as mensagens recebidas do segundo broker MQTT
+  MQTT2.loop();
 
   unsigned long now = millis();
   if (now - lastMsgDHT > 10000) {
@@ -744,8 +995,12 @@ void loop1() {
     dtostrf(tempterm_data, 6, 2, str_tempterm_data);
     /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
 
-    MQTT.publish(pub9, str_temp_data);
-    MQTT.publish(pub10, str_hum_data);
-    MQTT.publish(pub11, str_tempterm_data);
+    MQTT1.publish(pub9, str_temp_data);
+    MQTT1.publish(pub10, str_hum_data);
+    MQTT1.publish(pub11, str_tempterm_data);
+
+    MQTT2.publish(pub9, str_temp_data);
+    MQTT2.publish(pub10, str_hum_data);
+    MQTT2.publish(pub11, str_tempterm_data);
   }
 }
