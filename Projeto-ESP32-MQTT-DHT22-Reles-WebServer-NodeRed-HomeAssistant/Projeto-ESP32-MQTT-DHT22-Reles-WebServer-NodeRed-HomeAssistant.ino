@@ -10,8 +10,8 @@
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 30 - Alfa
-  Última Modificação : 12/03/2023
+  Versão : 35 - Alfa
+  Última Modificação : 29/03/2023
 **********************************************************************************/
 
 //Bibliotecas
@@ -24,17 +24,10 @@ void setup1();  // declaração da função setup1()
 void loop1();   // declaração da função loop1()
 
 int PortaBroker1 = 1883;  // Porta do Broker MQTT
-//int PortaBroker2 = 1883;  // Porta do Broker MQTT
 
 float diff = 1.0;
 
 #define ID_MQTT1 "ESP32-IoT-Broker1" /* ID MQTT (para identificação de seção)           \
-                            IMPORTANTE: Este deve ser único no broker (ou seja, \
-                            se um client MQTT tentar entrar com o mesmo         \
-                            ID de outro já conectado ao broker, o broker        \
-irá fechar a conexão de um deles).*/
-
-/*#define ID_MQTT2 "ESP32-IoT-Broker2" /* ID MQTT (para identificação de seção)           \
                             IMPORTANTE: Este deve ser único no broker (ou seja, \
                             se um client MQTT tentar entrar com o mesmo         \
                             ID de outro já conectado ao broker, o broker        \
@@ -380,7 +373,6 @@ void initWiFi() {
 // Função: inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
 void initMQTT() {
   MQTT.setServer(BrokerMQTT1, PortaBroker1);  // Informa qual broker e porta deve ser conectado
-  //MQTT.setServer(BrokerMQTT2, PortaBroker2);  // Informa qual broker e porta deve ser conectado
   MQTT.setCallback(mqtt_callback);          // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
 }
 // Função: Função de callback, esta função é chamada toda vez que uma informação de um dos tópicos subescritos chega.
@@ -586,29 +578,6 @@ void reconnectMQTT() {
       Serial.println("Haverá nova tentativa de conexão em 2s");
       delay(2000);
     }
-
-  /*Serial.print("* Tentando se conectar ao Broker MQTT: ");
-    Serial.println(BrokerMQTT2);
-    if (MQTT.connect(ID_MQTT2, mqttUserName2, mqttPwd2)) {
-      Serial.println("Conectado com sucesso ao broker MQTT!");
-      MQTT.subscribe(sub0, 1);
-      MQTT.subscribe(sub1, 1);
-      MQTT.subscribe(sub2, 1);
-      MQTT.subscribe(sub3, 1);
-      MQTT.subscribe(sub4, 1);
-      MQTT.subscribe(sub5, 1);
-      MQTT.subscribe(sub6, 1);
-      MQTT.subscribe(sub7, 1);
-      MQTT.subscribe(sub8, 1);
-      //MQTT.subscribe(sub9);
-      //MQTT.subscribe(sub10);
-      //MQTT.subscribe(sub11);
-    } else {
-      Serial.println("Falha ao reconectar no broker.");
-      Serial.print(MQTT.state());
-      Serial.println("Haverá nova tentativa de conexão em 2s");
-      delay(2000);
-    }*/
   }
 }
 // Função: reconecta-se ao WiFi

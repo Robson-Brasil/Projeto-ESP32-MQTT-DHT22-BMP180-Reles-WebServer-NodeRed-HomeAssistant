@@ -19,6 +19,7 @@ body {
   background-color: #ffffff;
   color: #333;
   transition: background-color 0.2s ease;
+  height: 100vh;
 }
 
 /* Alterar as cores e estilos no modo escuro */
