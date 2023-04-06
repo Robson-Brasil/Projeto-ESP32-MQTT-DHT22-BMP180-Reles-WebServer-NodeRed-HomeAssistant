@@ -10,8 +10,8 @@
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 35 - Alfa
-  Última Modificação : 29/03/2023
+  Versão : 1 - Beta Tester
+  Última Modificação : 04/03/2023
 **********************************************************************************/
 
 //Bibliotecas
@@ -26,6 +26,8 @@ void loop1();   // declaração da função loop1()
 int PortaBroker1 = 1883;  // Porta do Broker MQTT
 
 float diff = 1.0;
+
+int val;
 
 #define ID_MQTT1 "ESP32-IoT-Broker1" /* ID MQTT (para identificação de seção)           \
                             IMPORTANTE: Este deve ser único no broker (ou seja, \
@@ -71,8 +73,12 @@ char str_tempterm_data[7];
 char str_tempF_data[7];
 
 #define MSG_BUFFER_SIZE (1000)
+
+//Função MILLIS
 unsigned long lastMsgDHT = 0;
 unsigned long lastMsgMQTT = 0;
+unsigned long lastMsgPIR = 0;
+unsigned long delayTime = 0;
 int value = 0;
 
 // WebServer
@@ -183,11 +189,9 @@ void setup() {
     return;
   }
 
-  // Print do IP Local do ESP32
-
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
     if (!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
+    return request->requestAuthentication();
     request->send(SPIFFS, "/WebServer.html", String(), false, processor);
   });
 
@@ -195,27 +199,27 @@ void setup() {
   server.serveStatic("/", SPIFFS, "/");
 
   // Route for dashboard CSS
-  server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest* request) {
     request->send(SPIFFS, "/WebServer.css", "text/css");
   });
 
-  server.on("/darklmode.js", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/darklmode.js", HTTP_GET, [](AsyncWebServerRequest* request) {
     request->send(SPIFFS, "/darkmode.js", "application/javascript");
   });
 
-  server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest* request) {
     request->send(SPIFFS, "/darkmode.png", "image/png");
   });
 
-  server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest* request) {
     request->send(SPIFFS, "/lightmode.png", "image/png");
   });
 
-  server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest* request) {
     request->send(SPIFFS, "/logo-1.png", "image/png");
   });
 
-  server.on("/update1", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/update1", HTTP_GET, [](AsyncWebServerRequest* request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_1)) {
@@ -229,7 +233,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update2", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/update2", HTTP_GET, [](AsyncWebServerRequest* request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_2)) {
@@ -243,7 +247,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update3", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/update3", HTTP_GET, [](AsyncWebServerRequest* request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_1)) {
@@ -257,7 +261,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update4", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/update4", HTTP_GET, [](AsyncWebServerRequest* request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_2)) {
@@ -271,7 +275,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update5", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/update5", HTTP_GET, [](AsyncWebServerRequest* request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_1)) {
@@ -285,7 +289,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update6", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/update6", HTTP_GET, [](AsyncWebServerRequest* request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_2)) {
@@ -299,7 +303,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update7", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/update7", HTTP_GET, [](AsyncWebServerRequest* request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_1)) {
@@ -313,7 +317,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update8", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/update8", HTTP_GET, [](AsyncWebServerRequest* request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_2)) {
@@ -328,7 +332,7 @@ void setup() {
   });
 
   // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
-  server.on("/update", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/update", HTTP_GET, [](AsyncWebServerRequest* request) {
     String inputMessage1;
     String inputParam1;
     String inputMessage2;
@@ -361,7 +365,9 @@ void initSerial() {
 }
 // Função: inicializa e conecta-se na rede WI-FI desejada
 void initWiFi() {
+  
   delay(1000);
+
   Serial.println("------Conexao WI-FI------");
   Serial.print("Conectando-se na rede: ");
   Serial.println(ssid);
@@ -372,8 +378,9 @@ void initWiFi() {
 
 // Função: inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
 void initMQTT() {
+  
   MQTT.setServer(BrokerMQTT1, PortaBroker1);  // Informa qual broker e porta deve ser conectado
-  MQTT.setCallback(mqtt_callback);          // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
+  MQTT.setCallback(mqtt_callback);            // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
 }
 // Função: Função de callback, esta função é chamada toda vez que uma informação de um dos tópicos subescritos chega.
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
@@ -390,6 +397,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       data += (char)payload[i];
     }
     Serial.println();
+    
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
@@ -422,6 +430,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       data += (char)payload[i];
     }
     Serial.println();
+    
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_1 = 0;
@@ -555,6 +564,10 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
   em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
 void reconnectMQTT() {
+  
+  unsigned long currentTime = millis();
+  unsigned long reconnectTime = 2000;  // Tempo para tentar reconectar (em milissegundos)
+
   while (!MQTT.connected()) {
     Serial.print("* Tentando se conectar ao Broker MQTT: ");
     Serial.println(BrokerMQTT1);
@@ -569,17 +582,18 @@ void reconnectMQTT() {
       MQTT.subscribe(sub6, 1);
       MQTT.subscribe(sub7, 1);
       MQTT.subscribe(sub8, 1);
-      //MQTT.subscribe(sub9);
-      //MQTT.subscribe(sub10);
-      //MQTT.subscribe(sub11);
+      MQTT.subscribe(inTopic);
     } else {
       Serial.println("Falha ao reconectar no broker.");
       Serial.print(MQTT.state());
-      Serial.println("Haverá nova tentativa de conexão em 2s");
-      delay(2000);
+      if (millis() - currentTime > reconnectTime) {
+        Serial.println("Haverá nova tentativa de conexão em 2s");
+        currentTime = millis();
+      }
     }
   }
 }
+
 // Função: reconecta-se ao WiFi
 void reconectWiFi() {
   /* Se já está conectado a rede WI-FI, nada é feito.
@@ -617,8 +631,11 @@ void reconectWiFi() {
 /* Função: verifica o estado das conexões WiFI e ao broker MQTT.
   Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
+  
   if (!MQTT.connected())
+
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
+
     reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
 }
 
@@ -657,10 +674,10 @@ void loop() {
 
   loop1();
 
-  unsigned long now = millis();
-  if (now - lastMsgMQTT > 500) {
+  unsigned long currentTimeMQTT = millis();
+  if (currentTimeMQTT - lastMsgMQTT > 500) {
 
-    lastMsgMQTT = now;
+    lastMsgMQTT = currentTimeMQTT;
 
     if (digitalRead(RelayPin1) == HIGH) {
       MQTT.publish(pub1, "0", true);
@@ -712,7 +729,9 @@ void loop() {
 
 //Implementação das Funções Principais do Core1 do ESP32
 void setup1() {
+  
   initMQTT();
+
   dht.begin();  // inicializa o sensor DHT11
 }
 
@@ -724,10 +743,10 @@ void loop1() {
   //Keep-Alive da comunicação com Broker MQTT
   MQTT.loop();  // Verifica se há novas mensagens no Broker MQTT
 
-  unsigned long now = millis();
-  if (now - lastMsgDHT > 10000) {
+  unsigned long currentTimeDHT = millis();
+  if (currentTimeDHT - lastMsgDHT > 10000) {
 
-    lastMsgDHT = now;
+    lastMsgDHT = currentTimeDHT;
 
     float temp_data = dht.readTemperature();  // ou dht.readTemperature(true) para Fahrenheit
     dtostrf(temp_data, 6, 2, str_temp_data);
@@ -747,5 +766,37 @@ void loop1() {
     MQTT.publish(pub9, str_temp_data);
     MQTT.publish(pub10, str_hum_data);
     MQTT.publish(pub11, str_tempterm_data);
+  }
+  unsigned long currentTimePIR = millis();
+  unsigned long motionDetectedTime = 0;
+  unsigned long relayDuration = 5000;  // Tempo de duração do relé em milissegundos (5 segundos)
+  bool noMotionMsgSent = false;        // Variável para verificar se a mensagem "Sem Movimento" já foi enviada
+
+    if (currentTimePIR - lastMsgPIR > 50) {
+      lastMsgPIR = currentTimePIR;
+
+      val = digitalRead(pirPin);
+      if (val == LOW) {
+        if (!noMotionMsgSent) {  // Verifica se a mensagem "Sem Movimento" ainda não foi enviada
+          //Serial.println("Sem Movimento");
+          MQTT.publish(motion_topic, "Sem Movimento");
+          digitalWrite(RelayPin8, HIGH);  // Desliga o relé
+          MQTT.publish(pub8, "0", true);  // Publica mensagem MQTT indicando que o relé foi desligado
+          noMotionMsgSent = true;         // Define a variável para true para indicar que a mensagem já foi enviada
+        }
+      } else {
+        Serial.println("Movimento Detectado");
+        MQTT.publish(motion_topic, "Movimento Detectado");
+        digitalWrite(RelayPin8, LOW);         // Liga o relé
+        MQTT.publish(pub8, "1", true);        // Publica mensagem MQTT indicando que o relé foi ligado
+        noMotionMsgSent = false;              // Define a variável para false para indicar que o movimento foi detectado novamente
+        motionDetectedTime = currentTimePIR;  // Armazena o momento em que o movimento foi detectado
+      }
+    }
+
+  if (motionDetectedTime > 0 && millis() - motionDetectedTime > relayDuration) {
+    motionDetectedTime = 0;
+    digitalWrite(RelayPin8, HIGH);  // Desliga o relé após o tempo de duração definido
+    MQTT.publish(pub8, "0", true);  // Publica mensagem MQTT indicando que o relé foi desligado
   }
 }

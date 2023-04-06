@@ -1,5 +1,3 @@
-
-
 // Tópicos do Subscribe
 const char* sub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando"; // Somente por MQTT
 const char* sub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando";       // Ligados ao Nora/MQTT
@@ -29,3 +27,8 @@ const char* pub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado";        //
 const char* pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                // Somente por MQTT
 const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
 const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
+
+//Tópicos do Sensor de Movimento
+const char * motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";             // Somente por MQTT
+const char * inTopic      = "ESP32/MinhaCasa/QuartoRobson/inTopic";            // Somente por MQTT
+const char * outTopic     = "ESP32/MinhaCasa/QuartoRobson/outTopic";           // Somente por MQTT

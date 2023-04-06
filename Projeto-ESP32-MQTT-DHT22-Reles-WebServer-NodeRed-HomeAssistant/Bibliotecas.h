@@ -14,3 +14,5 @@
 #include <EEPROM.h>
 #include <AsyncJson.h>
 #include "FS.h"
+#include "RTClib.h"
+#include <Wire.h>         // Biblioteca para comunicação I2C

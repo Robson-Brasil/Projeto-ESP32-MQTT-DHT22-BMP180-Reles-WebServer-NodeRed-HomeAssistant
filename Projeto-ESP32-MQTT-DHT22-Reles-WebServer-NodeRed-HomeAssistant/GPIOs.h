@@ -13,3 +13,6 @@
 
 // DHT11 ou DHT22 para leitura dos valores  de Temperatura e Umidade
 #define DHTPIN 4
+
+//Sennsor PIR
+int pirPin = 12;

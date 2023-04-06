@@ -1,9 +1,0 @@
-CMake Warning:
-  Manually-specified variables were not used by the project:
-
-    CCACHE_ENABLE
-    ESP_PLATFORM
-    IDF_TARGET
-    PYTHON_DEPS_CHECKED
-
-

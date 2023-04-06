@@ -1,0 +1,15 @@
+{
+    "configuration": "JTAGAdapter=default,PSRAM=disabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,LoopCore=1,EventsCore=1,DebugLevel=none,EraseFlash=none",
+    "board": "esp32:esp32:esp32",
+    "sketch": "Projeto-ESP32-MQTT-DHT22-Reles-WebServer-NodeRed-HomeAssistant.ino",
+    "output": "D:\\GitRepositorio\\build\\ESP32",
+    "programmer": "AVRISP mkII",
+    "port": "COM3",
+    "baudRate": 115200,
+    "flashFreq": "80m",
+    "flashMode": "dio",
+    "partitionScheme": "default",
+    "uploadSpeed": 921600,
+    "debugger": "J-Link",
+    "extraFlags": ""
+}
