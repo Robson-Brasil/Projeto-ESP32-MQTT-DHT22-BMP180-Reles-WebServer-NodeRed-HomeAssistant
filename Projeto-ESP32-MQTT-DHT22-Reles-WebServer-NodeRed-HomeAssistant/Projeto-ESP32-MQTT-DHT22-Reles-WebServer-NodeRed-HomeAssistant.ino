@@ -46,6 +46,7 @@ int toggleState_5 = 1;  // Definir inteiro para lembrar o estado de alternância
 int toggleState_6 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 6
 int toggleState_7 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 7
 int toggleState_8 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 8
+int toggleState_9 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 8 via sensor PIR
 int status_todos = 0;   // Definir inteiro para lembrar o estado de alternância para todos
 
 // DHT11 ou DHT22 para leitura dos valores  de Temperatura e Umidade
@@ -191,7 +192,7 @@ void setup() {
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
     if (!request->authenticate(http_username, http_password))
-    return request->requestAuthentication();
+      return request->requestAuthentication();
     request->send(SPIFFS, "/WebServer.html", String(), false, processor);
   });
 
@@ -365,7 +366,7 @@ void initSerial() {
 }
 // Função: inicializa e conecta-se na rede WI-FI desejada
 void initWiFi() {
-  
+
   delay(1000);
 
   Serial.println("------Conexao WI-FI------");
@@ -378,7 +379,7 @@ void initWiFi() {
 
 // Função: inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
 void initMQTT() {
-  
+
   MQTT.setServer(BrokerMQTT1, PortaBroker1);  // Informa qual broker e porta deve ser conectado
   MQTT.setCallback(mqtt_callback);            // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
 }
@@ -397,7 +398,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       data += (char)payload[i];
     }
     Serial.println();
-    
+
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
@@ -430,7 +431,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       data += (char)payload[i];
     }
     Serial.println();
-    
+
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_1 = 0;
@@ -560,11 +561,28 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       MQTT.publish(pub8, "1", true);
     }
   }
+  /* if (strstr(topic, motion_topic)) {
+    for (unsigned int i = 0; i < length; i++) {
+      Serial.print((char)payload[i]);
+      data += (char)payload[i];
+    }
+    Serial.println();
+
+    if ((char)payload[0] == '0') {
+      digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+      toggleState_9 = 0;
+      MQTT.publish(motion_topic, "0", true);
+    } else {
+      digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
+      toggleState_9 = 1;
+      MQTT.publish(motion_topic, "1", true);
+    }
+  }*/
 }
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
   em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
 void reconnectMQTT() {
-  
+
   unsigned long currentTime = millis();
   unsigned long reconnectTime = 2000;  // Tempo para tentar reconectar (em milissegundos)
 
@@ -631,12 +649,12 @@ void reconectWiFi() {
 /* Função: verifica o estado das conexões WiFI e ao broker MQTT.
   Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
-  
+
   if (!MQTT.connected())
 
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
 
-    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
+  reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
 }
 
 // Função: inicializa o output em nível lógico baixo
@@ -719,6 +737,11 @@ void loop() {
     } else {
       MQTT.publish(pub8, "1", true);
     }
+    /*if (digitalRead(RelayPin8) == HIGH) {
+      MQTT.publish(motion_topic, "0", true);
+    } else {
+      MQTT.publish(motion_topic, "1", true);
+    }*/
     if (status_todos == 1) {
       MQTT.publish(pub0, "1", true);
     } else {
@@ -729,7 +752,7 @@ void loop() {
 
 //Implementação das Funções Principais do Core1 do ESP32
 void setup1() {
-  
+
   initMQTT();
 
   dht.begin();  // inicializa o sensor DHT11
@@ -743,6 +766,7 @@ void loop1() {
   //Keep-Alive da comunicação com Broker MQTT
   MQTT.loop();  // Verifica se há novas mensagens no Broker MQTT
 
+  //Sensor DHT11  - Temperatua e Umidade  unsigned long currentTimeDHT = millis();
   unsigned long currentTimeDHT = millis();
   if (currentTimeDHT - lastMsgDHT > 10000) {
 
@@ -767,36 +791,29 @@ void loop1() {
     MQTT.publish(pub10, str_hum_data);
     MQTT.publish(pub11, str_tempterm_data);
   }
+  //Sensor PIR - Detector de Presença
   unsigned long currentTimePIR = millis();
   unsigned long motionDetectedTime = 0;
-  unsigned long relayDuration = 5000;  // Tempo de duração do relé em milissegundos (5 segundos)
-  bool noMotionMsgSent = false;        // Variável para verificar se a mensagem "Sem Movimento" já foi enviada
+  unsigned long relayDuration = 15000;  // Tempo de duração do relé em milissegundos (5 segundos)
 
-    if (currentTimePIR - lastMsgPIR > 50) {
-      lastMsgPIR = currentTimePIR;
+  if (currentTimePIR - lastMsgPIR > 500) {
+    lastMsgPIR = currentTimePIR;
 
-      val = digitalRead(pirPin);
-      if (val == LOW) {
-        if (!noMotionMsgSent) {  // Verifica se a mensagem "Sem Movimento" ainda não foi enviada
-          //Serial.println("Sem Movimento");
-          MQTT.publish(motion_topic, "Sem Movimento");
-          digitalWrite(RelayPin8, HIGH);  // Desliga o relé
-          MQTT.publish(pub8, "0", true);  // Publica mensagem MQTT indicando que o relé foi desligado
-          noMotionMsgSent = true;         // Define a variável para true para indicar que a mensagem já foi enviada
-        }
-      } else {
-        Serial.println("Movimento Detectado");
-        MQTT.publish(motion_topic, "Movimento Detectado");
-        digitalWrite(RelayPin8, LOW);         // Liga o relé
-        MQTT.publish(pub8, "1", true);        // Publica mensagem MQTT indicando que o relé foi ligado
-        noMotionMsgSent = false;              // Define a variável para false para indicar que o movimento foi detectado novamente
-        motionDetectedTime = currentTimePIR;  // Armazena o momento em que o movimento foi detectado
-      }
+    val = digitalRead(pirPin);
+    if (val == LOW) {
+      // Serial.println("Sem Movimento");
+      MQTT.publish(motion_topic, "Sem Movimento");
+      digitalWrite(RelayPin8, HIGH);  // Desliga o relé
+    } else {
+      MQTT.publish(motion_topic, "Movimento Detectado");      
+      Serial.println("Movimento Detectado");
+      MQTT.publish(pub8, "0", true);        // Publica mensagem MQTT indicando que o relé foi ligado
+      motionDetectedTime = currentTimePIR;  // Armazena o momento em que o movimento foi detectado
+      digitalWrite(RelayPin8, LOW);         // Liga o relé
     }
-
+  }
   if (motionDetectedTime > 0 && millis() - motionDetectedTime > relayDuration) {
     motionDetectedTime = 0;
     digitalWrite(RelayPin8, HIGH);  // Desliga o relé após o tempo de duração definido
-    MQTT.publish(pub8, "0", true);  // Publica mensagem MQTT indicando que o relé foi desligado
   }
 }
