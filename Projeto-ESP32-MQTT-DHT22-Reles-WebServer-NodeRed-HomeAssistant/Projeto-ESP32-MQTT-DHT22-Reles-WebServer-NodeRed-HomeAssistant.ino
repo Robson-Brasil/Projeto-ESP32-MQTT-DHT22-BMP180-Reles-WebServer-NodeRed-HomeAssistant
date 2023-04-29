@@ -4,14 +4,14 @@
   Dispositivos : ESP32 WROOM32, DHT22 e Módulo Relé de 8 Canais
   Preferences--> URLs adicionais do Gerenciador de placas:
                                   http://arduino.esp8266.com/stable/package_esp8266com_index.json,https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-  Download Board ESP32 (2.0.5):
+  Download Board ESP32 (2.0.8):
   Broker MQTT
   Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 1 - Beta Tester
-  Última Modificação : 04/03/2023
+  Versão : 2 - Beta Tester
+  Última Modificação : 24/03/2023
 **********************************************************************************/
 
 //Bibliotecas
