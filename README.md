@@ -1,12 +1,12 @@
-Esse é meu primeiro projeto de IoT-Automação Residencial.
+# Esse é meu primeiro projeto de IoT-Automação Residencial.
 
-Nesse projeto usei o ESP32, DHT22, Sensor PIR e Módulo Relé de 8 Canais.
+## Nesse projeto usei o ESP32, DHT22, Sensor PIR e Módulo Relé de 8 Canais.
 
 Como estou sem recursos financeiros para a compra de equipamentos específicos para um bom funcionamento, estou usando o Broker MQTT rodando em um celular.
 
 Funciona até que bem, mas em determinadas horas, tenho que resetar o Servidor MQTT pra que tudo volte a funcionar.
 
-Usei o protocolo MQTT interligado com:
+## Usei o protocolo MQTT interligado com:
 
 - Node-Red / Google Assistant-Nora https://smart-nora.eu
   Tutorial pra configuração do SmartNora:
@@ -20,12 +20,12 @@ Usei o protocolo MQTT interligado com:
   Para Instalação do Home Assistant :
   https://www.home-assistant.io/installation/
 
-Para Instalação do Node-Red : https://nodered.org/docs/getting-started/
+## Para Instalação do Node-Red : https://nodered.org/docs/getting-started/
 
 Ligações na Protoboard
 ![Meu Projeto de IoT](https://user-images.githubusercontent.com/66142021/187596240-c7b705b2-5383-481c-bd41-8a28741f5f4a.png)
 
-Dashboards usadas no Celular
+## Dashboards usadas no Celular
 
 Vituíno MQTT
 ![Screenshot_20220830-233657](https://user-images.githubusercontent.com/66142021/187596297-efb1cd1e-e8bb-4784-9439-6de4913525d4.png)
