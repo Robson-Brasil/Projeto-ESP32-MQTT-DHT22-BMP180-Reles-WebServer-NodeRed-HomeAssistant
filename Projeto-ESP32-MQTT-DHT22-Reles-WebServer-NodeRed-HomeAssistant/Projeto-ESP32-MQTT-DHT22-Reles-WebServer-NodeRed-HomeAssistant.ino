@@ -803,17 +803,17 @@ void loop1() {
     if (val == LOW) {
       // Serial.println("Sem Movimento");
       MQTT.publish(motion_topic, "Sem Movimento");
-      digitalWrite(RelayPin8, HIGH);  // Desliga o relé
+      //digitalWrite(RelayPin8, HIGH);  // Desliga o relé
     } else {
       MQTT.publish(motion_topic, "Movimento Detectado");      
       Serial.println("Movimento Detectado");
-      MQTT.publish(pub8, "0", true);        // Publica mensagem MQTT indicando que o relé foi ligado
+      //MQTT.publish(pub8, "0", true);        // Publica mensagem MQTT indicando que o relé foi ligado
       motionDetectedTime = currentTimePIR;  // Armazena o momento em que o movimento foi detectado
-      digitalWrite(RelayPin8, LOW);         // Liga o relé
+      //digitalWrite(RelayPin8, LOW);         // Liga o relé
     }
   }
   if (motionDetectedTime > 0 && millis() - motionDetectedTime > relayDuration) {
     motionDetectedTime = 0;
-    digitalWrite(RelayPin8, HIGH);  // Desliga o relé após o tempo de duração definido
+    //digitalWrite(RelayPin8, HIGH);  // Desliga o relé após o tempo de duração definido
   }
 }
