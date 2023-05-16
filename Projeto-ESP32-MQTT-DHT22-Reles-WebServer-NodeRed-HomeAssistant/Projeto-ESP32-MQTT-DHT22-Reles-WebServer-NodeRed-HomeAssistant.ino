@@ -3,15 +3,16 @@
   Autor : Robson Brasil
   Dispositivos : ESP32 WROOM32, DHT22 e Módulo Relé de 8 Canais
   Preferences--> URLs adicionais do Gerenciador de placas:
-                                  http://arduino.esp8266.com/stable/package_esp8266com_index.json,https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-  Download Board ESP32 (2.0.8):
+                                     http://arduino.esp8266.com/stable/package_esp8266com_index.json,
+                                     https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+  Download Board ESP32 (2.0.9):
   Broker MQTT
   Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 2 - Beta Tester
-  Última Modificação : 24/03/2023
+  Versão : 6 - Beta Tester
+  Última Modificação : 16/05/2023
 **********************************************************************************/
 
 //Bibliotecas
@@ -654,7 +655,7 @@ void VerificaConexoesWiFIEMQTT(void) {
 
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
 
-  reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
+    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
 }
 
 // Função: inicializa o output em nível lógico baixo
@@ -693,7 +694,7 @@ void loop() {
   loop1();
 
   unsigned long currentTimeMQTT = millis();
-  if (currentTimeMQTT - lastMsgMQTT > 500) {
+  if (currentTimeMQTT - lastMsgMQTT > 100) {
 
     lastMsgMQTT = currentTimeMQTT;
 
@@ -737,7 +738,7 @@ void loop() {
     } else {
       MQTT.publish(pub8, "1", true);
     }
-    /*if (digitalRead(RelayPin8) == HIGH) {
+    /*if (digitalRead(RelayPin8) == HIGH) {  // Liga o relé sem a necessidade de configuração, seja no, Node Red ou HomeAssistant
       MQTT.publish(motion_topic, "0", true);
     } else {
       MQTT.publish(motion_topic, "1", true);
@@ -768,7 +769,7 @@ void loop1() {
 
   //Sensor DHT11  - Temperatua e Umidade  unsigned long currentTimeDHT = millis();
   unsigned long currentTimeDHT = millis();
-  if (currentTimeDHT - lastMsgDHT > 10000) {
+  if (currentTimeDHT - lastMsgDHT > 15000) {
 
     lastMsgDHT = currentTimeDHT;
 
@@ -794,7 +795,7 @@ void loop1() {
   //Sensor PIR - Detector de Presença
   unsigned long currentTimePIR = millis();
   unsigned long motionDetectedTime = 0;
-  unsigned long relayDuration = 15000;  // Tempo de duração do relé em milissegundos (5 segundos)
+  unsigned long relayDuration = 500;  // Tempo de duração do relé em milissegundos (5 segundos)
 
   if (currentTimePIR - lastMsgPIR > 500) {
     lastMsgPIR = currentTimePIR;
