@@ -58,12 +58,12 @@ DNSServer dns;
 
 // IP Estático
 IPAddress local_IP(192, 168, 15, 50);
-IPAddress gateway(192, 168, 15, 1);
-IPAddress subnet(255, 255, 255, 0);
+IPAddress gateway (192, 168, 15, 1);
+IPAddress subnet  (255, 255, 255, 0);
 
 // DNS Estático
-IPAddress primaryDNS(8, 8, 8, 8);
-IPAddress secondaryDNS(8, 8, 4, 4);
+IPAddress primaryDNS  (1, 1, 1, 1);
+IPAddress secondaryDNS(8, 8, 8, 8);
 
 // Variáveis e objetos globais
 WiFiClient espClient;          // Cria o objeto espClient
@@ -77,11 +77,11 @@ char str_tempF_data[7];
 #define MSG_BUFFER_SIZE (1000)
 
 //Função MILLIS
-unsigned long lastMsgDHT = 0;
+unsigned long lastMsgDHT  = 0;
 unsigned long lastMsgMQTT = 0;
-unsigned long lastMsgPIR = 0;
-unsigned long delayTime = 0;
-int value = 0;
+unsigned long lastMsgPIR  = 0;
+unsigned long delayTime   = 0;
+int value                 = 0;
 
 // WebServer
 const char* PARAM_INPUT_1 = "relay";
@@ -400,32 +400,32 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     }
     Serial.println();
 
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      digitalWrite(RelayPin3, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      digitalWrite(RelayPin4, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      digitalWrite(RelayPin5, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      digitalWrite(RelayPin6, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      digitalWrite(RelayPin7, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      status_todos = 0;
-      toggleState_0 = 0;
-      MQTT.publish(pub0, "0", true);
-    } else {
-      digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      digitalWrite(RelayPin3, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      digitalWrite(RelayPin4, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      digitalWrite(RelayPin5, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      digitalWrite(RelayPin6, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      digitalWrite(RelayPin7, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      status_todos = 1;
-      toggleState_0 = 1;
-      MQTT.publish(pub0, "1", true);
-    }
-  }
+  if ((char)payload[0] == '0') {
+    digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+    digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+    digitalWrite(RelayPin3, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+    digitalWrite(RelayPin4, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+    digitalWrite(RelayPin5, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+    digitalWrite(RelayPin6, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+    digitalWrite(RelayPin7, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+    digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
+    status_todos = 0;
+    toggleState_0 = 0;
+    MQTT.publish(pub0, "0", true);
+  } else {
+    digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
+    digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
+    digitalWrite(RelayPin3, LOW);  // Desligua o Relé tornando a tensão BAIXA
+    digitalWrite(RelayPin4, LOW);  // Desligua o Relé tornando a tensão BAIXA
+    digitalWrite(RelayPin5, LOW);  // Desligua o Relé tornando a tensão BAIXA
+    digitalWrite(RelayPin6, LOW);  // Desligua o Relé tornando a tensão BAIXA
+    digitalWrite(RelayPin7, LOW);  // Desligua o Relé tornando a tensão BAIXA
+    digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
+    status_todos = 1;
+    toggleState_0 = 1;
+    MQTT.publish(pub0, "1", true);
+   }
+ }
   if (strstr(topic, sub1)) {
     for (unsigned int i = 0; i < length; i++) {
       Serial.print((char)payload[i]);
@@ -769,7 +769,7 @@ void loop1() {
 
   //Sensor DHT11  - Temperatua e Umidade  unsigned long currentTimeDHT = millis();
   unsigned long currentTimeDHT = millis();
-  if (currentTimeDHT - lastMsgDHT > 15000) {
+  if (currentTimeDHT - lastMsgDHT > 60000) {
 
     lastMsgDHT = currentTimeDHT;
 
@@ -795,9 +795,9 @@ void loop1() {
   //Sensor PIR - Detector de Presença
   unsigned long currentTimePIR = millis();
   unsigned long motionDetectedTime = 0;
-  unsigned long relayDuration = 500;  // Tempo de duração do relé em milissegundos (5 segundos)
+  unsigned long relayDuration = 100;  // Tempo de duração do relé em milissegundos (5 segundos)
 
-  if (currentTimePIR - lastMsgPIR > 500) {
+  if (currentTimePIR - lastMsgPIR > 100) {
     lastMsgPIR = currentTimePIR;
 
     val = digitalRead(pirPin);
