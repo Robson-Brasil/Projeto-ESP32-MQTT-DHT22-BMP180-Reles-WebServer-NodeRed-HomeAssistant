@@ -1,17 +1,5 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  outline: 0;
-}
-
 /* Define fonte base */
 body {
-  display:flex;
-  flex-wrap: wrap;
-  flex: 1 1 100vw;
-  margin: 3px;
-  flex-grow: 1;
   lang: "pt-br";
   font-family: Arial;
   font-size: 20px;
@@ -19,12 +7,19 @@ body {
   background-color: #ffffff;
   color: #333;
   transition: background-color 0.2s ease;
+  position: relative;
+  min-height: 50vh;
+  /* Para garantir que a altura do corpo ocupe toda a tela */
+  background-image: url("IoT.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   height: 100vh;
 }
 
 /* Alterar as cores e estilos no modo escuro */
 .dark-mode header {
-  background-color: #333;
+  background-color: rgba(51, 51, 51, 0);
   color: #ffffff;
 }
 
@@ -40,17 +35,17 @@ body.dark-mode {
 
 /* Esconder a imagem de dark mode quando o modo claro está ativado */
 .light-mode .dark-mode-image {
-  background-color: #333;
-  max-width: 50px;
-  max-height: 50px;
+  background-color: rgba(51, 51, 51, 0);
+  max-width: 128px;
+  max-height: 128px;
   display: inline-block;
 }
 
 /* Esconder a imagem de light mode quando o modo escuro está ativado */
 .dark-mode .light-mode-image {
-  background-color: #333;
-  max-width: 50px;
-  max-height: 50px;
+  background-color: rgba(51, 51, 51, 0);
+  max-width: 128px;
+  max-height: 128px;
   display: inline-block;
 }
 
@@ -62,7 +57,7 @@ body.dark-mode {
 
 #dark-mode-switch {
   /* altura da imagem */
-  padding: 0;
+  padding: 0px;
   /* remova o padding do botão */
   border: none;
   /* remova a borda do botão */
@@ -73,31 +68,67 @@ body.dark-mode {
   align-items: center;
   max-width: 250px;
   /* ou outro valor que você preferir */
+  top: 50%;
+  transform: translateY(-400%);
+  position: absolute;
+  left: 15%;
+  height: auto;
 }
 
 #dark-mode-switch span {
   display: inline-block;
   margin-left: auto;
-  color: #fbfbfb;
-  font-size: 15px;
+  background: none;
+  color: #f39303;
+  font-size: 20px;
   white-space: nowrap;
+  height: auto;
 }
 
 /* Estilos do cabeçalho */
 header {
-  background-color: #333;
+  background-color: rgba(51, 51, 51, 0);
   color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  width: 90%;
-  max-width: 100%;
-  margin: auto;
+  padding: 19px;
 }
 
-h1 {
-  margin: auto;
+.header-logo {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo img {
+  margin-right: 10px;
+  max-width: 10%;
+  height: auto;
+}
+
+.header-title {
+  font-size: 1.5em;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .header-title {
+    font-size: 1.2em;
+  }
+}
+
+.header-content {
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-content img {
+  position: absolute;
+  top: 9%;
+  left: 90%;
+  transform: translateY(-50%);
+  width: 96px;
+  height: 96px;
 }
 
 /* Estilos para o botão de alternância de tema */
@@ -105,11 +136,11 @@ h1 {
   position: relative;
   display: inline-block;
   width: 100px;
-  height: 50px
+  height: 50px;
 }
 
 .switch input {
-  display: none
+  display: none;
 }
 
 .slider {
@@ -121,9 +152,7 @@ h1 {
   background-color: rgb(255, 0, 0);
   border-color: #ffffff;
   border-style: solid;
-  border-spacing: 0;
-  border-collapse: collapse;
-  border-radius: 7px
+  border-radius: 7px;
 }
 
 .slider:before {
@@ -134,13 +163,11 @@ h1 {
   left: 5px;
   bottom: 5px;
   background-color: #ffffff;
-  border-spacing: 0;
-  border-collapse: collapse;
   border-color: #000000;
   border-style: solid;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 7px
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 7px;
 }
 
 .slider-text.off {
@@ -152,16 +179,16 @@ h1 {
   font-weight: bold;
   color: #00ff11;
   text-transform: uppercase;
-  transition: .4s;
+  transition: 0.4s;
   opacity: 1;
 }
 
-input:not(:checked)+.slider+.slider-text.on {
+input:not(:checked) + .slider + .slider-text.on {
   opacity: 0;
   color: #ff0000;
 }
 
-input:not(:checked)+.slider+.slider-text.off {
+input:not(:checked) + .slider + .slider-text.off {
   opacity: 1;
   color: #22ff00;
 }
@@ -175,71 +202,126 @@ input:not(:checked)+.slider+.slider-text.off {
   font-weight: bold;
   color: #ff0000;
   text-transform: uppercase;
-  transition: .4s;
+  transition: 0.4s;
   opacity: 1;
 }
 
-input:checked+.slider {
+input:checked + .slider {
   background-color: #00ff11;
 }
 
-input:checked+.slider:before {
+input:checked + .slider:before {
   -webkit-transform: translateX(0px);
   -ms-transform: translateX(50px);
-  transform: translateX(50px)
+  transform: translateX(50px);
 }
 
 /* Estilos para tabelas */
 table {
-  border-collapse: collapse;
+  border-collapse: unset;
   width: 100%;
-  border-spacing: 10 50px;
+  font-size: 1rem;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.column {
+  flex: 1;
+  padding: 10px;
+}
+
+.column.left {
+  order: 1;
+}
+
+.column.right {
+  order: 2;
+}
+
+/* Estilos para agrupar os botões em grupos de 4 em 4 em linhas diferentes */
+.tg {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.tg tr:nth-child(4n + 1) {
+  clear: both;
+}
+
+.tg td {
+  width: 25%;
+  text-align: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Estilos responsivos para o #dark-mode-switch */
+@media (max-width: 600px) {
+  #dark-mode-switch {
+    position: absolute;
+    margin-top: -45px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #dark-mode-switch span {
+    font-size: 24px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    order: 0;
+  }
 }
 
 /* Estilos para o texto centralizado e branco */
 .centered-text {
   text-align: center;
-  display:block;
-  flex-wrap: wrap;
-  justify-content: space-between;
+}
 
+/* Estilo do rodapé */
+footer {
+  background-color: #333333;
+  color: #ffffff;
+  position: absolute;
+  width: 100%;
+  padding: 2px 2px 2px 0px;
+  /* altera a altura do footer para 100px */
+}
+
+@media only screen and (max-width: 600px) {
+  /* Estilos para telas menores que 600 pixels de largura */
 }
 
 /* Estilos responsivos */
-@media (max-width: 320px) {
+@media (max-width: 600px) {
   header {
     grid-template-columns: repeat(2, 1fr);
-
-    align-items: center;
-    padding: 20px;
-    width: 90%;
-    max-width: 100%;
-    margin: auto;
   }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 600px) {
   header {
-    grid-template-columns: repeat(2, 1fr);
-
-    align-items: center;
-    padding: 20px;
-    width: 90%;
-    max-width: 100%;
-    margin: auto;
+    grid-template-columns: 1fr;
   }
 }
 
-@media screen and (max-width: 320px) {
+@media (max-width: 600px) {
   body {
-    font-size: 10px;
+    font-size: 16px;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   header {
-    background-color: #333;
-    color: #fff;
+    background-color: rgba(51, 51, 51, 0);
+    color: #000000;
+    font-size: 25px;
   }
 
   body {
@@ -260,31 +342,46 @@ table {
   }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 6000px) {
   .dark-mode-image,
   .light-mode-image {
-    max-width: 10%;
-    max-height: 10%;
   }
 }
 
-@media screen and (max-width: 320px) {
+@media (max-width: 600px) {
   header {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
+  }
+
+  h1 {
+    margin-bottom: 20px;
   }
 }
 
-@media screen and (max-width: 320px) {
+@media (max-width: 600px) {
+  tg {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 600px) {
   table {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 
-@media screen and (max-width: 320px) {
+@media (max-width: 600px) {
   .centered-text {
     font-size: 18px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  body {
+    background-size: 100vw;
   }
 }
