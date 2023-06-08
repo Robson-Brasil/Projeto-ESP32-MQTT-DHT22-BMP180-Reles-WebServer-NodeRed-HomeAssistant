@@ -1,140 +1,95 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="utf-8" />
-    <meta name="author" content="Robson Brasil" />
-    <meta
-      name="keywords"
-      content="iot, internet of things, internet das coisas, automação residencial, programação em C++, home assistant, esp32, alexa, google assistant"
-    />
-    <link rel="icon" href="logo-1.png" />
-    <title>WebServer ESP32</title>
-    <link rel="stylesheet" href="WebServer.css" />
-    <script src="darkmode.js"></script>
-  </head>
+<html lang="pt-BR">
 
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Robson Brasil">
+    <meta
+        name="keywords"
+        content="iot, internet of things, internet das coisas, automação residencial, programação em C++, home assistant, esp32, alexa, google assistant"/>
+    <link rel="icon" href="logo-1.png"/>
+    <link rel="stylesheet" href="WebServer.css"/>
+    <script defer src="darkmode.js"></script>
+    <title>IoT - Internet of Things</title>
+</head>
+
+<body>
     <header>
-      <div class="header-logo">
-        <img src="logo-1.png" alt="Logo" />
-        <h1 class="header-title">IoT - Internet of Things</h1>
-      </div>
-      <button id="dark-mode-switch">
-        <span>Dark Mode</span>
-        <img
-          src="darkmode.png"
-          id="dark-mode-image"
-          class="dark-mode-image"
-          hidden
-        />
-        <img
-          src="lightmode.png"
-          id="light-mode-image"
-          class="light-mode-image"
-        />
-      </button>
+        <img src="logo-1.png" alt="Logo" class="logo"/>
+        <h1>AUTOMAÇÃO RESIDENCIAL</h1>
+        <label class="switch">
+            <input type="checkbox" id="darkModeToggle"/>
+            <span class="slider round"></span>
+        </label>
     </header>
 
-    <div class="centered-text">
-      <h2 class="white-text">AUTOMAÇÃO RESIDENCIAL</h2>
-      <div class="centered-text">
-        <h2 class="white-text">COM ESP32</h2>
-      </div>
-    </div>
+    <main>
+        <div class="switch-container">
+                    <div class="switch-row">
+                    <label class="switch-button">
+                        <span class="button-name">Luz Forte</span>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="23"/>
+                    <span class="slider-button"></span>
+                </label>
+                <label class="switch-button">
+                    <span class="button-name">Luz Fraca</span>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="22"/>
+                    <span class="slider-button"></span>
+                </label>
+                <label class="switch-button">
+                    <span class="button-name">Cooler</span>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="21"/>
+                    <span class="slider-button"></span>
+                </label>
+                <label class="switch-button">
+                    <span class="button-name">Varanda</span>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="26"/>
+                    <span class="slider-button"></span>
+                </label>
+            </div>
+            <div class="switch-row">
+                <label class="switch-button">
+                    <span class="button-name">Botão 5</span>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="5"/>
+                    <span class="slider-button"></span>
+                </label>
+                <label class="switch-button">
+                    <span class="button-name">Botão 6</span>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="18"/>
+                    <span class="slider-button"></span>
+                </label>
+                <label class="switch-button">
+                    <span class="button-name">Botão 7</span>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="19"/>
+                    <span class="slider-button"></span>
+                </label>
+                <label class="switch-button">
+                    <span class="button-name">Botão 8</span>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="25"/>
+                    <span class="slider-button"></span>
+                </label>
+            </div>
+        </div>
+    </main>
 
-    <table class="tg">
-      <tr>
-        <td colspan="2">
-          <h4>Luz Forte</h4>
-          <label class="switch">
-            <input type="checkbox" onchange="toggleCheckbox(this)" id="23" />
-            <span class="slider"></span>
-            <span class="slider-text off">OFF</span>
-            <span class="slider-text on">ON</span>
-          </label>
-        </td>
-        <td colspan="2">
-          <h4>Luz Fraca</h4>
-          <label class="switch">
-            <input type="checkbox" onchange="toggleCheckbox(this)" id="22" />
-            <span class="slider"></span>
-            <span class="slider-text off">OFF</span>
-            <span class="slider-text on">ON</span>
-          </label>
-        </td>
-        <td colspan="2">
-          <h4>Luz Cooler</h4>
-          <label class="switch">
-            <input type="checkbox" onchange="toggleCheckbox(this)" id="21" />
-            <span class="slider"></span>
-            <span class="slider-text off">OFF</span>
-            <span class="slider-text on">ON</span>
-          </label>
-        </td>
-        <td colspan="2">
-          <h4>Luz Bleutooth</h4>
-          <label class="switch">
-            <input type="checkbox" onchange="toggleCheckbox(this)" id="5" />
-            <span class="slider"></span>
-            <span class="slider-text off">OFF</span>
-            <span class="slider-text on">ON</span>
-          </label>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          <h4>Luz Principal</h4>
-          <label class="switch">
-            <input type="checkbox" onchange="toggleCheckbox(this)" id="26" />
-            <span class="slider"></span>
-            <span class="slider-text off">OFF</span>
-            <span class="slider-text on">ON</span>
-          </label>
-        </td>
-        <td colspan="2">
-          <h4>Botão 6</h4>
-          <label class="switch">
-            <input type="checkbox" onchange="toggleCheckbox(this)" id="18" />
-            <span class="slider"></span>
-            <span class="slider-text off">OFF</span>
-            <span class="slider-text on">ON</span>
-          </label>
-        </td>
-        <td colspan="2">
-          <h4>Botão 7</h4>
-          <label class="switch">
-            <input type="checkbox" onchange="toggleCheckbox(this)" id="19" />
-            <span class="slider"></span>
-            <span class="slider-text off">OFF</span>
-            <span class="slider-text on">ON</span>
-          </label>
-        </td>
-        <td colspan="2">
-          <h4>Botão 8</h4>
-          <label class="switch">
-            <input type="checkbox" onchange="toggleCheckbox(this)" id="25" />
-            <span class="slider"></span>
-            <span class="slider-text off">OFF</span>
-            <span class="slider-text on">ON</span>
-          </label>
-        </td>
-      </tr>
-    </table>
-    <!-- Rodapé -->
     <footer>
-      <p>Desenvolvido por Robson Brasil</p>
+        <h2>Desenvolvido por Robson Brasil</h2>
     </footer>
-  </body>
-  <script>
+    
+</body>
+
+<script>
     function toggleCheckbox(element) {
-      var xhr = new XMLHttpRequest();
-      if (element.checked) {
+    var xhr = new XMLHttpRequest();
+    if (element.checked) {
         xhr.open("GET", "/update?relay=" + element.id + "&state=1", true);
-      } else {
+    } else {
         xhr.open("GET", "/update?relay=" + element.id + "&state=0", true);
-      }
-      xhr.send();
     }
-  </script>
+    xhr.send();
+    }
+</script>
+
 </html>
