@@ -10,9 +10,6 @@ html, body{
     height: 100%;
 }
 
-main{
-    height: 100%;
-}
 
 body {
     font-family: Arial, sans-serif;
@@ -37,8 +34,7 @@ header {
     background-color: #f1f1f100;
     font: #060606;
 	box-shadow: 0 0 20px #000000, 0 0 60px #000000, 0 0 90px #000000;
-    margin: 10px;
-}
+    }
 
 .logo {
     max-height: 100px;
@@ -202,7 +198,7 @@ input:checked+.slider-button:before {
 
 footer {
     background-color: #f1f1f100;
-    padding: 0.5rem;
+    padding: 0.1rem;
     text-align: center;
 }
 
@@ -213,32 +209,49 @@ footer {
 
 .dark-mode header,
 .dark-mode footer {
-    background-color: #5c5c5c00;
+    background-color: #ffffff00;
+    background: #ffffff;
+    box-shadow: 0 0 10px #ffffff, 0 0 40px #ffffff, 0 0 80px #ffffff;
+    transition-delay: 0.2s;
 }
 
 /* Media queries para responsividade */
-@media (max-width: 740px) {
+@media (max-width: 400px) {
     .switch-container {
         padding: 1rem;
     }
 
     html, body{
-        height: 80%;
+        height: 100vh;
     }
     
     main{
-        height: 80%;
+        height: 50vh;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+          /* Para garantir que a altura do corpo ocupe toda a tela */
+        background-image: url("IoT.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 90vh;
     }
 
     header {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         padding: 0.1rem;
         background-color: #f1f1f100;
         font: #060606;
         box-shadow: 0 0 20px #000000, 0 0 60px #000000, 0 0 90px #000000;
-        margin: 10px;
+        width: 103vw;
+
     }
 
     footer {
@@ -293,11 +306,11 @@ footer {
     }
     
     input:checked+.slider:before {
-        transform: translateX(20px);
+        transform: translateX(18px);
     }
     
     .slider.round {
-        border-radius: 30px;
+        border-radius: 50px;
     }
     
     .slider.round:before {
@@ -312,22 +325,22 @@ footer {
     }
 
     html, body{
-        height: 80%;
+        height: 100vh;
     }
     
     main{
-        height: 80%;
+        height: 50vh;
     }
 
     header {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         padding: 0.5rem;
         background-color: #f1f1f100;
         font: #060606;
         box-shadow: 0 0 20px #000000, 0 0 60px #000000, 0 0 90px #000000;
-        margin: 10px;
+        gap: 1px;
     }
 
     footer {
@@ -382,11 +395,11 @@ footer {
     }
     
     input:checked+.slider:before {
-        transform: translateX(20px);
+        transform: translateX(24px);
     }
     
     .slider.round {
-        border-radius: 30px;
+        border-radius: 50px;
     }
     
     .slider.round:before {

@@ -81,14 +81,19 @@
 </body>
 
 <script>
+    // Adicione o código de redirecionamento aqui
+    window.addEventListener('load', function() {
+        window.location.href = "http://192.168.15.50:3232";
+    });
+
     function toggleCheckbox(element) {
-    var xhr = new XMLHttpRequest();
-    if (element.checked) {
-        xhr.open("GET", "/update?relay=" + element.id + "&state=1", true);
-    } else {
-        xhr.open("GET", "/update?relay=" + element.id + "&state=0", true);
-    }
-    xhr.send();
+        var xhr = new XMLHttpRequest();
+        if (element.checked) {
+            xhr.open("GET", "/update?relay=" + element.id + "&state=1", true);
+        } else {
+            xhr.open("GET", "/update?relay=" + element.id + "&state=0", true);
+        }
+        xhr.send();
     }
 </script>
 
