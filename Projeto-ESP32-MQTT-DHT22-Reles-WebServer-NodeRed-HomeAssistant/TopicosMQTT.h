@@ -13,6 +13,11 @@ const char* sub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                //
 const char* sub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
 const char* sub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
 
+const char* sub13 = "ESP32/MinhaCasa/QuartoRobson/BMP180/Temperatura";           // Somente por MQTT
+const char* sub14 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/Absoluta";           // Somente por MQTT
+const char* sub15 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/NivelMar";           // Somente por MQTT
+const char* sub16 = "ESP32/MinhaCasa/QuartoRobson/BMP180/Altitude";           // Somente por MQTT
+
 // Tópicos do Publish
 const char* pub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado";  // Somente por MQTT
 const char* pub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado";        // Ligados ao Nora/MQTT
@@ -28,7 +33,11 @@ const char* pub9 = "ESP32/MinhaCasa/QuartoRobson/Temperatura";                //
 const char* pub10 = "ESP32/MinhaCasa/QuartoRobson/Umidade";                   // Somente por MQTT
 const char* pub11 = "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica";           // Somente por MQTT
 
+const char* pub13 = "ESP32/MinhaCasa/QuartoRobson/BMP180/Temperatura";           // Somente por MQTT
+const char* pub14 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/Absoluta";           // Somente por MQTT
+const char* pub15 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/NivelMar";           // Somente por MQTT
+const char* pub16 = "ESP32/MinhaCasa/QuartoRobson/BMP180/Altitude";           // Somente por MQTT
+
 //Tópicos do Sensor de Movimento
-const char * motion_topic = "ESP32/MinhaCasa/QuartoRobson/Motion";             // Somente por MQTT
-const char * inTopic      = "ESP32/MinhaCasa/QuartoRobson/inTopic";            // Somente por MQTT
-const char * outTopic     = "ESP32/MinhaCasa/QuartoRobson/outTopic";           // Somente por MQTT
+const char * pub12 = "ESP32/MinhaCasa/QuartoRobson/SensorMovimento";          // Somente por MQTT
+const char * sub12 = "ESP32/MinhaCasa/QuartoRobson/SensorMovimento";          // Somente por MQTT

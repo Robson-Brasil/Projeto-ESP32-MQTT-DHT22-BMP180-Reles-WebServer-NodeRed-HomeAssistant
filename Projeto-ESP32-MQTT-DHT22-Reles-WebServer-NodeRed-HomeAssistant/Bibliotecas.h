@@ -16,3 +16,4 @@
 #include "FS.h"
 #include "RTClib.h"
 #include <Wire.h>         // Biblioteca para comunicação I2C
+#include <SFE_BMP180.h>   //Biblioteca para sensor BMP180

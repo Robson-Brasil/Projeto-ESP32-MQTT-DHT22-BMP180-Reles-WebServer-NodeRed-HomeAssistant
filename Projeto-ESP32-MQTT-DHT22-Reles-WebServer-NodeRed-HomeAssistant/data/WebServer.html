@@ -6,68 +6,67 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Robson Brasil">
-    <meta
-        name="keywords"
-        content="iot, internet of things, internet das coisas, automação residencial, programação em C++, home assistant, esp32, alexa, google assistant"/>
-    <link rel="icon" href="logo-1.png"/>
-    <link rel="stylesheet" href="WebServer.css"/>
+    <meta name="keywords"
+        content="iot, internet of things, internet das coisas, automação residencial, programação em C++, home assistant, esp32, alexa, google assistant" />
+    <link rel="icon" href="logo-1.png" />
+    <link rel="stylesheet" href="WebServer.css" />
     <script defer src="darkmode.js"></script>
     <title>IoT - Internet of Things</title>
 </head>
 
 <body>
     <header>
-        <img src="logo-1.png" alt="Logo" class="logo"/>
+        <img src="logo-1.png" alt="Logo" class="logo" />
         <h1>AUTOMAÇÃO RESIDENCIAL</h1>
         <label class="switch">
-            <input type="checkbox" id="darkModeToggle"/>
+            <input type="checkbox" id="darkModeToggle" />
             <span class="slider round"></span>
         </label>
     </header>
 
     <main>
         <div class="switch-container">
-                    <div class="switch-row">
-                    <label class="switch-button">
-                        <span class="button-name">Luz Forte</span>
-                    <input type="checkbox" onchange="toggleCheckbox(this)" id="23"/>
+            <div class="switch-row">
+                <label class="switch-button">
+                    <span class="button-name">Luz Forte</span>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="26" />
                     <span class="slider-button"></span>
                 </label>
                 <label class="switch-button">
                     <span class="button-name">Luz Fraca</span>
-                    <input type="checkbox" onchange="toggleCheckbox(this)" id="22"/>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="13" />
                     <span class="slider-button"></span>
                 </label>
                 <label class="switch-button">
                     <span class="button-name">Cooler</span>
-                    <input type="checkbox" onchange="toggleCheckbox(this)" id="21"/>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="14" />
                     <span class="slider-button"></span>
                 </label>
                 <label class="switch-button">
                     <span class="button-name">Varanda</span>
-                    <input type="checkbox" onchange="toggleCheckbox(this)" id="26"/>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="32" />
                     <span class="slider-button"></span>
                 </label>
             </div>
             <div class="switch-row">
                 <label class="switch-button">
                     <span class="button-name">Botão 5</span>
-                    <input type="checkbox" onchange="toggleCheckbox(this)" id="5"/>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="16" />
                     <span class="slider-button"></span>
                 </label>
                 <label class="switch-button">
                     <span class="button-name">Botão 6</span>
-                    <input type="checkbox" onchange="toggleCheckbox(this)" id="18"/>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="17" />
                     <span class="slider-button"></span>
                 </label>
                 <label class="switch-button">
                     <span class="button-name">Botão 7</span>
-                    <input type="checkbox" onchange="toggleCheckbox(this)" id="19"/>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="18" />
                     <span class="slider-button"></span>
                 </label>
                 <label class="switch-button">
                     <span class="button-name">Botão 8</span>
-                    <input type="checkbox" onchange="toggleCheckbox(this)" id="25"/>
+                    <input type="checkbox" onchange="toggleCheckbox(this)" id="19" />
                     <span class="slider-button"></span>
                 </label>
             </div>
@@ -77,12 +76,12 @@
     <footer>
         <h2>Desenvolvido por Robson Brasil</h2>
     </footer>
-    
+
 </body>
 
 <script>
     // Adicione o código de redirecionamento aqui
-    window.addEventListener('load', function() {
+    window.addEventListener('load', function () {
         window.location.href = "http://192.168.15.50:3232";
     });
 
