@@ -1,19 +1,18 @@
 // Bibliotecas
-#include <WiFi.h>          // Importa a Biblioteca WiFi
-#include <PubSubClient.h>  // Importa a Biblioteca PubSubClient
-#include <DHT.h>           // Importa a Biblioteca DHT
-#include <WiFiUdp.h>       // Importa a Biblioteca WiFiUdp
-#include <Arduino.h>       // Biblioteca do ArduinoJson :        https://github.com/bblanchon/ArduinoJson
-#include <DNSServer.h>     // Biblioteca do DNSServer :          https://github.com/zhouhan0126/DNSServer---esp32
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include <SPIFFS.h>
-#include <TimeLib.h>
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-#include <EEPROM.h>
-#include <AsyncJson.h>
-#include "FS.h"
-#include "RTClib.h"
-#include <Wire.h>         // Biblioteca para comunicação I2C
-#include <SFE_BMP180.h>   //Biblioteca para sensor BMP180
+#include <WiFi.h>               // Função: Fornece suporte para comunicação Wi-Fi em projetos Arduino. Permite a conexão a redes Wi-Fi e a criação de servidores ou clientes.
+#include <PubSubClient.h>       // Função: Biblioteca para implementação do protocolo MQTT em projetos Arduino. É comumente utilizada para comunicação entre dispositivos IoT.
+#include <DHT.h>                // Função: Utilizada para trabalhar com sensores de temperatura e umidade da série DHT (por exemplo, DHT11, DHT22).
+#include <WiFiUdp.h>            // Função: Fornece funcionalidades relacionadas a comunicação UDP (User Datagram Protocol) sobre Wi-Fi.
+#include <Arduino.h>            // Função: Cabeçalho padrão do Arduino, contém definições essenciais e macros necessárias para o desenvolvimento em Arduino.
+#include <DNSServer.h>          // Função: Implementa um servidor DNS que pode ser usado em conjunto com a biblioteca ESPAsyncWebServer para criar servidores web.   https://github.com/zhouhan0126/DNSServer---esp32
+#include <AsyncTCP.h>           // Função: Biblioteca para comunicação TCP assíncrona, usada principalmente em conjunto com o ESPAsyncWebServer.
+#include <ESPAsyncWebServer.h>  // Função: Permite a criação de servidores web assíncronos no ESP8266/ESP32.
+#include <SPIFFS.h>             // Função: Fornece acesso ao sistema de arquivos SPIFFS (SPI Flash File System), que permite armazenar e ler arquivos no flash da placa.
+#include <TimeLib.h>            // Função: Manipulação de tempo e data em projetos Arduino.
+#include <freertos/FreeRTOS.h>  // Função: Inclui a biblioteca FreeRTOS, um sistema operacional de tempo real para microcontroladores.
+#include <freertos/task.h>      // Função: Contém definições para tarefas do FreeRTOS.
+#include <EEPROM.h>             // Função: Permite a leitura e escrita de dados na EEPROM da placa Arduino.
+#include <AsyncJson.h>          // Função: Facilita a manipulação de dados JSON em projetos assíncronos. : https://github.com/bblanchon/ArduinoJson
+#include "FS.h"                 // Função: Fornece acesso ao sistema de arquivos no ESP8266/ESP32.
+#include <Wire.h>               // Função: Permite a comunicação I2C entre dispositivos.
+#include <Adafruit_BMP085.h>    // Função: Biblioteca para interagir com o sensor de pressão atmosférica BMP180.

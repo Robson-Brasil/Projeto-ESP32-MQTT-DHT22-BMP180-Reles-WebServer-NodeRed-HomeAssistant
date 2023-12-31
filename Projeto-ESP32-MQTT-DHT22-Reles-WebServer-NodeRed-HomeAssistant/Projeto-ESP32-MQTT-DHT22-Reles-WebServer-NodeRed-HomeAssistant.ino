@@ -11,8 +11,8 @@
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 6 - Beta Tester
-  Última Modificação : 16/05/2023
+  Versão : 9 - Beta Tester
+  Última Modificação : 31/12/2023
 **********************************************************************************/
 
 //Bibliotecas
@@ -22,12 +22,7 @@
 #include "GPIOs.h"
 
 //Parametros do Sensor BMP180
-SFE_BMP180 sensor;        //Define objeto sensor na classe SFE_BMP180 da biblioteca
-int ALTITUDE = 420;       //Altitude da casa da minha casa em metros
-char status;              //Variável auxiliar para verificação do resultado
-double temperatura;       //Variável para armazenar o valor da temperatura
-double pressao;           //Variável para armazenar o valor da pressão absoluta
-double pressao_relativa;  //Variável para armazenar a pressão relativa
+Adafruit_BMP085 bmp;        //Define objeto sensor na classe SFE_BMP180 da biblioteca
 
 void setup1();  // Declaração da função setup1()
 void loop1();   // Declaração da função loop1()
@@ -38,11 +33,11 @@ float diff = 1.0;
 
 int val;
 
-#define ID_MQTT1 "ESP32-IoT-Broker1" /* ID MQTT (para identificação de seção)           \
-                            IMPORTANTE: Este deve ser único no broker (ou seja, \
-                            se um client MQTT tentar entrar com o mesmo         \
-                            ID de outro já conectado ao broker, o broker        \
-                            irá fechar a conexão de um deles).*/
+#define ID_MQTT1 "ESP32-IoT-Broker1" /* ID MQTT (para identificação de seção)
+                                        IMPORTANTE: Este deve ser único no broker (ou seja,
+                                        se um client MQTT tentar entrar com o mesmo
+                                        ID de outro já conectado ao broker, o broker
+                                        irá fechar a conexão de um deles).*/
 
 #define DEBOUNCE_TIME 250
 
@@ -177,7 +172,7 @@ String outputState(int output) {
   }
 }
 
-// Prototypes
+// Protótipos
 void initSerial();
 void initWiFi();
 void initMQTT();
@@ -197,21 +192,12 @@ void setup() {
   //Chama a função setup1()
   setup1();
 
-  if (sensor.begin()) {
-    Serial.println("===========================================================");
-    Serial.println("Sensor BMP180 inicializado com sucesso");
-  } else {
-    Serial.println("Falha na inicializacao do sensor BMP180\n\n");
-    while (1)
-      ;
-  }
-
   if (!SPIFFS.begin(true)) {
     Serial.println("Ocorreu um erro ao montar o SPIFFS");
     return;
   }
 
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
     request->send(SPIFFS, "/WebServer.html", String(), false, processor);
@@ -219,27 +205,27 @@ void setup() {
 
   server.serveStatic("/", SPIFFS, "/");
 
-  server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/WebServer.css", "text/css");
   });
 
-  server.on("/darklmode.js", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/darklmode.js", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/darkmode.js", "application/javascript");
   });
 
-  server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/darkmode.png", "image/png");
   });
 
-  server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/lightmode.png", "image/png");
   });
 
-  server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/logo-1.png", "image/png");
   });
 
-  server.on("/update1", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/update1", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_1)) {
@@ -253,7 +239,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update2", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/update2", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_2)) {
@@ -267,7 +253,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update3", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/update3", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_1)) {
@@ -281,7 +267,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update4", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/update4", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_2)) {
@@ -295,7 +281,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update5", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/update5", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_1)) {
@@ -309,7 +295,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update6", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/update6", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_2)) {
@@ -323,7 +309,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update7", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/update7", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_1)) {
@@ -337,7 +323,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update8", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/update8", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
     if (request->hasParam(PARAM_INPUT_2)) {
@@ -351,7 +337,7 @@ void setup() {
     request->send(200, "text/plain", inputMessage);
   });
 
-  server.on("/update", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/update", HTTP_GET, [](AsyncWebServerRequest * request) {
     String inputMessage1;
     String inputParam1;
     String inputMessage2;
@@ -375,6 +361,11 @@ void setup() {
 
   //Start do Servidor
   server.begin();
+
+  if (!bmp.begin()) {
+  Serial.println("Could not find a valid BMP180 sensor, please check wiring!");
+  while (1) {}
+  }
 }
 
 //Função: inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
@@ -419,41 +410,26 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     Serial.println();
 
     if ((char)payload[0] == '0') {
-      RelayPin1Estado = true;
+
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      RelayPin2Estado = true;
       digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      RelayPin3Estado = true;
       digitalWrite(RelayPin3, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      RelayPin4Estado = true;
       digitalWrite(RelayPin4, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      RelayPin5Estado = true;
       digitalWrite(RelayPin5, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      RelayPin6Estado = true;
       digitalWrite(RelayPin6, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      RelayPin7Estado = true;
       digitalWrite(RelayPin7, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      RelayPin8Estado = true;
       digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       status_todos = 0;
       toggleState_0 = 0;
       MQTT.publish(pub0, "0");
     } else {
-      RelayPin1Estado = false;
       digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      RelayPin2Estado = false;
       digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      RelayPin3Estado = false;
       digitalWrite(RelayPin3, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      RelayPin4Estado = false;
       digitalWrite(RelayPin4, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      RelayPin5Estado = false;
       digitalWrite(RelayPin5, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      RelayPin6Estado = false;
       digitalWrite(RelayPin6, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      RelayPin7Estado = false;
       digitalWrite(RelayPin7, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      RelayPin8Estado = false;
       digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
       status_todos = 1;
       toggleState_0 = 1;
@@ -468,12 +444,10 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     Serial.println();
 
     if ((char)payload[0] == '0') {
-      RelayPin1Estado = true;
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_1 = 0;
       MQTT.publish(pub1, "0");
     } else {
-      RelayPin1Estado = false;
       digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_1 = 1;
       MQTT.publish(pub1, "1");
@@ -487,12 +461,10 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     Serial.println();
 
     if ((char)payload[0] == '0') {
-      RelayPin2Estado = true;
       digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_2 = 0;
       MQTT.publish(pub2, "0");
     } else {
-      RelayPin2Estado = false;
       digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_2 = 1;
       MQTT.publish(pub2, "1");
@@ -506,12 +478,10 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     Serial.println();
 
     if ((char)payload[0] == '0') {
-      RelayPin2Estado = true;
       digitalWrite(RelayPin3, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_3 = 0;
       MQTT.publish(pub3, "0");
     } else {
-      RelayPin3Estado = false;
       digitalWrite(RelayPin3, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_3 = 1;
       MQTT.publish(pub3, "1");
@@ -525,12 +495,10 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     Serial.println();
 
     if ((char)payload[0] == '0') {
-      RelayPin4Estado = true;
       digitalWrite(RelayPin4, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_4 = 0;
       MQTT.publish(pub4, "0");
     } else {
-      RelayPin4Estado = false;
       digitalWrite(RelayPin4, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_4 = 1;
       MQTT.publish(pub4, "1");
@@ -544,12 +512,10 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     Serial.println();
 
     if ((char)payload[0] == '0') {
-      RelayPin5Estado = true;
       digitalWrite(RelayPin5, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_5 = 0;
       MQTT.publish(pub5, "0");
     } else {
-      RelayPin5Estado = false;
       digitalWrite(RelayPin5, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_5 = 1;
       MQTT.publish(pub5, "1");
@@ -563,12 +529,10 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     Serial.println();
 
     if ((char)payload[0] == '0') {
-      RelayPin6Estado = true;
       digitalWrite(RelayPin6, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_6 = 0;
       MQTT.publish(pub6, "0");
     } else {
-      RelayPin6Estado = false;
       digitalWrite(RelayPin6, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_6 = 1;
       MQTT.publish(pub6, "1");
@@ -582,12 +546,10 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     Serial.println();
 
     if ((char)payload[0] == '0') {
-      RelayPin7Estado = true;
       digitalWrite(RelayPin7, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_7 = 0;
       MQTT.publish(pub7, "0");
     } else {
-      RelayPin7Estado = false;
       digitalWrite(RelayPin7, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_7 = 1;
       MQTT.publish(pub7, "1");
@@ -601,12 +563,10 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     Serial.println();
 
     if ((char)payload[0] == '0') {
-      RelayPin8Estado = true;
       digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_8 = 0;
       MQTT.publish(pub8, "0");
     } else {
-      RelayPin8Estado = false;
       digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_8 = 1;
       MQTT.publish(pub8, "1");
@@ -629,7 +589,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       toggleState_9 = 1;
       MQTT.publish(pub12, "Movimento Detectado");
     }
-  }*/
+    }*/
 }
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
   em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
@@ -652,9 +612,9 @@ void reconnectMQTT() {
       MQTT.subscribe(sub6);
       MQTT.subscribe(sub7);
       MQTT.subscribe(sub8);
-      MQTT.subscribe(sub9);
-      MQTT.subscribe(sub10);
-      MQTT.subscribe(sub11);
+      //MQTT.subscribe(sub9);
+      //MQTT.subscribe(sub10);
+      //MQTT.subscribe(sub11);
       //MQTT.subscribe(sub12);
     } else {
       Serial.println("Falha ao reconectar no broker.");
@@ -701,14 +661,14 @@ void reconectWiFi() {
   Serial.println(WiFi.dnsIP(1));
 }
 /* Função: Verifica o estado das conexões WiFI e ao broker MQTT.
-Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
+  Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
 
   if (!MQTT.connected())
 
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
 
-  reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
+    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
 }
 // Função: Inicializa o output em nível lógico baixo
 void initOutput(void) {
@@ -792,9 +752,9 @@ void loop() {
     }
     /*if (digitalRead(RelayPin1) == HIGH) {  // Liga o relé sem a necessidade de configuração, seja no, Node Red ou HomeAssistant
       MQTT.publish(pub12, "Sem Movimento");
-    } else {
+      } else {
       MQTT.publish(pub12, "Movimento Detectado");
-    }*/
+      }*/
     if (status_todos == 1) {
       MQTT.publish(pub0, "1");
     } else {
@@ -815,10 +775,11 @@ void loop1() {
   VerificaConexoesWiFIEMQTT();
   // Keep-Alive da comunicação com Broker MQTT
   MQTT.loop();  // Verifica se há novas mensagens no Broker MQTT
+  
   //Sensor DHT11  - Temperatua e Umidade  unsigned long currentTimeDHT = millis();
   unsigned long currentTimeDHT = millis();
   if (currentTimeDHT - lastMsgDHT > 60000) {
-
+    
     lastMsgDHT = currentTimeDHT;
 
     float temp_data = dht.readTemperature();  // ou dht.readTemperature(true) para Fahrenheit
@@ -845,8 +806,8 @@ void loop1() {
   unsigned long currentTimePIR = millis();
   unsigned long motionDetectedTime = 0;
   unsigned long relayDuration = 100;  // Tempo de duração do relé em milissegundos (5 segundos)
-
   if (currentTimePIR - lastMsgPIR > 100) {
+    
     lastMsgPIR = currentTimePIR;
 
     val = digitalRead(SensorPIR);
@@ -867,51 +828,55 @@ void loop1() {
     //digitalWrite(RelayPin1, HIGH);  // Desliga o relé após o tempo de duração definido
   }
 
-  //Sensor SMP180
-  //Leitura da temperatura
+  // Sensor SMP180
+  // Leitura da temperatura
   unsigned long currentTimeBMP180 = millis();
   if (currentTimeBMP180 - lastMsgBMP180 > 60000) {
 
-    lastMsgBMP180 = currentTimeBMP180;
+     lastMsgBMP180 = currentTimeBMP180;
 
-  status = sensor.startTemperature();  //Inicializa a leitura da temperatura
-  if (status != 0)                     //se status for diferente de zero (sem erro de leitura)
-  {
-    delay(status);                                //Realiza uma pequena pausa para que a leitura seja finalizada
-    status = sensor.getTemperature(temperatura);  //Armazena o valor da temperatura na variável temperatura
-    if (status != 0)                              //se status for diferente de zero (sem erro de leitura)
-    {
-      Serial.print("Temperatura: ");      //Imprime "Temperatura: " na serial
-      Serial.print(temperatura, 1);       //Imprime o valor da variável temperatura com uma casa decimal após a vírgula
-      Serial.println(" Graus Celsius ");  //Imprime " graus Celsius " na serial
+    Serial.print("Temperatura do Sensor BMP180 = ");
+    Serial.print(bmp.readTemperature());
+    Serial.println(" *C");
 
-      //Leitura da Pressão Absoluta
-      status = sensor.startPressure(3);  //Inicializa a leitura
-      if (status != 0)                   //se status for diferente de zero (sem erro de leitura)
-      {
-        delay(status);                                      //Realiza uma pequena pausa para que a leitura seja finalizada
-        status = sensor.getPressure(pressao, temperatura);  //Atribui o valor medido de pressão à variável pressao, em função da variável temperatura
-        if (status != 0)                                    //se status for diferente de zero (sem erro de leitura)
-        {
-          //Imprime na serial o valor da Pressão absoluta
-          Serial.print("Pressão Atmosférica Absoluta: ");
-          Serial.print(pressao, 1);
-          Serial.println(" hpa ");
+    Serial.print("Pressão = ");
+    Serial.print(bmp.readPressure() / 100.0, 2); // Convertendo para milibares e usando 2 casas decimais
+    Serial.println(" mb");
 
-          //Leitura da Pressão Relativa
-          pressao_relativa = sensor.sealevel(pressao, ALTITUDE);  //Atribui o valor medido de pressão relativa à variavel pressao_relativa, em função da ALTITUDE
-          Serial.print("Pressão Atmosférica Relativa ao Nivel do Mar: ");
-          Serial.print(pressao_relativa, 1);  //Imprime na serial o valor da pressão relativa
-          Serial.println(" hpa ");
+    Serial.print("Pressão ao nível do mar (calculada) = ");
+    Serial.print(bmp.readSealevelPressure() / 100.0, 2); // Convertendo para milibares e usando 2 casas decimais
+    Serial.println(" mb");
 
-          //Imprimir a Altitude
-          Serial.print("Altitude: ");
-          Serial.print(ALTITUDE);
-          Serial.println(" Metros ");
-        }
-      }
-    }
-  } else Serial.println("Erro na leitura do sensor\n");
-  Serial.println("===========================================================");
+    // Calcule a altitude assumindo uma pressão barométrica 'padrão'
+    // de 1013,25 milibares = 101325 pascals.
+
+    // Você pode obter uma medida mais precisa da altitude
+    // se souber a pressão ao nível do mar atual, que
+    // muda com o clima e outros fatores. Se for 1015 milibares
+    // isso é equivalente a 101500 pascals.
+
+    Serial.print("Altitude = ");
+    Serial.print(bmp.readAltitude());
+    Serial.println(" metros");
+
+    Serial.print("Altitude Real = ");
+    Serial.print(bmp.readAltitude(102000));
+    Serial.println(" metros");
+
+    Serial.println();
+
+    char buffer[10]; // Buffer para armazenar a string convertida
+
+    dtostrf(bmp.readPressure() / 100.0, 2, 2, buffer);          //Pressão
+    MQTT.publish(pub14, buffer);
+
+    dtostrf(bmp.readSealevelPressure() / 100.0, 2, 2, buffer);  //Pressão ao nível do mar (calculada)
+    MQTT.publish(pub15, buffer);
+
+    dtostrf(bmp.readAltitude(), 2, 2, buffer);                  //Altitude
+    MQTT.publish(pub16, buffer);
+
+    dtostrf(bmp.readAltitude(102000), 2, 2, buffer);            //Altitude Real
+    MQTT.publish(pub17, buffer);
   }
 }
