@@ -109,6 +109,9 @@ const char login_html[] PROGMEM = R"rawliteral(
 </script>
 </html>)rawliteral";
 
+const int numButtons = 8;
+bool buttonStates[numButtons];
+
 String processor(const String& var) {
   //Serial.println(var);
   if (var == "BUTTONPLACEHOLDER1") {
@@ -124,50 +127,63 @@ String processor(const String& var) {
     buttons += "<h4>Interruptor 2</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"13\" " + outputState(13) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
+
   if (var == "BUTTONPLACEHOLDER3") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
     buttons += "<h4>Interruptor 3</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"14\" " + outputState(14) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
+
   if (var == "BUTTONPLACEHOLDER4") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
     buttons += "<h4>Interruptor 4</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"32\" " + outputState(32) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
+
   if (var == "BUTTONPLACEHOLDER5") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
     buttons += "<h4>Interruptor 5</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"16\" " + outputState(16) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
+
   if (var == "BUTTONPLACEHOLDER6") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Som Bluetooth</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"17\" " + outputState(17) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 6</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"17\" " + outputState(17) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
+
   if (var == "BUTTONPLACEHOLDER7") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
     buttons += "<h4>Interruptor 7</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"18\" " + outputState(18) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
+
   if (var == "BUTTONPLACEHOLDER8") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Luz do Quarto</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"19\" " + outputState(19) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 8</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"19\" " + outputState(19) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
-  return String();
+
+    return String();
 }
 
-// Configuração dos Botões Usados no WebServer
-String outputState(int output) {
-  if (digitalRead(output)) {
+// Função para processar a mudança de estado do botão e atualizar no mapa
+void toggleCheckbox(int checkboxId, bool checkboxState) {
+  // Atualiza o estado no array
+  buttonStates[checkboxId] = checkboxState;
+}
+
+String outputState(int buttonId) {
+  if (buttonStates[buttonId]) {
     return "checked";
-  } else {
+  } 
+  else {
     return "";
   }
 }
@@ -180,6 +196,9 @@ void reconectWiFi();
 void mqtt_callback(char* topic, byte* payload, unsigned int length);
 void VerificaConexoesWiFIEMQTT(void);
 void initOutput(void);
+void initESPmDNS();
+void initSPIFFS();
+void toggleCheckbox(int checkboxId, bool checkboxState);
 
 // Implementações das funções
 void setup() {
@@ -188,10 +207,28 @@ void setup() {
   initSerial();
   initWiFi();
   initMQTT();
-
+  initESPmDNS();
+  initSPIFFS();
+  
   //Chama a função setup1()
   setup1();
 
+  //Start do Servidor
+  server.begin();
+
+// Inicialize os estados dos botões como falso (desligado) ao iniciar o programa
+  for (int i = 0; i < numButtons; ++i) {
+    buttonStates[i] = false;
+  }
+
+  if (!bmp.begin()) {
+  Serial.println("Não foi possível encontrar um sensor BMP180 válido, por favor, verifique a conexão!");
+  while (1) {}
+  }
+}
+
+//Função: Inicializa o SPIFFS
+void initSPIFFS(){
   if (!SPIFFS.begin(true)) {
     Serial.println("Ocorreu um erro ao montar o SPIFFS");
     return;
@@ -225,10 +262,32 @@ void setup() {
     request->send(SPIFFS, "/logo-1.png", "image/png");
   });
 
+  server.on("/update", HTTP_GET, [](AsyncWebServerRequest * request) {
+    String inputMessage1;
+    String inputParam1;
+    String inputMessage2;
+    String inputParam2;
+    if (request->hasParam(PARAM_INPUT_1) && request->hasParam(PARAM_INPUT_2)) {
+      inputMessage1 = request->getParam(PARAM_INPUT_1)->value();
+      inputParam1 = PARAM_INPUT_1;
+      inputMessage2 = request->getParam(PARAM_INPUT_2)->value();
+      inputParam2 = PARAM_INPUT_2;
+      digitalWrite(inputMessage1.toInt(), !inputMessage2.toInt());
+    } else {
+      inputMessage1 = "Mensagem não enviada";
+      inputMessage2 = "Mensagem não enviada";
+    }
+    Serial.print("GPIO: ");
+    Serial.print(inputMessage1);
+    Serial.print(" - Comando Ligar - Desligar: ");
+    Serial.println(inputMessage2);
+    request->send(200, "text/plain", "OK");
+  });
+
   server.on("/update1", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
-    if (request->hasParam(PARAM_INPUT_1)) {
+    if (request->hasParam(PARAM_INPUT_2)) {
       state = HIGH;
       inputMessage = "Relé 1 ligado";
     } else {
@@ -256,7 +315,7 @@ void setup() {
   server.on("/update3", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
-    if (request->hasParam(PARAM_INPUT_1)) {
+    if (request->hasParam(PARAM_INPUT_2)) {
       state = HIGH;
       inputMessage = "Relé 3 ligado";
     } else {
@@ -284,7 +343,7 @@ void setup() {
   server.on("/update5", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
-    if (request->hasParam(PARAM_INPUT_1)) {
+    if (request->hasParam(PARAM_INPUT_2)) {
       state = HIGH;
       inputMessage = "Relé 5 ligado";
     } else {
@@ -312,7 +371,7 @@ void setup() {
   server.on("/update7", HTTP_GET, [](AsyncWebServerRequest * request) {
     int state = LOW;
     String inputMessage;
-    if (request->hasParam(PARAM_INPUT_1)) {
+    if (request->hasParam(PARAM_INPUT_2)) {
       state = HIGH;
       inputMessage = "Relé 7 ligado";
     } else {
@@ -336,44 +395,14 @@ void setup() {
     digitalWrite(RelayPin8, state);
     request->send(200, "text/plain", inputMessage);
   });
-
-  server.on("/update", HTTP_GET, [](AsyncWebServerRequest * request) {
-    String inputMessage1;
-    String inputParam1;
-    String inputMessage2;
-    String inputParam2;
-    if (request->hasParam(PARAM_INPUT_1) && request->hasParam(PARAM_INPUT_2)) {
-      inputMessage1 = request->getParam(PARAM_INPUT_1)->value();
-      inputParam1 = PARAM_INPUT_1;
-      inputMessage2 = request->getParam(PARAM_INPUT_2)->value();
-      inputParam2 = PARAM_INPUT_2;
-      digitalWrite(inputMessage1.toInt(), !inputMessage2.toInt());
-    } else {
-      inputMessage1 = "Mensagem não enviada";
-      inputMessage2 = "Mensagem não enviada";
-    }
-    Serial.print("GPIO: ");
-    Serial.print(inputMessage1);
-    Serial.print(" - Comando Ligar - Desligar: ");
-    Serial.println(inputMessage2);
-    request->send(200, "text/plain", "OK");
-  });
-
-  //Start do Servidor
-  server.begin();
-
-  if (!bmp.begin()) {
-  Serial.println("Could not find a valid BMP180 sensor, please check wiring!");
-  while (1) {}
-  }
 }
 
-//Função: inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
+//Função: Inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
 void initSerial() {
   Serial.begin(115200);
 }
 
-//Função: inicializa e conecta-se na rede WI-FI desejada
+//Função: Inicializa e conecta-se na rede WI-FI desejada
 void initWiFi() {
 
   delay(1000);
@@ -386,14 +415,25 @@ void initWiFi() {
   reconectWiFi();
 }
 
-// Função: inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
+//Função: Inicializa o EPmDNS para usar o Hostname
+void initESPmDNS() {
+  // Configuração do mDNS
+  if (MDNS.begin(hostname)) {
+    Serial.println("mDNS responder iniciado");
+  } 
+  else {
+    Serial.println("Erro ao iniciar o mDNS responder");
+  }
+}
+
+// Função: Inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
 void initMQTT() {
 
   MQTT.setServer(BrokerMQTT1, PortaBroker1);  // Informa qual broker e porta deve ser conectado
   MQTT.setCallback(mqtt_callback);            // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
 }
 
-// Função: Função de callback, esta função é chamada toda vez que uma informação de um dos tópicos subescritos chega.
+// Função: Inicializa o callback, esta função é chamada toda vez que uma informação de um dos tópicos subescritos chega.
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 
   Serial.print("Mensagem enviada ao Broker MQTT no Tópico -> [");

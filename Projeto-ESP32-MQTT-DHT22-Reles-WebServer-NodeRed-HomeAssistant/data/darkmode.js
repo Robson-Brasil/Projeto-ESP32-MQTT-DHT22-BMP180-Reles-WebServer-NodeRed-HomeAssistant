@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const buttonId = button.id;
             const buttonState = localStorage.getItem(buttonId);
             localStorage.setItem(buttonId, buttonState === '1' ? '0' : '1');
+
+            // Adicione aqui a lógica para enviar a alteração do estado ao servidor
+            updateButtonStateOnServer(buttonId, button.classList.contains('active'));
         });
 
         // Recupera o estado do botão do LocalStorage e aplica ao carregar a página
@@ -37,4 +40,35 @@ document.addEventListener('DOMContentLoaded', () => {
             button.classList.add('active');
         }
     });
+
+    // Função para enviar a alteração do estado ao servidor
+    function updateButtonStateOnServer(buttonId, buttonState) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/update?relay=" + buttonId + "&state=" + (buttonState ? '1' : '0'), true);
+        xhr.send();
+    }
+
+    // Função para atualizar o estado dos botões ao carregar a página
+    function updateButtonStates() {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var buttonStates = JSON.parse(xhr.responseText);
+
+                // Atualiza o estado dos botões na página
+                for (var buttonId in buttonStates) {
+                    var button = document.getElementById(buttonId);
+                    if (button) {
+                        button.classList.toggle('active', buttonStates[buttonId]);
+                    }
+                }
+            }
+        };
+
+        xhr.open("GET", "/getButtonStates", true);
+        xhr.send();
+    }
+
+    // Atualiza o estado dos botões ao carregar a página
+    updateButtonStates();
 });
