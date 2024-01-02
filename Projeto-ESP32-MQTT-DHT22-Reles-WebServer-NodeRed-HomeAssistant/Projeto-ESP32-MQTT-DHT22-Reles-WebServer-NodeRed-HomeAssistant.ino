@@ -87,7 +87,7 @@ unsigned long delayTime = 0;
 unsigned long lastSensorPIR = 0;
 int value = 0;
 
-// WebServer
+// Status do WebServer
 const char* PARAM_INPUT_1 = "relay";
 const char* PARAM_INPUT_2 = "state";
 
@@ -199,7 +199,7 @@ void initESPmDNS();
 void initSPIFFS();
 void initElegantOTA();
 
-// Implementações das funções
+//Implementação das Funções Principais do Core0 do ESP32
 void setup() {
   // Inicializações:
   initOutput();
@@ -257,7 +257,7 @@ void onOTAProgress(size_t current, size_t final) {
   }
 }
 
-//Função que inicializa do Servidor ElegantOTA
+//Função: Inicializa o Servidor ElegantOTA
 void onOTAEnd(bool success) {
   // Log when OTA has finished
   if (success) {
@@ -280,6 +280,7 @@ void initSPIFFS() {
     request->send(200, "text/plain", "Hi! This is ElegantOTA AsyncDemo.");
   });
 
+  // Rota para o WebServer.html
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
@@ -288,26 +289,32 @@ void initSPIFFS() {
 
   server.serveStatic("/", SPIFFS, "/");
 
+  // Rota para o CSS
   server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/WebServer.css", "text/css");
   });
 
+  // Rota para o JavaScript
   server.on("/darklmode.js", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/darkmode.js", "application/javascript");
   });
 
+  // Rota para o DarkMode
   server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/darkmode.png", "image/png");
   });
 
+  // Rota para o LightMode
   server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/lightmode.png", "image/png");
   });
 
+  // Rota para o Logo
   server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/logo-1.png", "image/png");
   });
 
+  // Rota para o ações dos botões do WebServer
   server.on("/update", HTTP_GET, [](AsyncWebServerRequest * request) {
     String inputMessage1;
     String inputParam1;
@@ -594,7 +601,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     }*/
 }
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
-  em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
+   em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
 void reconnectMQTT() {
 
   unsigned long currentTime = millis();
@@ -629,6 +636,7 @@ void reconnectMQTT() {
     }
   }
 }
+
 // Função: Reconectar-se ao WiFi
 void reconectWiFi() {
   /* Se já está conectado a rede WI-FI, nada é feito.
@@ -699,7 +707,7 @@ void initOutput(void) {
   digitalWrite(RelayPin7, HIGH);
   digitalWrite(RelayPin8, HIGH);
 }
-// Programa Principal
+// Programa Principal do Core0 do ESP32
 void loop() {
   // Garante funcionamento das conexões WiFi e ao Broker MQTT
   VerificaConexoesWiFIEMQTT();
@@ -862,20 +870,19 @@ void loop1() {
     Serial.print(bmp.readSealevelPressure() / 100.0, 2); // Convertendo para milibares e usando 2 casas decimais
     Serial.println(" mb");
 
-    // Calcule a altitude assumindo uma pressão barométrica 'padrão'
-    // de 1013,25 milibares = 101325 pascals.
-
-    // Você pode obter uma medida mais precisa da altitude
-    // se souber a pressão ao nível do mar atual, que
-    // muda com o clima e outros fatores. Se for 1015 milibares
-    // isso é equivalente a 101500 pascals.
+    /* Calcule a altitude assumindo uma pressão barométrica 'padrão'
+       de 1013,25 milibares = 101325 pascals.
+       Você pode obter uma medida mais precisa da altitude
+       se souber a pressão ao nível do mar atual, que
+       muda com o clima e outros fatores. Se for 1015 milibares
+       isso é equivalente a 101500 pascals.  */
 
     Serial.print("Altitude = ");
     Serial.print(bmp.readAltitude());
     Serial.println(" metros");
 
     Serial.print("Altitude Real = ");
-    Serial.print(bmp.readAltitude(102000));
+    Serial.print(bmp.readAltitude(1009.1 * 100));
     Serial.println(" metros");
 
     Serial.println();
@@ -891,7 +898,7 @@ void loop1() {
     dtostrf(bmp.readAltitude(), 2, 2, buffer);                  //Altitude
     MQTT.publish(pub16, buffer);
 
-    dtostrf(bmp.readAltitude(102000), 2, 2, buffer);            //Altitude Real
+    dtostrf(bmp.readAltitude(1009.1 * 100), 2, 2, buffer);      //Altitude Real
     MQTT.publish(pub17, buffer);
   }
 }
