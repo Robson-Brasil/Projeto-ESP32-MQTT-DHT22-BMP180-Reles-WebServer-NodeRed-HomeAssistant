@@ -1,0 +1,111 @@
+  server.on("/botao1", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 1 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 1 desligado";
+    }
+    digitalWrite(RelayPin1, state);
+    request->send(200, "text/plain", inputMessage);
+  });
+
+  server.on("/botao2", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 2 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 2 desligado";
+    }
+    digitalWrite(RelayPin2, state);
+    request->send(200, "text/plain", inputMessage);
+  });
+
+  server.on("/botao3", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 3 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 3 desligado";
+    }
+    digitalWrite(RelayPin3, state);
+    request->send(200, "text/plain", inputMessage);
+  });
+
+  server.on("/botao4", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 4 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 4 desligado";
+    }
+    digitalWrite(RelayPin4, state);
+    request->send(200, "text/plain", inputMessage);
+  });
+
+  server.on("/botao5", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 5 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 5 desligado";
+    }
+    digitalWrite(RelayPin5, state);
+    request->send(200, "text/plain", inputMessage);
+  });
+
+  server.on("/botao6", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 6 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 6 desligado";
+    }
+    digitalWrite(RelayPin6, state);
+    request->send(200, "text/plain", inputMessage);
+  });
+
+  server.on("/botao7", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 7 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 7 desligado";
+    }
+    digitalWrite(RelayPin7, state);
+    request->send(200, "text/plain", inputMessage);
+  });
+
+  server.on("/botao8", HTTP_GET, [](AsyncWebServerRequest * request) {
+    int state = LOW;
+    String inputMessage;
+    if (request->hasParam(PARAM_INPUT_2)) {
+      state = HIGH;
+      inputMessage = "Relé 8 ligado";
+    } else {
+      state = LOW;
+      inputMessage = "Relé 8 desligado";
+    }
+    digitalWrite(RelayPin8, state);
+    request->send(200, "text/plain", inputMessage);
+  });

@@ -6,13 +6,14 @@
                                      http://arduino.esp8266.com/stable/package_esp8266com_index.json,
                                      https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
   Download Board ESP32 (x.x.x):
+  ElegntOTA V.3                      https://docs.elegantota.pro/   
   Broker MQTT
   Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 9 - Beta Tester
-  Última Modificação : 31/12/2023
+  Versão : 10 - Beta Tester
+  Última Modificação : 02/01/2024
 **********************************************************************************/
 
 //Bibliotecas
@@ -38,8 +39,6 @@ int val;
                                         se um client MQTT tentar entrar com o mesmo
                                         ID de outro já conectado ao broker, o broker
                                         irá fechar a conexão de um deles).*/
-
-#define DEBOUNCE_TIME 250
 
 int toggleState_0 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 0
 int toggleState_1 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 1
@@ -170,7 +169,7 @@ String processor(const String& var) {
     return buttons;
   }
 
-    return String();
+  return String();
 }
 
 // Função para processar a mudança de estado do botão e atualizar no mapa
@@ -182,7 +181,7 @@ void toggleCheckbox(int checkboxId, bool checkboxState) {
 String outputState(int buttonId) {
   if (buttonStates[buttonId]) {
     return "checked";
-  } 
+  }
   else {
     return "";
   }
@@ -198,7 +197,7 @@ void VerificaConexoesWiFIEMQTT(void);
 void initOutput(void);
 void initESPmDNS();
 void initSPIFFS();
-void toggleCheckbox(int checkboxId, bool checkboxState);
+void initElegantOTA();
 
 // Implementações das funções
 void setup() {
@@ -209,30 +208,77 @@ void setup() {
   initMQTT();
   initESPmDNS();
   initSPIFFS();
-  
+  initElegantOTA();
+  ElegantOTA.onStart(onOTAStart);
+  ElegantOTA.onProgress(onOTAProgress);
+  ElegantOTA.onEnd(onOTAEnd);
+
   //Chama a função setup1()
   setup1();
 
-  //Start do Servidor
+  //Start do Servidor WebServer
   server.begin();
 
-// Inicialize os estados dos botões como falso (desligado) ao iniciar o programa
+  // Inicialize os estados dos botões como falso (desligado) ao iniciar o programa
   for (int i = 0; i < numButtons; ++i) {
     buttonStates[i] = false;
   }
 
   if (!bmp.begin()) {
-  Serial.println("Não foi possível encontrar um sensor BMP180 válido, por favor, verifique a conexão!");
-  while (1) {}
+    Serial.println("Não foi possível encontrar um sensor BMP180 válido, por favor, verifique a conexão!");
+    while (1) {}
+  }
+}
+
+//Função que inicializa do Servidor ElegantOTA
+void initElegantOTA() {
+
+  ElegantOTA.begin(&server);    // Start ElegantOTA
+
+  // Set Authentication Credentials
+  ElegantOTA.setAuth("RobsonBrasil", "@Lobo#Alfa@");
+}
+
+unsigned long ota_progress_millis = 0;
+
+//Função que inicializa do Servidor ElegantOTA
+void onOTAStart() {
+  // Log when OTA has started
+  Serial.println("OTA update started!");
+  // <Add your own code here>
+}
+
+//Função que inicializa do Servidor ElegantOTA
+void onOTAProgress(size_t current, size_t final) {
+  // Log every 1 second
+  if (millis() - ota_progress_millis > 1000) {
+    ota_progress_millis = millis();
+    Serial.printf("OTA Progress Current: %u bytes, Final: %u bytes\n", current, final);
+  }
+}
+
+//Função que inicializa do Servidor ElegantOTA
+void onOTAEnd(bool success) {
+  // Log when OTA has finished
+  if (success) {
+    Serial.println("OTA update finished successfully!");
+  }
+  else {
+    Serial.println("There was an error during OTA update!");
   }
 }
 
 //Função: Inicializa o SPIFFS
-void initSPIFFS(){
+void initSPIFFS() {
   if (!SPIFFS.begin(true)) {
     Serial.println("Ocorreu um erro ao montar o SPIFFS");
     return;
   }
+
+  // Rota para o ElegantOTA
+  server.on("/ota", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(200, "text/plain", "Hi! This is ElegantOTA AsyncDemo.");
+  });
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
@@ -273,7 +319,8 @@ void initSPIFFS(){
       inputMessage2 = request->getParam(PARAM_INPUT_2)->value();
       inputParam2 = PARAM_INPUT_2;
       digitalWrite(inputMessage1.toInt(), !inputMessage2.toInt());
-    } else {
+    }
+    else {
       inputMessage1 = "Mensagem não enviada";
       inputMessage2 = "Mensagem não enviada";
     }
@@ -284,117 +331,22 @@ void initSPIFFS(){
     request->send(200, "text/plain", "OK");
   });
 
-  server.on("/update1", HTTP_GET, [](AsyncWebServerRequest * request) {
-    int state = LOW;
-    String inputMessage;
-    if (request->hasParam(PARAM_INPUT_2)) {
-      state = HIGH;
-      inputMessage = "Relé 1 ligado";
-    } else {
-      state = LOW;
-      inputMessage = "Relé 1 desligado";
-    }
-    digitalWrite(RelayPin1, state);
-    request->send(200, "text/plain", inputMessage);
-  });
+  File file = SPIFFS.open("/WebServer.txt", "r");
+  if (!file) {
+    Serial.println("Falha ao abrir o arquivo WebServer.txt");
+    return;
+  }
 
-  server.on("/update2", HTTP_GET, [](AsyncWebServerRequest * request) {
-    int state = LOW;
-    String inputMessage;
-    if (request->hasParam(PARAM_INPUT_2)) {
-      state = HIGH;
-      inputMessage = "Relé 2 ligado";
-    } else {
-      state = LOW;
-      inputMessage = "Relé 2 desligado";
-    }
-    digitalWrite(RelayPin2, state);
-    request->send(200, "text/plain", inputMessage);
-  });
+  String code = file.readString();
+  file.close();
 
-  server.on("/update3", HTTP_GET, [](AsyncWebServerRequest * request) {
-    int state = LOW;
-    String inputMessage;
-    if (request->hasParam(PARAM_INPUT_2)) {
-      state = HIGH;
-      inputMessage = "Relé 3 ligado";
-    } else {
-      state = LOW;
-      inputMessage = "Relé 3 desligado";
-    }
-    digitalWrite(RelayPin3, state);
-    request->send(200, "text/plain", inputMessage);
-  });
-
-  server.on("/update4", HTTP_GET, [](AsyncWebServerRequest * request) {
-    int state = LOW;
-    String inputMessage;
-    if (request->hasParam(PARAM_INPUT_2)) {
-      state = HIGH;
-      inputMessage = "Relé 4 ligado";
-    } else {
-      state = LOW;
-      inputMessage = "Relé 4 desligado";
-    }
-    digitalWrite(RelayPin4, state);
-    request->send(200, "text/plain", inputMessage);
-  });
-
-  server.on("/update5", HTTP_GET, [](AsyncWebServerRequest * request) {
-    int state = LOW;
-    String inputMessage;
-    if (request->hasParam(PARAM_INPUT_2)) {
-      state = HIGH;
-      inputMessage = "Relé 5 ligado";
-    } else {
-      state = LOW;
-      inputMessage = "Relé 5 desligado";
-    }
-    digitalWrite(RelayPin5, state);
-    request->send(200, "text/plain", inputMessage);
-  });
-
-  server.on("/update6", HTTP_GET, [](AsyncWebServerRequest * request) {
-    int state = LOW;
-    String inputMessage;
-    if (request->hasParam(PARAM_INPUT_2)) {
-      state = HIGH;
-      inputMessage = "Relé 6 ligado";
-    } else {
-      state = LOW;
-      inputMessage = "Relé 6 desligado";
-    }
-    digitalWrite(RelayPin6, state);
-    request->send(200, "text/plain", inputMessage);
-  });
-
-  server.on("/update7", HTTP_GET, [](AsyncWebServerRequest * request) {
-    int state = LOW;
-    String inputMessage;
-    if (request->hasParam(PARAM_INPUT_2)) {
-      state = HIGH;
-      inputMessage = "Relé 7 ligado";
-    } else {
-      state = LOW;
-      inputMessage = "Relé 7 desligado";
-    }
-    digitalWrite(RelayPin7, state);
-    request->send(200, "text/plain", inputMessage);
-  });
-
-  server.on("/update8", HTTP_GET, [](AsyncWebServerRequest * request) {
-    int state = LOW;
-    String inputMessage;
-    if (request->hasParam(PARAM_INPUT_2)) {
-      state = HIGH;
-      inputMessage = "Relé 8 ligado";
-    } else {
-      state = LOW;
-      inputMessage = "Relé 8 desligado";
-    }
-    digitalWrite(RelayPin8, state);
-    request->send(200, "text/plain", inputMessage);
-  });
+  // Executar o código lido do arquivo
+  if (code.length() > 0) {
+    Serial.println("Executando código do arquivo WebServer.txt");
+  }
+  else {
+    Serial.println("O arquivo WebServer.txt está vazio");
+  }
 }
 
 //Função: Inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
@@ -420,7 +372,7 @@ void initESPmDNS() {
   // Configuração do mDNS
   if (MDNS.begin(hostname)) {
     Serial.println("mDNS responder iniciado");
-  } 
+  }
   else {
     Serial.println("Erro ao iniciar o mDNS responder");
   }
@@ -462,7 +414,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       status_todos = 0;
       toggleState_0 = 0;
       MQTT.publish(pub0, "0");
-    } else {
+    }
+    else {
       digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
       digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
       digitalWrite(RelayPin3, LOW);  // Desligua o Relé tornando a tensão BAIXA
@@ -487,7 +440,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_1 = 0;
       MQTT.publish(pub1, "0");
-    } else {
+    }
+    else {
       digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_1 = 1;
       MQTT.publish(pub1, "1");
@@ -504,7 +458,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_2 = 0;
       MQTT.publish(pub2, "0");
-    } else {
+    }
+    else {
       digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_2 = 1;
       MQTT.publish(pub2, "1");
@@ -521,7 +476,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin3, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_3 = 0;
       MQTT.publish(pub3, "0");
-    } else {
+    }
+    else {
       digitalWrite(RelayPin3, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_3 = 1;
       MQTT.publish(pub3, "1");
@@ -538,7 +494,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin4, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_4 = 0;
       MQTT.publish(pub4, "0");
-    } else {
+    }
+    else {
       digitalWrite(RelayPin4, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_4 = 1;
       MQTT.publish(pub4, "1");
@@ -555,7 +512,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin5, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_5 = 0;
       MQTT.publish(pub5, "0");
-    } else {
+    }
+    else {
       digitalWrite(RelayPin5, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_5 = 1;
       MQTT.publish(pub5, "1");
@@ -572,7 +530,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin6, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_6 = 0;
       MQTT.publish(pub6, "0");
-    } else {
+    }
+    else {
       digitalWrite(RelayPin6, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_6 = 1;
       MQTT.publish(pub6, "1");
@@ -589,7 +548,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin7, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_7 = 0;
       MQTT.publish(pub7, "0");
-    } else {
+    }
+    else {
       digitalWrite(RelayPin7, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_7 = 1;
       MQTT.publish(pub7, "1");
@@ -606,7 +566,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_8 = 0;
       MQTT.publish(pub8, "0");
-    } else {
+    }
+    else {
       digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_8 = 1;
       MQTT.publish(pub8, "1");
@@ -624,7 +585,8 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       toggleState_9 = 0;
       MQTT.publish(pub12, "Sem Movimento");
-    } else {
+    }
+    else {
       digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
       toggleState_9 = 1;
       MQTT.publish(pub12, "Movimento Detectado");
@@ -656,7 +618,8 @@ void reconnectMQTT() {
       //MQTT.subscribe(sub10);
       //MQTT.subscribe(sub11);
       //MQTT.subscribe(sub12);
-    } else {
+    }
+    else {
       Serial.println("Falha ao reconectar no broker.");
       Serial.print(MQTT.state());
       if (millis() - currentTime > reconnectTime) {
@@ -745,6 +708,8 @@ void loop() {
 
   loop1();
 
+  ElegantOTA.loop();
+
   unsigned long currentTimeMQTT = millis();
   if (currentTimeMQTT - lastMsgMQTT > 100) {
 
@@ -752,42 +717,50 @@ void loop() {
 
     if (digitalRead(RelayPin1) == HIGH) {
       MQTT.publish(pub1, "0");
-    } else {
+    }
+    else {
       MQTT.publish(pub1, "1");
     }
     if (digitalRead(RelayPin2) == HIGH) {
       MQTT.publish(pub2, "0");
-    } else {
+    }
+    else {
       MQTT.publish(pub2, "1");
     }
     if (digitalRead(RelayPin3) == HIGH) {
       MQTT.publish(pub3, "0");
-    } else {
+    }
+    else {
       MQTT.publish(pub3, "1");
     }
     if (digitalRead(RelayPin4) == HIGH) {
       MQTT.publish(pub4, "0");
-    } else {
+    }
+    else {
       MQTT.publish(pub4, "1");
     }
     if (digitalRead(RelayPin5) == HIGH) {
       MQTT.publish(pub5, "0");
-    } else {
+    }
+    else {
       MQTT.publish(pub5, "1");
     }
     if (digitalRead(RelayPin6) == HIGH) {
       MQTT.publish(pub6, "0");
-    } else {
+    }
+    else {
       MQTT.publish(pub6, "1");
     }
     if (digitalRead(RelayPin7) == HIGH) {
       MQTT.publish(pub7, "0");
-    } else {
+    }
+    else {
       MQTT.publish(pub7, "1");
     }
     if (digitalRead(RelayPin8) == HIGH) {
       MQTT.publish(pub8, "0");
-    } else {
+    }
+    else {
       MQTT.publish(pub8, "1");
     }
     /*if (digitalRead(RelayPin1) == HIGH) {  // Liga o relé sem a necessidade de configuração, seja no, Node Red ou HomeAssistant
@@ -797,7 +770,8 @@ void loop() {
       }*/
     if (status_todos == 1) {
       MQTT.publish(pub0, "1");
-    } else {
+    }
+    else {
       MQTT.publish(pub0, "0");
     }
   }
@@ -815,11 +789,11 @@ void loop1() {
   VerificaConexoesWiFIEMQTT();
   // Keep-Alive da comunicação com Broker MQTT
   MQTT.loop();  // Verifica se há novas mensagens no Broker MQTT
-  
+
   //Sensor DHT11  - Temperatua e Umidade  unsigned long currentTimeDHT = millis();
   unsigned long currentTimeDHT = millis();
   if (currentTimeDHT - lastMsgDHT > 60000) {
-    
+
     lastMsgDHT = currentTimeDHT;
 
     float temp_data = dht.readTemperature();  // ou dht.readTemperature(true) para Fahrenheit
@@ -847,7 +821,7 @@ void loop1() {
   unsigned long motionDetectedTime = 0;
   unsigned long relayDuration = 100;  // Tempo de duração do relé em milissegundos (5 segundos)
   if (currentTimePIR - lastMsgPIR > 100) {
-    
+
     lastMsgPIR = currentTimePIR;
 
     val = digitalRead(SensorPIR);
@@ -855,7 +829,8 @@ void loop1() {
       // Serial.println("Sem Movimento");
       MQTT.publish(pub12, "Sem Movimento");
       //digitalWrite(RelayPin1, HIGH);  // Desliga o relé
-    } else {
+    }
+    else {
       MQTT.publish(pub12, "Movimento Detectado");
       //Serial.println("Movimento Detectado");
       //MQTT.publish(pub12, "0", true);        // Publica mensagem MQTT indicando que o relé foi ligado
@@ -873,7 +848,7 @@ void loop1() {
   unsigned long currentTimeBMP180 = millis();
   if (currentTimeBMP180 - lastMsgBMP180 > 60000) {
 
-     lastMsgBMP180 = currentTimeBMP180;
+    lastMsgBMP180 = currentTimeBMP180;
 
     Serial.print("Temperatura do Sensor BMP180 = ");
     Serial.print(bmp.readTemperature());

@@ -26,11 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Adicione aqui a lógica para armazenar o estado do botão no LocalStorage
             const buttonId = button.id;
-            const buttonState = localStorage.getItem(buttonId);
-            localStorage.setItem(buttonId, buttonState === '1' ? '0' : '1');
+            const buttonState = button.classList.contains('active') ? '1' : '0';
+            localStorage.setItem(buttonId, buttonState);
 
             // Adicione aqui a lógica para enviar a alteração do estado ao servidor
-            updateButtonStateOnServer(buttonId, button.classList.contains('active'));
+            updateButtonStateOnServer(buttonId, buttonState);
         });
 
         // Recupera o estado do botão do LocalStorage e aplica ao carregar a página
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Função para enviar a alteração do estado ao servidor
     function updateButtonStateOnServer(buttonId, buttonState) {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "/update?relay=" + buttonId + "&state=" + (buttonState ? '1' : '0'), true);
+        xhr.open("GET", "/update?relay=" + buttonId + "&state=" + buttonState, true);
         xhr.send();
     }
 
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (var buttonId in buttonStates) {
                     var button = document.getElementById(buttonId);
                     if (button) {
-                        button.classList.toggle('active', buttonStates[buttonId]);
+                        button.classList.toggle('active', buttonStates[buttonId] === '1');
                     }
                 }
             }
