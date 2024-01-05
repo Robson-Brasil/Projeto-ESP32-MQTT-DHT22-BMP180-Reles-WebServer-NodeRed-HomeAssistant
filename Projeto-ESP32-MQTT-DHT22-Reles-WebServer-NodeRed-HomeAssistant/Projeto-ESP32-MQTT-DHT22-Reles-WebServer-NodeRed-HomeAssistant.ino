@@ -858,16 +858,18 @@ void loop1() {
 
     lastMsgBMP180 = currentTimeBMP180;
 
+    float pressaoNivelMar = 1013.0; // Pressão ao nível do mar
+
     Serial.print("Temperatura do Sensor BMP180 = ");
     Serial.print(bmp.readTemperature());
     Serial.println(" *C");
 
-    Serial.print("Pressão = ");
+    Serial.print("Pressão Real= ");
     Serial.print(bmp.readPressure() / 100.0, 2); // Convertendo para milibares e usando 2 casas decimais
     Serial.println(" mb");
 
-    Serial.print("Pressão ao nível do mar (calculada) = ");
-    Serial.print(bmp.readSealevelPressure() / 100.0, 2); // Convertendo para milibares e usando 2 casas decimais
+    Serial.print("Pressão ao Nível do Mar = ");
+    Serial.print(bmp.readSealevelPressure() / 1013.0, 2); // Convertendo para milibares e usando 2 casas decimais
     Serial.println(" mb");
 
     /* Calcule a altitude assumindo uma pressão barométrica 'padrão'
@@ -877,28 +879,28 @@ void loop1() {
        muda com o clima e outros fatores. Se for 1015 milibares
        isso é equivalente a 101500 pascals.  */
 
-    Serial.print("Altitude = ");
+    Serial.print("Altitude Real= ");
     Serial.print(bmp.readAltitude());
     Serial.println(" metros");
 
-    Serial.print("Altitude Real = ");
-    Serial.print(bmp.readAltitude(1009.1 * 100));
+    Serial.print("Altitude ao Nível do Mar = ");
+    Serial.print(bmp.readAltitude(1013.0 * 100));
     Serial.println(" metros");
 
     Serial.println();
 
     char buffer[10]; // Buffer para armazenar a string convertida
 
-    dtostrf(bmp.readPressure() / 100.0, 2, 2, buffer);          //Pressão
+    dtostrf(bmp.readPressure() / 100.0, 2, 2, buffer);          //Pressão Real
     MQTT.publish(pub14, buffer);
 
-    dtostrf(bmp.readSealevelPressure() / 100.0, 2, 2, buffer);  //Pressão ao nível do mar (calculada)
+    dtostrf(bmp.readSealevelPressure(pressaoNivelMar) / 100.0, 2, 2, buffer);  //Pressão ao nível do mar (calculada)
     MQTT.publish(pub15, buffer);
 
-    dtostrf(bmp.readAltitude(), 2, 2, buffer);                  //Altitude
+    dtostrf(bmp.readAltitude(), 2, 2, buffer);                  //Altitude Real
     MQTT.publish(pub16, buffer);
 
-    dtostrf(bmp.readAltitude(1009.1 * 100), 2, 2, buffer);      //Altitude Real
+    dtostrf(bmp.readAltitude(1013.0 * 100), 2, 2, buffer);      //Altitude ao Nível do Mar
     MQTT.publish(pub17, buffer);
   }
 }

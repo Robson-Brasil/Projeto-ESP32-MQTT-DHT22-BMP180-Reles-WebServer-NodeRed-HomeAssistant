@@ -21,10 +21,10 @@ const char* sub12 = "ESP32/MinhaCasa/QuartoRobson/SensorMovimento";           //
 
 //Sensor BMP180 (Temperatura, Pressão Atmosférica e Altitude)
 const char* sub13 = "ESP32/MinhaCasa/QuartoRobson/BMP180/Temperatura";                  // Somente por MQTT
-const char* sub14 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/Absoluta";  // Somente por MQTT
+const char* sub14 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/Real";  // Somente por MQTT
 const char* sub15 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/NivelMar";  // Somente por MQTT
-const char* sub16 = "ESP32/MinhaCasa/QuartoRobson/BMP180/Altitude";                     // Somente por MQTT
-const char* sub17 = "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeReal";                 // Somente por MQTT
+const char* sub16 = "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeReal";                     // Somente por MQTT
+const char* sub17 = "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeNivelMar";                 // Somente por MQTT
 
 // Tópicos do Publish
 
@@ -49,7 +49,7 @@ const char* pub12 = "ESP32/MinhaCasa/QuartoRobson/SensorMovimento";           //
 
 //Sensor BMP180 (Temperatura, Pressão Atmosférica e Altitude)
 const char* pub13 = "ESP32/MinhaCasa/QuartoRobson/BMP180/Temperatura";                  // Somente por MQTT
-const char* pub14 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/Absoluta";  // Somente por MQTT
+const char* pub14 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/Real";  // Somente por MQTT
 const char* pub15 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/NivelMar";  // Somente por MQTT
-const char* pub16 = "ESP32/MinhaCasa/QuartoRobson/BMP180/Altitude";                     // Somente por MQTT
-const char* pub17 = "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeReal";                 // Somente por MQTT
+const char* pub16 = "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeReal";                     // Somente por MQTT
+const char* pub17 = "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeNivelMar";                 // Somente por MQTT
