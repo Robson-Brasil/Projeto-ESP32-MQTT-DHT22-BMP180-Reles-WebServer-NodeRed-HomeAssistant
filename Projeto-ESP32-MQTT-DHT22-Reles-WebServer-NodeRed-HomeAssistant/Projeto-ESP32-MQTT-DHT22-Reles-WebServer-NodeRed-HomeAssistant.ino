@@ -235,7 +235,7 @@ void initElegantOTA() {
 
   ElegantOTA.begin(&server);    // Start ElegantOTA
 
-  // Set Authentication Credentials
+  // Credenciais para acesso o ElegantOTA
   ElegantOTA.setAuth("RobsonBrasil", "@Lobo#Alfa@");
 }
 
@@ -349,7 +349,8 @@ void initSPIFFS() {
 
   // Executar o código lido do arquivo
   if (code.length() > 0) {
-    Serial.println("Executando código do arquivo WebServer.txt");
+    Serial.println("SPIFF : Executando código do arquivo WebServer.txt");
+    Serial.println("");
   }
   else {
     Serial.println("O arquivo WebServer.txt está vazio");
@@ -378,11 +379,38 @@ void initWiFi() {
 void initESPmDNS() {
   // Configuração do mDNS
   if (MDNS.begin(hostname)) {
-    Serial.println("mDNS responder iniciado");
+    Serial.println("mDNS iniciado");
+    Serial.println("");
   }
   else {
     Serial.println("Erro ao iniciar o mDNS responder");
+    Serial.println("");
   }
+}
+
+//Função: Inicializa o servicço de busca na rede
+void browseService(const char * hostname, const char * http){
+    Serial.printf("Browsing for service _%s._%s.local. ... ", hostname, http);
+    int n = MDNS.queryService(hostname, http);
+    if (n == 0) {
+        Serial.println("no services found");
+    } else {
+        Serial.print(n);
+        Serial.println(" service(s) found");
+        for (int i = 0; i < n; ++i) {
+            // Print details for each service found
+            Serial.print("  ");
+            Serial.print(i + 1);
+            Serial.print(": ");
+            Serial.print(MDNS.hostname(i));
+            Serial.print(" (");
+            Serial.print(MDNS.IP(i));
+            Serial.print(":");
+            Serial.print(MDNS.port(i));
+            Serial.println(")");
+        }
+    }
+    Serial.println();
 }
 
 // Função: Inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
@@ -599,7 +627,9 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       MQTT.publish(pub12, "Movimento Detectado");
     }
     }*/
+  Serial.println("");
 }
+
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
    em caso de sucesso na conexão ou reconexão, o subscribe dos tópicos é refeito.*/
 void reconnectMQTT() {
@@ -612,6 +642,7 @@ void reconnectMQTT() {
     Serial.println(BrokerMQTT1);
     if (MQTT.connect(ID_MQTT1, mqttUserName1, mqttPwd1)) {
       Serial.println("Conectado com sucesso ao broker MQTT!");
+      Serial.println("");
       MQTT.subscribe(sub0);
       MQTT.subscribe(sub1);
       MQTT.subscribe(sub2);
@@ -670,7 +701,9 @@ void reconectWiFi() {
   Serial.println(WiFi.dnsIP(0));
   Serial.print("DNS 2: ");
   Serial.println(WiFi.dnsIP(1));
+  Serial.println("");
 }
+
 /* Função: Verifica o estado das conexões WiFI e ao broker MQTT.
   Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
 void VerificaConexoesWiFIEMQTT(void) {
@@ -681,6 +714,7 @@ void VerificaConexoesWiFIEMQTT(void) {
 
     reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
 }
+
 // Função: Inicializa o output em nível lógico baixo
 void initOutput(void) {
 
@@ -707,6 +741,7 @@ void initOutput(void) {
   digitalWrite(RelayPin7, HIGH);
   digitalWrite(RelayPin8, HIGH);
 }
+
 // Programa Principal do Core0 do ESP32
 void loop() {
   // Garante funcionamento das conexões WiFi e ao Broker MQTT
@@ -784,6 +819,7 @@ void loop() {
     }
   }
 }
+
 //Implementação das Funções Principais do Core1 do ESP32
 void setup1() {
 
@@ -791,6 +827,7 @@ void setup1() {
 
   dht.begin();  // inicializa o sensor DHT11
 }
+
 // Implementação do Programa Principal no Loop do Core1 do ESP32
 void loop1() {
   // Garante funcionamento das conexões WiFi e ao Broker MQTT
@@ -869,7 +906,7 @@ void loop1() {
     Serial.println(" mb");
 
     Serial.print("Pressão ao Nível do Mar = ");
-    Serial.print(bmp.readSealevelPressure() / 1013.0, 2); // Convertendo para milibares e usando 2 casas decimais
+    Serial.print(bmp.readSealevelPressure() / 100.0); // Convertendo para milibares e usando 2 casas decimais
     Serial.println(" mb");
 
     /* Calcule a altitude assumindo uma pressão barométrica 'padrão'
