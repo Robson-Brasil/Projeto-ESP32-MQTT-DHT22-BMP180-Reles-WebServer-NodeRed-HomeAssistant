@@ -12,8 +12,6 @@
 #include <freertos/FreeRTOS.h>  // Função: Inclui a biblioteca FreeRTOS, um sistema operacional de tempo real para microcontroladores.
 #include <freertos/task.h>      // Função: Contém definições para tarefas do FreeRTOS.
 #include <EEPROM.h>             // Função: Permite a leitura e escrita de dados na EEPROM da placa Arduino.
-#include <AsyncJson.h>          // Função: Facilita a manipulação de dados JSON em projetos assíncronos. : https://github.com/bblanchon/ArduinoJson
-#include "FS.h"                 // Função: Fornece acesso ao sistema de arquivos no ESP8266/ESP32.
 #include <Wire.h>               // Função: Permite a comunicação I2C entre dispositivos.
 #include <Adafruit_BMP085.h>    // Função: Biblioteca para interagir com o sensor de pressão atmosférica BMP180.
 #include <ESPmDNS.h>            // Função: Essa biblioteca implementa o suporte mDNS no ESP8266/ESP32. Isso permite que você atribua um nome de host ao seu dispositivo na rede local, facilitando a descoberta de dispositivos na mesma rede por meio de um nome amigável, como "esp8266.local" ou "esp32.local", em vez de depender de endereços IP.

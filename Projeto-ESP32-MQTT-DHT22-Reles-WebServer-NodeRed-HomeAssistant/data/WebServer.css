@@ -204,14 +204,14 @@ footer {
 
 .dark-mode {
     background-color: #000000;
-    color: white;
+    color: rgb(255, 255, 255);
 }
 
 .dark-mode header,
 .dark-mode footer {
     background-color: #ffffff00;
-    background: #ffffff;
-    box-shadow: 0 0 10px #ffffff, 0 0 40px #ffffff, 0 0 80px #ffffff;
+    background: #ffffff00;
+    box-shadow: 0 0 10px #fdfdfd3f, 0 0 40px #ffffff48, 0 0 80px #ffffff3a;
     transition-delay: 0.2s;
 }
 
@@ -249,7 +249,7 @@ footer {
         padding: 0.1rem;
         background-color: #f1f1f100;
         font: #060606;
-        box-shadow: 0 0 20px #000000, 0 0 60px #000000, 0 0 90px #000000;
+        box-shadow: 0 0 20px #00000041, 0 0 60px #000000, 0 0 90px #000000;
         width: 103vw;
 
     }
@@ -301,7 +301,7 @@ footer {
     input:checked+.slider {
         background-color: #ffffff;
         background: #ffffff;
-        box-shadow: 0 0 10px #ffffff, 0 0 40px #ffffff, 0 0 80px #ffffff;
+        box-shadow: 0 0 5px #ffffff00, 0 0 40px #ffffff00, 0 0 80px #ffffff00;
         transition-delay: 0.2s;
     }
     
@@ -390,7 +390,7 @@ footer {
     input:checked+.slider {
         background-color: #ffffff;
         background: #ffffff;
-        box-shadow: 0 0 10px #ffffff, 0 0 40px #ffffff, 0 0 80px #ffffff;
+        box-shadow: 0 0 5px #ffffff, 0 0 40px #ffffff, 0 0 80px #ffffff;
         transition-delay: 0.2s;
     }
     
