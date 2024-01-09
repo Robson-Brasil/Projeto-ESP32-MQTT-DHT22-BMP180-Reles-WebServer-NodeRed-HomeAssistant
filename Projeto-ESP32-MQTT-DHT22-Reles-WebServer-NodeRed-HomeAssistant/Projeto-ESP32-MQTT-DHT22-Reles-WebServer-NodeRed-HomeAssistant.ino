@@ -67,6 +67,9 @@ IPAddress subnet(255, 255, 255, 0);
 IPAddress primaryDNS(1, 1, 1, 1);
 IPAddress secondaryDNS(8, 8, 8, 8);
 
+// Configuração da Porta do WebServer Usada Pelo AsyncWebServer
+AsyncWebServer server(3232);
+
 // Variáveis e objetos globais
 WiFiClient espClient;          // Cria o objeto espClient
 PubSubClient MQTT(espClient);  // Instância o Cliente MQTT passando o objeto espClient
@@ -90,9 +93,6 @@ int value = 0;
 // Status do WebServer
 const char* PARAM_INPUT_1 = "relay";
 const char* PARAM_INPUT_2 = "state";
-
-// Configuração da Porta do WebServer Usada Pelo AsyncWebServer
-AsyncWebServer server(3232);
 
 // Configuração das funções dos botões da página WebServer
 const char login_html[] PROGMEM = R"rawliteral(
@@ -196,7 +196,6 @@ void VerificaConexoesWiFIeMQTT();
 void initOutput();
 void initESPmDNS();
 void initSPIFFS();
-void initElegantOTA();
 
 //Implementação das Funções Principais do Core0 do ESP32
 void setup() {
@@ -207,11 +206,7 @@ void setup() {
   initMQTT();
   initESPmDNS();
   initSPIFFS();
-  initElegantOTA();
-  ElegantOTA.onStart(onOTAStart);
-  ElegantOTA.onProgress(onOTAProgress);
-  ElegantOTA.onEnd(onOTAEnd);
-
+  
   //Chama a função setup1()
   setup1();
 
@@ -229,52 +224,25 @@ void setup() {
   }
 }
 
-//Função que inicializa do Servidor ElegantOTA
-void initElegantOTA() {
-
-  ElegantOTA.begin(&server);  // Start ElegantOTA
-
-  // Credenciais para acesso ao ElegantOTA
-  ElegantOTA.setAuth("RobsonBrasil", "@Lobo#Alfa@");
-}
-
-unsigned long ota_progress_millis = 0;
-
-//Função que inicializa do Servidor ElegantOTA
-void onOTAStart() {
-  // Log when OTA has started
-  Serial.println("Iniciada a atualização Over-The-Air (OTA)!");
-}
-
-//Função que inicializa do Servidor ElegantOTA
-void onOTAProgress(size_t current, size_t final) {
-  // Log every 1 second
-  if (millis() - ota_progress_millis > 1000) {
-    ota_progress_millis = millis();
-    Serial.printf("Progresso Atual da Atualização Over-The-Air (OTA): %u bytes, Final: %u bytes\n", current, final);
-  }
-}
-
-//Função: Inicializa o Servidor ElegantOTA
-void onOTAEnd(bool success) {
-  // Registro quando a atualização Over-The-Air (OTA) foi concluída
-  if (success) {
-    Serial.println("Atualização Over-The-Air (OTA) concluída com sucesso!");
-  } else {
-    Serial.println("Ocorreu um erro durante a atualização Over-The-Air (OTA)!");
-  }
-}
-
 //Função: Inicializa o SPIFFS
 void initSPIFFS() {
+
   if (!SPIFFS.begin(true)) {
     Serial.println("Ocorreu um erro ao montar o SPIFFS");
     return;
   }
 
-  // Rota para o ElegantOTA
-  server.on("/ota", HTTP_GET, [](AsyncWebServerRequest* request) {
-    request->send(200, "text/plain", "Atualização Over-The-Air (OTA).");
+  // Rota para iniciar a atualização OTA
+  server.on("/updateota", HTTP_GET, [](AsyncWebServerRequest* request) {
+    if (!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+
+    // Coloque aqui qualquer lógica de verificação adicional antes de iniciar a atualização OTA
+
+    // Inicia a atualização OTA
+    ArduinoOTA.begin();
+
+    request->send(200, "text/plain", "Atualização OTA iniciada. Isso pode levar alguns minutos. Acesse o monitor serial para obter mais informações.");
   });
 
   // Rota para o WebServer.html
@@ -710,7 +678,8 @@ void loop() {
 
   loop1();
 
-  ElegantOTA.loop();
+  // Lida com atualizações OTA
+  ArduinoOTA.handle();
 
   unsigned long currentTimeMQTT = millis();
   if (currentTimeMQTT - lastMsgMQTT > 100) {
