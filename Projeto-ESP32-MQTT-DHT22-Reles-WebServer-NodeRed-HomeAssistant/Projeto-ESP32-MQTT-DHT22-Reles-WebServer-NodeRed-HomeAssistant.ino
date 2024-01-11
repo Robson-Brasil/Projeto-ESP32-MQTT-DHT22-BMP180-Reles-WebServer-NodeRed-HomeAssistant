@@ -13,7 +13,7 @@
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
   Versão : 11 - Beta Tester
-  Última Modificação : 07/01/2024
+  Última Modificação : 10/01/2024
 **********************************************************************************/
 
 //Bibliotecas
