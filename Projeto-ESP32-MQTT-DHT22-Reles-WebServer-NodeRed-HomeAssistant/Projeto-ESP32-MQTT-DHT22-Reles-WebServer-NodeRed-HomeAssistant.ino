@@ -12,7 +12,7 @@
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 11 - Beta Tester
+  Versão : 13 - Beta Tester
   Última Modificação : 10/01/2024
 **********************************************************************************/
 
@@ -69,6 +69,93 @@ IPAddress secondaryDNS(8, 8, 8, 8);
 
 // Configuração da Porta do WebServer Usada Pelo AsyncWebServer
 AsyncWebServer server(3232);
+
+/*
+ * Login page
+ */
+
+const char* loginIndex =
+ "<form name='loginForm'>"
+    "<table width='20%' bgcolor='A09F9F' align='center'>"
+        "<tr>"
+            "<td colspan=2>"
+                "<center><font size=4><b>Login do ESP32 IoT</b></font></center>"
+                "<br>"
+            "</td>"
+            "<br>"
+            "<br>"
+        "</tr>"
+        "<tr>"
+             "<td>Username:</td>"
+             "<td><input type='text' size=25 name='userid'><br></td>"
+        "</tr>"
+        "<br>"
+        "<br>"
+        "<tr>"
+            "<td>Password:</td>"
+            "<td><input type='Password' size=25 name='pwd'><br></td>"
+            "<br>"
+            "<br>"
+        "</tr>"
+        "<tr>"
+            "<td><input type='submit' onclick='check(this.form)' value='Login'></td>"
+        "</tr>"
+    "</table>"
+"</form>"
+"<script>"
+    "function check(form)"
+    "{"
+    "if(form.userid.value=='RobsonBrasil' && form.pwd.value=='loboalfa')"
+    "{"
+    "window.open('/serverIndex')"
+    "}"
+    "else"
+    "{"
+    " alert('Error Password or Username')/*displays error message*/"
+    "}"
+    "}"
+"</script>";
+
+/*
+ * Server Index Page
+ */
+
+const char* serverIndex =
+"<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>"
+"<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>"
+   "<input type='file' name='update'>"
+        "<input type='submit' value='Update'>"
+    "</form>"
+ "<div id='prg'>progress: 0%</div>"
+ "<script>"
+  "$('form').submit(function(e){"
+  "e.preventDefault();"
+  "var form = $('#upload_form')[0];"
+  "var data = new FormData(form);"
+  " $.ajax({"
+  "url: '/update',"
+  "type: 'POST',"
+  "data: data,"
+  "contentType: false,"
+  "processData:false,"
+  "xhr: function() {"
+  "var xhr = new window.XMLHttpRequest();"
+  "xhr.upload.addEventListener('progress', function(evt) {"
+  "if (evt.lengthComputable) {"
+  "var per = evt.loaded / evt.total;"
+  "$('#prg').html('progress: ' + Math.round(per*100) + '%');"
+  "}"
+  "}, false);"
+  "return xhr;"
+  "},"
+  "success:function(d, s) {"
+  "console.log('success!')"
+ "},"
+ "error: function (a, b, c) {"
+ "}"
+ "});"
+ "});"
+ "</script>";
 
 // Variáveis e objetos globais
 WiFiClient espClient;          // Cria o objeto espClient
@@ -211,7 +298,7 @@ void setup() {
   setup1();
 
   // Port defaults to 3232
-  // ArduinoOTA.setPort(3232);
+  ArduinoOTA.setPort(3232);
 
   // Hostname defaults to esp3232-[MAC]
   ArduinoOTA.setHostname("esp32");
@@ -273,15 +360,42 @@ void initSPIFFS() {
     return;
   }
 
-  // Rota para iniciar a atualização OTA
-  server.on("/updateota", HTTP_GET, [](AsyncWebServerRequest* request) {
-    if (!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
+  /*return index page which is stored in serverIndex */
+  server.on("/ota", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(200, "text/html", loginIndex);
+  });
 
-    // Coloque aqui qualquer lógica de verificação adicional antes de iniciar a atualização OTA
+  server.on("/serverIndex", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(200, "text/html", serverIndex);
+  });
+
+  server.on("/update", HTTP_POST, [](AsyncWebServerRequest *request){
+    request->send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+    ESP.restart();
+  }, [](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final){
+    if (!index) {
+      Serial.printf("Update: %s\n", filename.c_str());
+      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
+        Update.printError(Serial);
+      }
+    }
+    if (Update.write(data, len) != len) {
+      Update.printError(Serial);
+    }
+    if (final) {
+      if (Update.end(true)) {
+        Serial.printf("Update Success: %u\nRebooting...\n", index+len);
+      } else {
+        Update.printError(Serial);
+      }
+    }
 
     // Inicia a atualização OTA
     ArduinoOTA.begin();
+
+  Serial.println("Ready");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
 
     request->send(200, "text/plain", "Atualização OTA iniciada. Isso pode levar alguns minutos. Acesse o monitor serial para obter mais informações.");
   });
