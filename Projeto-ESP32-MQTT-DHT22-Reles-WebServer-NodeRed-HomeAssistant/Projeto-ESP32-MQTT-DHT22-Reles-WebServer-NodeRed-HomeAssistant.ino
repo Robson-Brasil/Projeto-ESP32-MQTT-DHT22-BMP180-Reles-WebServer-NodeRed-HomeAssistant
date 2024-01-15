@@ -6,7 +6,7 @@
                                      http://arduino.esp8266.com/stable/package_esp8266com_index.json,
                                      https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
   Download Board ESP32 (x.x.x):
-  ElegntOTA V.3                      https://docs.elegantota.pro/   
+  ElegntOTA V.3                      https://docs.elegantota.pro/
   Broker MQTT
   Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
@@ -21,165 +21,13 @@
 #include "TopicosMQTT.h"
 #include "Bibliotecas.h"
 #include "GPIOs.h"
-
-//Parametros do Sensor BMP180
-Adafruit_BMP085 bmp;  //Define objeto sensor na classe SFE_BMP180 da biblioteca
+#include "WebServerOTA.h"
+#include "Sensores.h"
+#include "MQTT.h"
+#include "VariaveisGlobais.h"
 
 void setup1();  // Declaração da função setup1()
 void loop1();   // Declaração da função loop1()
-
-int PortaBroker1 = 1883;  // Porta do Broker MQTT
-
-float diff = 1.0;
-
-int val;
-
-#define ID_MQTT1 "ESP32-IoT-Broker1" /* ID MQTT (para identificação de seção)
-                                        IMPORTANTE: Este deve ser único no broker (ou seja,
-                                        se um client MQTT tentar entrar com o mesmo
-                                        ID de outro já conectado ao broker, o broker
-                                        irá fechar a conexão de um deles).*/
-
-int toggleState_0 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 0
-int toggleState_1 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 1
-int toggleState_2 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 2
-int toggleState_3 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 3
-int toggleState_4 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 4
-int toggleState_5 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 5
-int toggleState_6 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 6
-int toggleState_7 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 7
-int toggleState_8 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 8
-int toggleState_9 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 8 via sensor PIR
-int status_todos = 0;   // Definir inteiro para lembrar o estado de alternância para todos
-
-// DHT11 ou DHT22 para leitura dos valores  de Temperatura e Umidade
-#define DHTTYPE DHT22  // DHT11 ou DHT22
-DHT dht(DHTPIN, DHTTYPE);
-
-DNSServer dns;
-
-// IP Estático
-IPAddress local_IP(192, 168, 15, 50);
-IPAddress gateway(192, 168, 15, 1);
-IPAddress subnet(255, 255, 255, 0);
-
-// DNS Estático
-IPAddress primaryDNS(1, 1, 1, 1);
-IPAddress secondaryDNS(8, 8, 8, 8);
-
-// Configuração da Porta do WebServer Usada Pelo AsyncWebServer
-AsyncWebServer server(3232);
-
-/*
- * Login page
- */
-
-const char* loginIndex =
- "<form name='loginForm'>"
-    "<table width='20%' bgcolor='A09F9F' align='center'>"
-        "<tr>"
-            "<td colspan=2>"
-                "<center><font size=4><b>Login do ESP32 IoT</b></font></center>"
-                "<br>"
-            "</td>"
-            "<br>"
-            "<br>"
-        "</tr>"
-        "<tr>"
-             "<td>Username:</td>"
-             "<td><input type='text' size=25 name='userid'><br></td>"
-        "</tr>"
-        "<br>"
-        "<br>"
-        "<tr>"
-            "<td>Password:</td>"
-            "<td><input type='Password' size=25 name='pwd'><br></td>"
-            "<br>"
-            "<br>"
-        "</tr>"
-        "<tr>"
-            "<td><input type='submit' onclick='check(this.form)' value='Login'></td>"
-        "</tr>"
-    "</table>"
-"</form>"
-"<script>"
-    "function check(form)"
-    "{"
-    "if(form.userid.value=='RobsonBrasil' && form.pwd.value=='loboalfa')"
-    "{"
-    "window.open('/serverIndex')"
-    "}"
-    "else"
-    "{"
-    " alert('Error Password or Username')/*displays error message*/"
-    "}"
-    "}"
-"</script>";
-
-/*
- * Server Index Page
- */
-
-const char* serverIndex =
-"<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>"
-"<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>"
-   "<input type='file' name='update'>"
-        "<input type='submit' value='Update'>"
-    "</form>"
- "<div id='prg'>progress: 0%</div>"
- "<script>"
-  "$('form').submit(function(e){"
-  "e.preventDefault();"
-  "var form = $('#upload_form')[0];"
-  "var data = new FormData(form);"
-  " $.ajax({"
-  "url: '/update',"
-  "type: 'POST',"
-  "data: data,"
-  "contentType: false,"
-  "processData:false,"
-  "xhr: function() {"
-  "var xhr = new window.XMLHttpRequest();"
-  "xhr.upload.addEventListener('progress', function(evt) {"
-  "if (evt.lengthComputable) {"
-  "var per = evt.loaded / evt.total;"
-  "$('#prg').html('progress: ' + Math.round(per*100) + '%');"
-  "}"
-  "}, false);"
-  "return xhr;"
-  "},"
-  "success:function(d, s) {"
-  "console.log('success!')"
- "},"
- "error: function (a, b, c) {"
- "}"
- "});"
- "});"
- "</script>";
-
-// Variáveis e objetos globais
-WiFiClient espClient;          // Cria o objeto espClient
-PubSubClient MQTT(espClient);  // Instância o Cliente MQTT passando o objeto espClient
-
-char str_hum_data[7];
-char str_temp_data[7];
-char str_tempterm_data[7];
-char str_tempF_data[7];
-
-#define MSG_BUFFER_SIZE (1000)
-
-//Função MILLIS
-unsigned long lastMsgDHT = 0;
-unsigned long lastMsgBMP180 = 0;
-unsigned long lastMsgMQTT = 0;
-unsigned long lastMsgPIR = 0;
-unsigned long delayTime = 0;
-unsigned long lastSensorPIR = 0;
-int value = 0;
-
-// Status do WebServer
-const char* PARAM_INPUT_1 = "relay";
-const char* PARAM_INPUT_2 = "state";
 
 // Configuração das funções dos botões da página WebServer
 const char login_html[] PROGMEM = R"rawliteral(
@@ -273,6 +121,16 @@ String outputState(int buttonId) {
   }
 }
 
+#define MSG_BUFFER_SIZE (1000)
+
+//Função MILLIS
+unsigned long lastMsgDHT = 0;
+unsigned long lastMsgBMP180 = 0;
+unsigned long lastMsgMQTT = 0;
+unsigned long lastMsgPIR = 0;
+unsigned long delayTime = 0;
+int value = 0;
+
 // Protótipos
 void initSerial();
 void initWiFi();
@@ -293,59 +151,60 @@ void setup() {
   initMQTT();
   initESPmDNS();
   initSPIFFS();
-  
+
   //Chama a função setup1()
   setup1();
 
-  // Port defaults to 3232
+  // Escolha qual porta usar no seu ESP32
   ArduinoOTA.setPort(3232);
 
-  // Hostname defaults to esp3232-[MAC]
-  ArduinoOTA.setHostname("esp32");
+  // Esolha qual o Hostname usar para esp32-[MAC]
+  ArduinoOTA.setHostname("ESP32-IoT");
 
-  // No authentication by default
+  // Senha para autenticar a atulização OTA (Se não tiver, qualquer um pode autlizar sem sua permissão)
   ArduinoOTA.setPassword("loboalfa");
 
-  // Password can be set with it's md5 value as well
+  // A senha pode ser definida com o seu valor MD5 também.(Senha mais avançada)
   // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
   // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
 
+  // Inicio da configuração do Servidor OTA
   ArduinoOTA
-    .onStart([]() {
-      String type;
-      if (ArduinoOTA.getCommand() == U_FLASH)
-        type = "sketch";
-      else // U_SPIFFS
-        type = "filesystem";
+  .onStart([]() {
+    String type;
+    if (ArduinoOTA.getCommand() == U_FLASH)
+      type = "sketch";
+    else // U_SPIFFS
+      type = "filesystem";
 
-      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-      Serial.println("Start updating " + type);
-    })
-    .onEnd([]() {
-      Serial.println("\nEnd");
-    })
-    .onProgress([](unsigned int progress, unsigned int total) {
-      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-    })
-    .onError([](ota_error_t error) {
-      Serial.printf("Error[%u]: ", error);
-      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-      else if (error == OTA_END_ERROR) Serial.println("End Failed");
-    });
+    Serial.println("Iniciando a atualização. " + type);
+  })
+  .onEnd([]() {
+    Serial.println("\nEnd");
+  })
+  .onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("Progresso: %u%%\r", (progress / (total / 100)));
+  })
+  .onError([](ota_error_t error) {
+    Serial.printf("Erro[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) Serial.println("Autenticação Falhou");
+    else if (error == OTA_BEGIN_ERROR) Serial.println("Início falhou.");
+    else if (error == OTA_CONNECT_ERROR) Serial.println("Conexão Falhou");
+    else if (error == OTA_RECEIVE_ERROR) Serial.println("Recepção falhou");
+    else if (error == OTA_END_ERROR) Serial.println("Encerramento falhou.");
+  });
 
+  // Start do Servidor OTA
   ArduinoOTA.begin();
 
-  //Start do Servidor WebServer
+  // Start do Servidor WebServer
   server.begin();
 
   // Inicialize os estados dos botões como falso (desligado) ao iniciar o programa
   for (int i = 0; i < numButtons; ++i) {
     buttonStates[i] = false;
   }
-
+  // Start do Sensor BMP180
   if (!bmp.begin()) {
     Serial.println("Não foi possível encontrar um sensor BMP180 válido, por favor, verifique a conexão!");
     while (1) {}
@@ -360,19 +219,27 @@ void initSPIFFS() {
     return;
   }
 
-  /*return index page which is stored in serverIndex */
-  server.on("/ota", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/html", loginIndex);
+  // Rota para main.html
+  server.on("/principal", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/main.html", "text/html");
   });
 
-  server.on("/serverIndex", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/html", serverIndex);
+  // Rota para access.html
+  server.on("/access", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/access.html", "text/html");
   });
 
-  server.on("/update", HTTP_POST, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
-    ESP.restart();
-  }, [](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final){
+  // Rota para upload.html
+  server.on("/upload", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/upload.html", "text/html");
+  });
+
+  // Rota para o processamento do formulário de upload
+  server.on("/upload", HTTP_POST, [](AsyncWebServerRequest * request) {
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+    response->addHeader("Connection", "close");
+    request->send(response);
+  }, [](AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
     if (!index) {
       Serial.printf("Update: %s\n", filename.c_str());
       if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
@@ -384,7 +251,7 @@ void initSPIFFS() {
     }
     if (final) {
       if (Update.end(true)) {
-        Serial.printf("Update Success: %u\nRebooting...\n", index+len);
+        Serial.printf("Update Success: %u\nRebooting...\n", index + len);
       } else {
         Update.printError(Serial);
       }
@@ -393,15 +260,63 @@ void initSPIFFS() {
     // Inicia a atualização OTA
     ArduinoOTA.begin();
 
-  Serial.println("Ready");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+    Serial.println("Ready");
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+  });
+
+  // Rota para avatar.png
+  server.on("/avatar", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/avatar.png", "image/png");
+  });
+
+  // Rota para style.css
+  server.on("/styleota", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/styleota.css", "text/css");
+  });
+
+  /*OBSERVAÇÃO: Se estiver atualizando o SPIFFS, este seria o local para desmontar o SPIFFS usando SPIFFS.end()*/
+  server.on("/ota", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(200, "text/html", loginIndex);
+  });
+
+  server.on("/serverIndex", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(200, "text/html", serverIndex);
+  });
+
+  server.on("/update", HTTP_POST, [](AsyncWebServerRequest * request) {
+    request->send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+    ESP.restart();
+  }, [](AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+    if (!index) {
+      Serial.printf("Update: %s\n", filename.c_str());
+      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
+        Update.printError(Serial);
+      }
+    }
+    if (Update.write(data, len) != len) {
+      Update.printError(Serial);
+    }
+    if (final) {
+      if (Update.end(true)) {
+        Serial.printf("Update Success: %u\nRebooting...\n", index + len);
+      } else {
+        Update.printError(Serial);
+      }
+    }
+
+    // Inicia a atualização OTA
+    ArduinoOTA.begin();
+
+    Serial.println("Ready");
+    Serial.print("Endereço de IP: ");
+    Serial.println(WiFi.localIP());
 
     request->send(200, "text/plain", "Atualização OTA iniciada. Isso pode levar alguns minutos. Acesse o monitor serial para obter mais informações.");
   });
 
   // Rota para o WebServer.html
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
     request->send(SPIFFS, "/WebServer.html", String(), false, processor);
@@ -410,32 +325,32 @@ void initSPIFFS() {
   server.serveStatic("/", SPIFFS, "/");
 
   // Rota para o CSS
-  server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/WebServer.css", "text/css");
   });
 
   // Rota para o JavaScript
-  server.on("/darklmode.js", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/darkmode.js", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/darkmode.js", "application/javascript");
   });
 
   // Rota para o DarkMode
-  server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/darkmode.png", "image/png");
   });
 
   // Rota para o LightMode
-  server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/lightmode.png", "image/png");
   });
 
   // Rota para o Logo
-  server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/logo-1.png", "image/png");
   });
 
   // Rota para o ações dos botões do WebServer
-  server.on("/update", HTTP_GET, [](AsyncWebServerRequest* request) {
+  server.on("/update", HTTP_GET, [](AsyncWebServerRequest * request) {
     String inputMessage1;
     String inputParam1;
     String inputMessage2;
@@ -720,31 +635,43 @@ void reconnectMQTT() {
   unsigned long currentTime = millis();
   unsigned long reconnectTime = 2000;  // Tempo para tentar reconectar (em milissegundos)
 
-  while (!MQTT.connected()) {
-    Serial.print("* Tentando se conectar ao Broker MQTT: ");
-    Serial.println(BrokerMQTT1);
-    if (MQTT.connect(ID_MQTT1, mqttUserName1, mqttPwd1)) {
-      Serial.println("Conectado com sucesso ao broker MQTT!");
-      Serial.println("");
-      MQTT.subscribe(sub0);
-      MQTT.subscribe(sub1);
-      MQTT.subscribe(sub2);
-      MQTT.subscribe(sub3);
-      MQTT.subscribe(sub4);
-      MQTT.subscribe(sub5);
-      MQTT.subscribe(sub6);
-      MQTT.subscribe(sub7);
-      MQTT.subscribe(sub8);
-      //MQTT.subscribe(sub9);
-      //MQTT.subscribe(sub10);
-      //MQTT.subscribe(sub11);
-      //MQTT.subscribe(sub12);
-    } else {
-      Serial.println("Falha ao reconectar no broker.");
-      Serial.print(MQTT.state());
-      if (millis() - currentTime > reconnectTime) {
-        Serial.println("Haverá nova tentativa de conexão em 2s");
-        currentTime = millis();
+  // Verifica o overflow de millis
+  if (currentTime < delayTime) {
+    // Overflow ocorreu
+    // Lógica para lidar com o overflow, se necessário
+    // Por exemplo, reiniciar o último tempo para o valor atual
+    delayTime = currentTime;
+  } else {
+    delayTime = currentTime;
+
+    while (!MQTT.connected()) {
+      Serial.print("* Tentando se conectar ao Broker MQTT: ");
+      Serial.println(BrokerMQTT1);
+      if (MQTT.connect(ID_MQTT1, mqttUserName1, mqttPwd1)) {
+        Serial.println("Conectado com sucesso ao broker MQTT!");
+        Serial.println("");
+        MQTT.subscribe(sub0);
+        MQTT.subscribe(sub1);
+        MQTT.subscribe(sub2);
+        MQTT.subscribe(sub3);
+        MQTT.subscribe(sub4);
+        MQTT.subscribe(sub5);
+        MQTT.subscribe(sub6);
+        MQTT.subscribe(sub7);
+        MQTT.subscribe(sub8);
+        //MQTT.subscribe(sub9);
+        //MQTT.subscribe(sub10);
+        //MQTT.subscribe(sub11);
+        //MQTT.subscribe(sub12);
+      } else {
+        Serial.println("Falha ao reconectar no broker.");
+        Serial.print(MQTT.state());
+        // Verifica o overflow de millis para o próximo tempo de reconexão
+        if (millis() - currentTime > reconnectTime) {
+          Serial.println("Haverá nova tentativa de conexão em 2s");
+          // Reinicia o último tempo para o valor atual
+          currentTime = millis();
+        }
       }
     }
   }
@@ -837,59 +764,69 @@ void loop() {
   ArduinoOTA.handle();
 
   unsigned long currentTimeMQTT = millis();
-  if (currentTimeMQTT - lastMsgMQTT > 100) {
 
+  // Verifica o overflow de millis
+  if (currentTimeMQTT < lastMsgMQTT) {
+    // Overflow ocorreu
+    // Lógica para lidar com o overflow, se necessário
+    // Por exemplo, reiniciar o último tempo para o valor atual
     lastMsgMQTT = currentTimeMQTT;
+  } else {
+    if (currentTimeMQTT - lastMsgMQTT > 100) {
+      lastMsgMQTT = currentTimeMQTT;
 
-    if (digitalRead(RelayPin1) == HIGH) {
-      MQTT.publish(pub1, "0");
-    } else {
-      MQTT.publish(pub1, "1");
-    }
-    if (digitalRead(RelayPin2) == HIGH) {
-      MQTT.publish(pub2, "0");
-    } else {
-      MQTT.publish(pub2, "1");
-    }
-    if (digitalRead(RelayPin3) == HIGH) {
-      MQTT.publish(pub3, "0");
-    } else {
-      MQTT.publish(pub3, "1");
-    }
-    if (digitalRead(RelayPin4) == HIGH) {
-      MQTT.publish(pub4, "0");
-    } else {
-      MQTT.publish(pub4, "1");
-    }
-    if (digitalRead(RelayPin5) == HIGH) {
-      MQTT.publish(pub5, "0");
-    } else {
-      MQTT.publish(pub5, "1");
-    }
-    if (digitalRead(RelayPin6) == HIGH) {
-      MQTT.publish(pub6, "0");
-    } else {
-      MQTT.publish(pub6, "1");
-    }
-    if (digitalRead(RelayPin7) == HIGH) {
-      MQTT.publish(pub7, "0");
-    } else {
-      MQTT.publish(pub7, "1");
-    }
-    if (digitalRead(RelayPin8) == HIGH) {
-      MQTT.publish(pub8, "0");
-    } else {
-      MQTT.publish(pub8, "1");
-    }
-    /*if (digitalRead(RelayPin1) == HIGH) {  // Liga o relé sem a necessidade de configuração, seja no, Node Red ou HomeAssistant
-      MQTT.publish(pub12, "Sem Movimento");
+      // Código executado a cada 100 milissegundos
+
+      if (digitalRead(RelayPin1) == HIGH) {
+        MQTT.publish(pub1, "0");
       } else {
-      MQTT.publish(pub12, "Movimento Detectado");
-      }*/
-    if (status_todos == 1) {
-      MQTT.publish(pub0, "1");
-    } else {
-      MQTT.publish(pub0, "0");
+        MQTT.publish(pub1, "1");
+      }
+      if (digitalRead(RelayPin2) == HIGH) {
+        MQTT.publish(pub2, "0");
+      } else {
+        MQTT.publish(pub2, "1");
+      }
+      if (digitalRead(RelayPin3) == HIGH) {
+        MQTT.publish(pub3, "0");
+      } else {
+        MQTT.publish(pub3, "1");
+      }
+      if (digitalRead(RelayPin4) == HIGH) {
+        MQTT.publish(pub4, "0");
+      } else {
+        MQTT.publish(pub4, "1");
+      }
+      if (digitalRead(RelayPin5) == HIGH) {
+        MQTT.publish(pub5, "0");
+      } else {
+        MQTT.publish(pub5, "1");
+      }
+      if (digitalRead(RelayPin6) == HIGH) {
+        MQTT.publish(pub6, "0");
+      } else {
+        MQTT.publish(pub6, "1");
+      }
+      if (digitalRead(RelayPin7) == HIGH) {
+        MQTT.publish(pub7, "0");
+      } else {
+        MQTT.publish(pub7, "1");
+      }
+      if (digitalRead(RelayPin8) == HIGH) {
+        MQTT.publish(pub8, "0");
+      } else {
+        MQTT.publish(pub8, "1");
+      }
+      /*if (digitalRead(RelayPin1) == HIGH) {  // Liga o relé sem a necessidade de configuração, seja no, Node Red ou HomeAssistant
+        MQTT.publish(pub12, "Sem Movimento");
+        } else {
+        MQTT.publish(pub12, "Movimento Detectado");
+        }*/
+      if (status_todos == 1) {
+        MQTT.publish(pub0, "1");
+      } else {
+        MQTT.publish(pub0, "0");
+      }
     }
   }
 }
@@ -911,51 +848,71 @@ void loop1() {
 
   //Sensor DHT11  - Temperatua e Umidade  unsigned long currentTimeDHT = millis();
   unsigned long currentTimeDHT = millis();
+
   if (currentTimeDHT - lastMsgDHT > 60000) {
 
-    lastMsgDHT = currentTimeDHT;
+    // Verifica o overflow de millis
+    if (currentTimeDHT < lastMsgDHT) {
+      // Overflow ocorreu
+      // Lógica para lidar com o overflow, se necessário
+      // Por exemplo, reiniciar o último tempo para o valor atual
+      lastMsgDHT = currentTimeDHT;
+    } else {
+      lastMsgDHT = currentTimeDHT;
 
-    float temp_data = dht.readTemperature();  // ou dht.readTemperature(true) para Fahrenheit
-    dtostrf(temp_data, 6, 2, str_temp_data);
-    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
-    float hum_data = dht.readHumidity();
-    dtostrf(hum_data, 6, 2, str_hum_data);
-    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
-    float tempF_data = dht.readTemperature(true);
-    dtostrf(tempF_data, 6, 2, str_tempF_data);
-    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
-    float tempterm_data = 0;
-    tempterm_data = dht.computeHeatIndex(tempF_data, hum_data);
-    tempterm_data = dht.convertFtoC(tempterm_data);
-    dtostrf(tempterm_data, 6, 2, str_tempterm_data);
-    /* 4 é largura mínima, 2 é precisão; valor flutuante é copiado para str_sensor*/
+      // Código executado a cada 60000 milissegundos (1 minuto)
 
-    MQTT.publish(pub9, str_temp_data);
-    MQTT.publish(pub10, str_hum_data);
-    MQTT.publish(pub11, str_tempterm_data);
+      float temp_data = dht.readTemperature();
+      dtostrf(temp_data, 6, 2, str_temp_data);
+
+      float hum_data = dht.readHumidity();
+      dtostrf(hum_data, 6, 2, str_hum_data);
+
+      float tempF_data = dht.readTemperature(true);
+      dtostrf(tempF_data, 6, 2, str_tempF_data);
+
+      float tempterm_data = dht.computeHeatIndex(tempF_data, hum_data);
+      tempterm_data = dht.convertFtoC(tempterm_data);
+      dtostrf(tempterm_data, 6, 2, str_tempterm_data);
+
+      // Publica os dados no MQTT
+      MQTT.publish(pub9, str_temp_data);
+      MQTT.publish(pub10, str_hum_data);
+      MQTT.publish(pub11, str_tempterm_data);
+    }
   }
 
   //Sensor PIR - Detector de Presença
   unsigned long currentTimePIR = millis();
   unsigned long motionDetectedTime = 0;
   unsigned long relayDuration = 100;  // Tempo de duração do relé em milissegundos (5 segundos)
+
   if (currentTimePIR - lastMsgPIR > 100) {
 
-    lastMsgPIR = currentTimePIR;
-
-    val = digitalRead(SensorPIR);
-    if (val == LOW) {
-      // Serial.println("Sem Movimento");
-      MQTT.publish(pub12, "Sem Movimento");
-      //digitalWrite(RelayPin1, HIGH);  // Desliga o relé
+    // Verifica o overflow de millis
+    if (currentTimePIR < lastMsgPIR) {
+      // Overflow ocorreu
+      // Lógica para lidar com o overflow, se necessário
+      // Por exemplo, reiniciar o último tempo para o valor atual
+      lastMsgPIR = currentTimePIR;
     } else {
-      MQTT.publish(pub12, "Movimento Detectado");
-      //Serial.println("Movimento Detectado");
-      //MQTT.publish(pub12, "0", true);        // Publica mensagem MQTT indicando que o relé foi ligado
-      motionDetectedTime = currentTimePIR;  // Armazena o momento em que o movimento foi detectado
-      //digitalWrite(RelayPin1, LOW);         // Liga o relé
+      lastMsgPIR = currentTimePIR;
+
+      val = digitalRead(SensorPIR);
+      if (val == LOW) {
+        // Serial.println("Sem Movimento");
+        MQTT.publish(pub12, "Sem Movimento");
+        //digitalWrite(RelayPin1, HIGH);  // Desliga o relé
+      } else {
+        MQTT.publish(pub12, "Movimento Detectado");
+        //Serial.println("Movimento Detectado");
+        //MQTT.publish(pub12, "0", true);        // Publica mensagem MQTT indicando que o relé foi ligado
+        motionDetectedTime = currentTimePIR;  // Armazena o momento em que o movimento foi detectado
+        //digitalWrite(RelayPin1, LOW);         // Liga o relé
+      }
     }
   }
+
   if (motionDetectedTime > 0 && millis() - motionDetectedTime > relayDuration) {
     motionDetectedTime = 0;
     //digitalWrite(RelayPin1, HIGH);  // Desliga o relé após o tempo de duração definido
@@ -964,53 +921,66 @@ void loop1() {
   // Sensor SMP180
   // Leitura da temperatura
   unsigned long currentTimeBMP180 = millis();
-  if (currentTimeBMP180 - lastMsgBMP180 > 60000) {
 
-    lastMsgBMP180 = currentTimeBMP180;
+  if (currentTimeBMP180 - lastMsgBMP180 > 120000) {
 
-    float pressaoNivelMar = 1013.0;  // Pressão ao nível do mar
+    // Verifica o overflow de millis
+    if (currentTimeBMP180 < lastMsgBMP180) {
+      // Overflow ocorreu
+      // Lógica para lidar com o overflow, se necessário
+      // Por exemplo, reiniciar o último tempo para o valor atual
+      lastMsgBMP180 = currentTimeBMP180;
+    } else {
+      lastMsgBMP180 = currentTimeBMP180;
 
-    Serial.print("Temperatura do Sensor BMP180 = ");
-    Serial.print(bmp.readTemperature());
-    Serial.println(" *C");
+      // Código executado a cada 120000 milissegundos (2 minutos)
 
-    Serial.print("Pressão Real = ");
-    Serial.print(bmp.readPressure() / 100.0, 2);  // Convertendo para milibares e usando 2 casas decimais
-    Serial.println(" mb");
+      float pressaoNivelMar = 1013.0;  // Pressão ao nível do mar
 
-    Serial.print("Pressão ao Nível do Mar = ");
-    Serial.print(bmp.readSealevelPressure() / 100.0);  // Convertendo para milibares e usando 2 casas decimais
-    Serial.println(" mb");
+      Serial.print("Temperatura do Sensor BMP180 = ");
+      Serial.print(bmp.readTemperature());
+      Serial.println(" *C");
 
-    /* Calcule a altitude assumindo uma pressão barométrica 'padrão'
-       de 1013,25 milibares = 101325 pascals.
-       Você pode obter uma medida mais precisa da altitude
-       se souber a pressão ao nível do mar atual, que
-       muda com o clima e outros fatores. Se for 1015 milibares
-       isso é equivalente a 101500 pascals.  */
+      Serial.print("Pressão Real = ");
+      Serial.print(bmp.readPressure() / 100.0, 2);  // Convertendo para milibares e usando 2 casas decimais
+      Serial.println(" mb");
 
-    Serial.print("Altitude Real = ");
-    Serial.print(bmp.readAltitude());
-    Serial.println(" metros");
+      Serial.print("Pressão ao Nível do Mar = ");
+      Serial.print(bmp.readSealevelPressure() / 100.0);  // Convertendo para milibares e usando 2 casas decimais
+      Serial.println(" mb");
 
-    Serial.print("Altitude ao Nível do Mar = ");
-    Serial.print(bmp.readAltitude(1013.0 * 100));
-    Serial.println(" metros");
+      /* Calcule a altitude assumindo uma pressão barométrica 'padrão'
+         de 1013,25 milibares = 101325 pascals.
+         Você pode obter uma medida mais precisa da altitude
+         se souber a pressão ao nível do mar atual, que
+         muda com o clima e outros fatores. Se for 1015 milibares
+         isso é equivalente a 101500 pascals.  */
 
-    Serial.println();
+      Serial.print("Altitude Real = ");
+      Serial.print(bmp.readAltitude());
+      Serial.println(" metros");
 
-    char buffer[10];  // Buffer para armazenar a string convertida
+      Serial.print("Altitude ao Nível do Mar = ");
+      Serial.print(bmp.readAltitude(1013.0 * 100));
+      Serial.println(" metros");
 
-    dtostrf(bmp.readPressure() / 100.0, 2, 2, buffer);  //Pressão Real
-    MQTT.publish(pub14, buffer);
+      Serial.println();
 
-    dtostrf(bmp.readSealevelPressure(pressaoNivelMar) / 100.0, 2, 2, buffer);  //Pressão ao nível do mar (calculada)
-    MQTT.publish(pub15, buffer);
+      Serial.println();
 
-    dtostrf(bmp.readAltitude(), 2, 2, buffer);  //Altitude Real
-    MQTT.publish(pub16, buffer);
+      char buffer[10];  // Buffer para armazenar a string convertida
 
-    dtostrf(bmp.readAltitude(1013.0 * 100), 2, 2, buffer);  //Altitude ao Nível do Mar
-    MQTT.publish(pub17, buffer);
+      dtostrf(bmp.readPressure() / 100.0, 2, 2, buffer);  //Pressão Real
+      MQTT.publish(pub14, buffer);
+
+      dtostrf(bmp.readSealevelPressure(pressaoNivelMar) / 100.0, 2, 2, buffer);  //Pressão ao nível do mar (calculada)
+      MQTT.publish(pub15, buffer);
+
+      dtostrf(bmp.readAltitude(), 2, 2, buffer);  //Altitude Real
+      MQTT.publish(pub16, buffer);
+
+      dtostrf(bmp.readAltitude(1013.0 * 100), 2, 2, buffer);  //Altitude ao Nível do Mar
+      MQTT.publish(pub17, buffer);
+    }
   }
 }
