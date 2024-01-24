@@ -16,7 +16,7 @@ const char* mqttPwd1 =      "loboalfa";       // MQTT Password
 const char* http_username = "RobsonBrasil";   // Login da página do WebServer
 const char* http_password = "loboalfa";       // Senha da página do WebServer
 
-// Host Name do ESP32 http://esp32.local
+// Host Name do ESP32 http://esp32.iot.local
 const char* hostname = "esp32-iot";
 
 const char* firmwareUpdatePassword = "loboalfa";
