@@ -1,6 +1,6 @@
-int PortaBroker1 = 1883;  // Porta do Broker MQTT
+int PortaBroker = 1883;  // Porta do Broker MQTT
 
-#define ID_MQTT1 "ESP32-IoT-Broker1" /* ID MQTT (para identificação de seção)
+#define ID_MQTT "ESP32-IoT-Broker1" /* ID MQTT (para identificação de seção)
                                         IMPORTANTE: Este deve ser único no broker (ou seja,
                                         se um client MQTT tentar entrar com o mesmo
                                         ID de outro já conectado ao broker, o broker

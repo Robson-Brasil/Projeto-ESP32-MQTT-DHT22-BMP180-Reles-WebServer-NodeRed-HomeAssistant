@@ -1,5 +1,4 @@
 // Tópicos do Subscribe
-
 //Módulo Relé de 8 Canais
 const char* sub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando"; // Somente por MQTT
 const char* sub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando";       // Ligados ao Nora/MQTT
@@ -27,7 +26,6 @@ const char* sub16 = "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeReal";         
 const char* sub17 = "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeNivelMar";                 // Somente por MQTT
 
 // Tópicos do Publish
-
 //Módulo Relé de 8 Canais
 const char* pub0 = "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado";  // Somente por MQTT
 const char* pub1 = "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado";        // Ligados ao Nora/MQTT

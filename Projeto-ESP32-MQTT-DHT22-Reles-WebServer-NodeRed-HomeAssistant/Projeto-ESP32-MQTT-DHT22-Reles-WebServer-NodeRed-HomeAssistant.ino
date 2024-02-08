@@ -504,7 +504,7 @@ void initESPmDNS() {
 // Função: Inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
 void initMQTT() {
 
-  MQTT.setServer(BrokerMQTT1, PortaBroker1);  // Informa qual broker e porta deve ser conectado
+  MQTT.setServer(BrokerMQTT, PortaBroker);    // Informa qual broker e porta deve ser conectado
   MQTT.setCallback(mqtt_callback);            // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
 }
 
@@ -727,8 +727,8 @@ void reconnectMQTT() {
 
     while (!MQTT.connected()) {
       Serial.print("* Tentando se conectar ao Broker MQTT: ");
-      Serial.println(BrokerMQTT1);
-      if (MQTT.connect(ID_MQTT1, mqttUserName1, mqttPwd1)) {
+      Serial.println(BrokerMQTT);
+      if (MQTT.connect(ID_MQTT, mqttUserName, mqttPwd)) {
         Serial.println("Conectado com sucesso ao broker MQTT!");
         Serial.println("");
         MQTT.subscribe(sub0);
