@@ -889,41 +889,41 @@ void loop1() {
     }
   }
 
-  //Sensor PIR - Detector de Presença
-  unsigned long currentTimePIR = millis();
-  unsigned long motionDetectedTime = 0;
-  unsigned long relayDuration = 100;  // Tempo de duração do relé em milissegundos (5 segundos)
+//Sensor PIR - Detector de Presença
+unsigned long currentTimePIR = millis();
+unsigned long motionDetectedTime = 0;
+unsigned long relayDuration = 15000;  // Tempo de duração do relé em milissegundos (5 segundos)
 
-  if (currentTimePIR - lastMsgPIR > 100) {
+if (currentTimePIR - lastMsgPIR > 100) {
 
     // Verifica o overflow de millis
     if (currentTimePIR < lastMsgPIR) {
-      // Overflow ocorreu
-      // Lógica para lidar com o overflow, se necessário
-      // Por exemplo, reiniciar o último tempo para o valor atual
-      lastMsgPIR = currentTimePIR;
+        // Overflow ocorreu
+        // Lógica para lidar com o overflow, se necessário
+        // Por exemplo, reiniciar o último tempo para o valor atual
+        lastMsgPIR = currentTimePIR;
     } else {
-      lastMsgPIR = currentTimePIR;
+        lastMsgPIR = currentTimePIR;
 
-      val = digitalRead(SensorPIR);
-      if (val == LOW) {
-        // Serial.println("Sem Movimento");
-        MQTT.publish(pub12, "Sem Movimento");
-        digitalWrite(RelayPin1, HIGH);  // Desliga o relé
-      } else {
-        MQTT.publish(pub12, "Movimento Detectado");
-        //Serial.println("Movimento Detectado");
-        MQTT.publish(pub12, "0");        // Publica mensagem MQTT indicando que o relé foi ligado
-        motionDetectedTime = currentTimePIR;  // Armazena o momento em que o movimento foi detectado
-        digitalWrite(RelayPin1, LOW);         // Liga o relé
-      }
+        val = digitalRead(SensorPIR);
+        if (val == LOW) {
+            // Serial.println("Sem Movimento");
+            MQTT.publish(pub12, "Sem Movimento");
+            digitalWrite(RelayPin1, HIGH);  // Desliga o relé
+        } else {
+            MQTT.publish(pub12, "Movimento Detectado");
+            //Serial.println("Movimento Detectado");
+            motionDetectedTime = currentTimePIR;  // Armazena o momento em que o movimento foi detectado
+            digitalWrite(RelayPin1, LOW);         // Liga o relé
+        }
     }
-  }
+}
 
-  if (motionDetectedTime > 0 && millis() - motionDetectedTime > relayDuration) {
+if (motionDetectedTime > 0 && millis() - motionDetectedTime > relayDuration) {
     motionDetectedTime = 0;
     digitalWrite(RelayPin1, HIGH);  // Desliga o relé após o tempo de duração definido
-  }
+    MQTT.publish(pub12, "0");        // Publica mensagem MQTT indicando que o relé foi desligado
+}
 
   // Sensor SMP180
   // Leitura da temperatura
