@@ -13,8 +13,8 @@
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 16 - Beta Tester
-  Última Modificação : 07/02/2024
+  Versão : 17 - Beta Tester
+  Última Modificação : 10/02/2024
 **********************************************************************************/
 
 //Bibliotecas
@@ -137,11 +137,255 @@ void initSerial();
 void initWiFi();
 void initMQTT();
 void reconectWiFi();
-void mqtt_callback(char* topic, byte* payload, unsigned int length);
+void MQTT_CallBack(char* topic, byte* payload, unsigned int length);
 void VerificaConexoesWiFIeMQTT();
 void initOutput();
 void initESPmDNS();
 void initSPIFFS();
+
+// Função: Inicializa o output em nível lógico baixo
+void initOutput() {
+
+  pinMode(RelayPin1, OUTPUT);
+  pinMode(RelayPin2, OUTPUT);
+  pinMode(RelayPin3, OUTPUT);
+  pinMode(RelayPin4, OUTPUT);
+  pinMode(RelayPin5, OUTPUT);
+  pinMode(RelayPin6, OUTPUT);
+  pinMode(RelayPin7, OUTPUT);
+  pinMode(RelayPin8, OUTPUT);
+
+  // Durante a partida o LED WiFI, inicia desligado
+  pinMode(wifiLed, OUTPUT);
+  digitalWrite(wifiLed, HIGH);
+
+  // Durante a partida, todos os Relés iniciam desligados
+  digitalWrite(RelayPin1, HIGH);
+  digitalWrite(RelayPin2, HIGH);
+  digitalWrite(RelayPin3, HIGH);
+  digitalWrite(RelayPin4, HIGH);
+  digitalWrite(RelayPin5, HIGH);
+  digitalWrite(RelayPin6, HIGH);
+  digitalWrite(RelayPin7, HIGH);
+  digitalWrite(RelayPin8, HIGH);
+}
+
+//Função: Inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
+void initSerial() {
+  Serial.begin(115200);
+}
+
+//Função: Inicializa e conecta-se na rede WI-FI desejada
+void initWiFi() {
+
+  delay(1000);
+
+  Serial.println("------Conexao WI-FI------");
+  Serial.print("Conectando-se na rede: ");
+  Serial.println(ssid);
+  Serial.println("Aguarde");
+
+  reconectWiFi();
+}
+
+// Função: Inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
+void initMQTT() {
+
+  MQTT.setServer(BrokerMQTT, PortaBroker);    // Informa qual broker e porta deve ser conectado
+  MQTT.setCallback(MQTT_CallBack);            // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
+  MQTT.setKeepAlive(MQTT_KeepAlive);          // Defina o keep-alive
+}
+
+//Função: Inicializa o EPmDNS para usar o Hostname
+void initESPmDNS() {
+  // Configuração do mDNS
+  if (MDNS.begin(hostname)) {
+    Serial.println("mDNS iniciado");
+    Serial.println("");
+  } else {
+    Serial.println("Erro ao iniciar o mDNS");
+    Serial.println("");
+  }
+}
+
+//Função: Inicializa o SPIFFS
+void initSPIFFS() {
+
+  if (!SPIFFS.begin(true)) {
+    Serial.println("Ocorreu um erro ao montar o SPIFFS");
+    return;
+  }
+
+  // Rota para main.html
+  server.on("/principal", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/main.html", "text/html");
+  });
+
+  // Rota para access.html
+  server.on("/access", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/access.html", "text/html");
+  });
+
+  // Rota para upload.html
+  server.on("/upload", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/upload.html", "text/html");
+  });
+
+  // Rota para o processamento do formulário de upload
+  server.on("/upload", HTTP_POST, [](AsyncWebServerRequest * request) {
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+    response->addHeader("Connection", "close");
+    request->send(response);
+  }, [](AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+    if (!index) {
+      Serial.printf("Update: %s\n", filename.c_str());
+      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
+        Update.printError(Serial);
+      }
+    }
+    if (Update.write(data, len) != len) {
+      Update.printError(Serial);
+    }
+    if (final) {
+      if (Update.end(true)) {
+        Serial.printf("Update Success: %u\nRebooting...\n", index + len);
+      } else {
+        Update.printError(Serial);
+      }
+    }
+
+    // Inicia a atualização OTA
+    ArduinoOTA.begin();
+
+    Serial.println("Ready");
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+  });
+
+  // Rota para avatar.png
+  server.on("/avatar", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/avatar.png", "image/png");
+  });
+
+  // Rota para style.css
+  server.on("/styleota", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/styleota.css", "text/css");
+  });
+
+  /*OBSERVAÇÃO: Se estiver atualizando o SPIFFS, este seria o local para desmontar o SPIFFS usando SPIFFS.end()*/
+  server.on("/ota", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(200, "text/html", loginIndex);
+  });
+
+  server.on("/serverIndex", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(200, "text/html", serverIndex);
+  });
+
+  server.on("/update", HTTP_POST, [](AsyncWebServerRequest * request) {
+    request->send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+    ESP.restart();
+  }, [](AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+    if (!index) {
+      Serial.printf("Update: %s\n", filename.c_str());
+      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
+        Update.printError(Serial);
+      }
+    }
+    if (Update.write(data, len) != len) {
+      Update.printError(Serial);
+    }
+    if (final) {
+      if (Update.end(true)) {
+        Serial.printf("Update Success: %u\nRebooting...\n", index + len);
+      } else {
+        Update.printError(Serial);
+      }
+    }
+
+    // Inicia a atualização OTA
+    ArduinoOTA.begin();
+
+    Serial.println("Ready");
+    Serial.print("Endereço de IP: ");
+    Serial.println(WiFi.localIP());
+
+    request->send(200, "text/plain", "Atualização OTA iniciada. Isso pode levar alguns minutos. Acesse o monitor serial para obter mais informações.");
+  });
+
+  // Rota para o WebServer.html
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
+    if (!request->authenticate(LoginDoHTTP, SenhaDoHTTP))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/WebServer.html", String(), false, processor);
+  });
+
+  server.serveStatic("/", SPIFFS, "/");
+
+  // Rota para o CSS
+  server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/WebServer.css", "text/css");
+  });
+
+  // Rota para o JavaScript
+  server.on("/darkmode.js", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/darkmode.js", "application/javascript");
+  });
+
+  // Rota para o DarkMode
+  server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/darkmode.png", "image/png");
+  });
+
+  // Rota para o LightMode
+  server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/lightmode.png", "image/png");
+  });
+
+  // Rota para o Logo
+  server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/logo-1.png", "image/png");
+  });
+
+  // Rota para o ações dos botões do WebServer
+  server.on("/update", HTTP_GET, [](AsyncWebServerRequest * request) {
+    String inputMessage1;
+    String inputParam1;
+    String inputMessage2;
+    String inputParam2;
+    if (request->hasParam(PARAM_INPUT_1) && request->hasParam(PARAM_INPUT_2)) {
+      inputMessage1 = request->getParam(PARAM_INPUT_1)->value();
+      inputParam1 = PARAM_INPUT_1;
+      inputMessage2 = request->getParam(PARAM_INPUT_2)->value();
+      inputParam2 = PARAM_INPUT_2;
+      digitalWrite(inputMessage1.toInt(), !inputMessage2.toInt());
+    } else {
+      inputMessage1 = "Mensagem não enviada";
+      inputMessage2 = "Mensagem não enviada";
+    }
+    Serial.print("GPIO: ");
+    Serial.print(inputMessage1);
+    Serial.print(" - Comando Ligar - Desligar: ");
+    Serial.println(inputMessage2);
+    request->send(200, "text/plain", "OK");
+  });
+
+  File file = SPIFFS.open("/WebServer.txt", "r");
+  if (!file) {
+    Serial.println("Falha ao abrir o arquivo WebServer.txt");
+    return;
+  }
+
+  String code = file.readString();
+  file.close();
+
+  // Executar o código lido do arquivo
+  if (code.length() > 0) {
+    Serial.println("SPIFF : Executando código do arquivo WebServer.txt");
+    Serial.println("");
+  } else {
+    Serial.println("O arquivo WebServer.txt está vazio");
+  }
+}
 
 //Implementação das Funções Principais do Core0 do ESP32
 void setup() {
@@ -292,224 +536,8 @@ void loop() {
   }
 }
 
-//Função: Inicializa o SPIFFS
-void initSPIFFS() {
-
-  if (!SPIFFS.begin(true)) {
-    Serial.println("Ocorreu um erro ao montar o SPIFFS");
-    return;
-  }
-
-  // Rota para main.html
-  server.on("/principal", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/main.html", "text/html");
-  });
-
-  // Rota para access.html
-  server.on("/access", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/access.html", "text/html");
-  });
-
-  // Rota para upload.html
-  server.on("/upload", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/upload.html", "text/html");
-  });
-
-  // Rota para o processamento do formulário de upload
-  server.on("/upload", HTTP_POST, [](AsyncWebServerRequest * request) {
-    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
-    response->addHeader("Connection", "close");
-    request->send(response);
-  }, [](AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
-    if (!index) {
-      Serial.printf("Update: %s\n", filename.c_str());
-      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
-        Update.printError(Serial);
-      }
-    }
-    if (Update.write(data, len) != len) {
-      Update.printError(Serial);
-    }
-    if (final) {
-      if (Update.end(true)) {
-        Serial.printf("Update Success: %u\nRebooting...\n", index + len);
-      } else {
-        Update.printError(Serial);
-      }
-    }
-
-    // Inicia a atualização OTA
-    ArduinoOTA.begin();
-
-    Serial.println("Ready");
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
-  });
-
-  // Rota para avatar.png
-  server.on("/avatar", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/avatar.png", "image/png");
-  });
-
-  // Rota para style.css
-  server.on("/styleota", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/styleota.css", "text/css");
-  });
-
-  /*OBSERVAÇÃO: Se estiver atualizando o SPIFFS, este seria o local para desmontar o SPIFFS usando SPIFFS.end()*/
-  server.on("/ota", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(200, "text/html", loginIndex);
-  });
-
-  server.on("/serverIndex", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(200, "text/html", serverIndex);
-  });
-
-  server.on("/update", HTTP_POST, [](AsyncWebServerRequest * request) {
-    request->send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
-    ESP.restart();
-  }, [](AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
-    if (!index) {
-      Serial.printf("Update: %s\n", filename.c_str());
-      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
-        Update.printError(Serial);
-      }
-    }
-    if (Update.write(data, len) != len) {
-      Update.printError(Serial);
-    }
-    if (final) {
-      if (Update.end(true)) {
-        Serial.printf("Update Success: %u\nRebooting...\n", index + len);
-      } else {
-        Update.printError(Serial);
-      }
-    }
-
-    // Inicia a atualização OTA
-    ArduinoOTA.begin();
-
-    Serial.println("Ready");
-    Serial.print("Endereço de IP: ");
-    Serial.println(WiFi.localIP());
-
-    request->send(200, "text/plain", "Atualização OTA iniciada. Isso pode levar alguns minutos. Acesse o monitor serial para obter mais informações.");
-  });
-
-  // Rota para o WebServer.html
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/WebServer.html", String(), false, processor);
-  });
-
-  server.serveStatic("/", SPIFFS, "/");
-
-  // Rota para o CSS
-  server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/WebServer.css", "text/css");
-  });
-
-  // Rota para o JavaScript
-  server.on("/darkmode.js", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/darkmode.js", "application/javascript");
-  });
-
-  // Rota para o DarkMode
-  server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/darkmode.png", "image/png");
-  });
-
-  // Rota para o LightMode
-  server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/lightmode.png", "image/png");
-  });
-
-  // Rota para o Logo
-  server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/logo-1.png", "image/png");
-  });
-
-  // Rota para o ações dos botões do WebServer
-  server.on("/update", HTTP_GET, [](AsyncWebServerRequest * request) {
-    String inputMessage1;
-    String inputParam1;
-    String inputMessage2;
-    String inputParam2;
-    if (request->hasParam(PARAM_INPUT_1) && request->hasParam(PARAM_INPUT_2)) {
-      inputMessage1 = request->getParam(PARAM_INPUT_1)->value();
-      inputParam1 = PARAM_INPUT_1;
-      inputMessage2 = request->getParam(PARAM_INPUT_2)->value();
-      inputParam2 = PARAM_INPUT_2;
-      digitalWrite(inputMessage1.toInt(), !inputMessage2.toInt());
-    } else {
-      inputMessage1 = "Mensagem não enviada";
-      inputMessage2 = "Mensagem não enviada";
-    }
-    Serial.print("GPIO: ");
-    Serial.print(inputMessage1);
-    Serial.print(" - Comando Ligar - Desligar: ");
-    Serial.println(inputMessage2);
-    request->send(200, "text/plain", "OK");
-  });
-
-  File file = SPIFFS.open("/WebServer.txt", "r");
-  if (!file) {
-    Serial.println("Falha ao abrir o arquivo WebServer.txt");
-    return;
-  }
-
-  String code = file.readString();
-  file.close();
-
-  // Executar o código lido do arquivo
-  if (code.length() > 0) {
-    Serial.println("SPIFF : Executando código do arquivo WebServer.txt");
-    Serial.println("");
-  } else {
-    Serial.println("O arquivo WebServer.txt está vazio");
-  }
-}
-
-//Função: Inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
-void initSerial() {
-  Serial.begin(115200);
-}
-
-//Função: Inicializa e conecta-se na rede WI-FI desejada
-void initWiFi() {
-
-  delay(1000);
-
-  Serial.println("------Conexao WI-FI------");
-  Serial.print("Conectando-se na rede: ");
-  Serial.println(ssid);
-  Serial.println("Aguarde");
-
-  reconectWiFi();
-}
-
-//Função: Inicializa o EPmDNS para usar o Hostname
-void initESPmDNS() {
-  // Configuração do mDNS
-  if (MDNS.begin(hostname)) {
-    Serial.println("mDNS iniciado");
-    Serial.println("");
-  } else {
-    Serial.println("Erro ao iniciar o mDNS");
-    Serial.println("");
-  }
-}
-
-// Função: Inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
-void initMQTT() {
-
-  MQTT.setServer(BrokerMQTT, PortaBroker);    // Informa qual broker e porta deve ser conectado
-  MQTT.setCallback(mqtt_callback);            // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
-}
-
 // Função: Inicializa o callback, esta função é chamada toda vez que uma informação de um dos tópicos subescritos chega.
-void mqtt_callback(char* topic, byte* payload, unsigned int length) {
+void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
 
   Serial.print("Mensagem enviada ao Broker MQTT no Tópico -> [");
   Serial.print(topic);
@@ -726,9 +754,9 @@ void reconnectMQTT() {
     delayTime = currentTime;
 
     while (!MQTT.connected()) {
-      Serial.print("* Tentando se conectar ao Broker MQTT: ");
+      Serial.print(".....Tentando se conectar ao Broker MQTT: ");
       Serial.println(BrokerMQTT);
-      if (MQTT.connect(ID_MQTT, mqttUserName, mqttPwd)) {
+      if (MQTT.connect(ID_MQTT, LoginDoMQTT, SenhaMQTT)) {
         Serial.println("Conectado com sucesso ao broker MQTT!");
         Serial.println("");
         MQTT.subscribe(sub0);
@@ -744,6 +772,11 @@ void reconnectMQTT() {
         //MQTT.subscribe(sub10);
         //MQTT.subscribe(sub11);
         //MQTT.subscribe(sub12);
+        //MQTT.subscribe(sub13);
+        //MQTT.subscribe(sub14);
+        //MQTT.subscribe(sub15);
+        //MQTT.subscribe(sub16);
+        //MQTT.subscribe(sub17);
       } else {
         Serial.println("Falha ao reconectar no broker.");
         Serial.print(MQTT.state());
@@ -803,33 +836,6 @@ void VerificaConexoesWiFIeMQTT() {
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
 
     reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
-}
-
-// Função: Inicializa o output em nível lógico baixo
-void initOutput() {
-
-  pinMode(RelayPin1, OUTPUT);
-  pinMode(RelayPin2, OUTPUT);
-  pinMode(RelayPin3, OUTPUT);
-  pinMode(RelayPin4, OUTPUT);
-  pinMode(RelayPin5, OUTPUT);
-  pinMode(RelayPin6, OUTPUT);
-  pinMode(RelayPin7, OUTPUT);
-  pinMode(RelayPin8, OUTPUT);
-
-  // Durante a partida o LED WiFI, inicia desligado
-  pinMode(wifiLed, OUTPUT);
-  digitalWrite(wifiLed, HIGH);
-
-  // Durante a partida, todos os Relés iniciam desligados
-  digitalWrite(RelayPin1, HIGH);
-  digitalWrite(RelayPin2, HIGH);
-  digitalWrite(RelayPin3, HIGH);
-  digitalWrite(RelayPin4, HIGH);
-  digitalWrite(RelayPin5, HIGH);
-  digitalWrite(RelayPin6, HIGH);
-  digitalWrite(RelayPin7, HIGH);
-  digitalWrite(RelayPin8, HIGH);
 }
 
 //Implementação das Funções Principais do Core1 do ESP32
@@ -903,20 +909,20 @@ void loop1() {
       if (val == LOW) {
         // Serial.println("Sem Movimento");
         MQTT.publish(pub12, "Sem Movimento");
-        //digitalWrite(RelayPin1, HIGH);  // Desliga o relé
+        digitalWrite(RelayPin1, HIGH);  // Desliga o relé
       } else {
         MQTT.publish(pub12, "Movimento Detectado");
         //Serial.println("Movimento Detectado");
-        //MQTT.publish(pub12, "0", true);        // Publica mensagem MQTT indicando que o relé foi ligado
+        MQTT.publish(pub12, "0");        // Publica mensagem MQTT indicando que o relé foi ligado
         motionDetectedTime = currentTimePIR;  // Armazena o momento em que o movimento foi detectado
-        //digitalWrite(RelayPin1, LOW);         // Liga o relé
+        digitalWrite(RelayPin1, LOW);         // Liga o relé
       }
     }
   }
 
   if (motionDetectedTime > 0 && millis() - motionDetectedTime > relayDuration) {
     motionDetectedTime = 0;
-    //digitalWrite(RelayPin1, HIGH);  // Desliga o relé após o tempo de duração definido
+    digitalWrite(RelayPin1, HIGH);  // Desliga o relé após o tempo de duração definido
   }
 
   // Sensor SMP180
