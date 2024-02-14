@@ -715,25 +715,6 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
       MQTT.publish(pub8, "1", true);
     }
   }
-  // Função para acionamento das ações do Sensor PIR via MQTT
-  /*if (strstr(topic, sub12)) {
-    for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
-      data += (char)payload[i];
-    }
-    Serial.println();
-
-    if ((char)payload[0] == '0') {
-      digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
-      toggleState_9 = 0;
-      MQTT.publish(pub12, "Sem Movimento");
-    }
-    else {
-      digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
-      toggleState_9 = 1;
-      MQTT.publish(pub12, "Movimento Detectado");
-    }
-    }*/
   Serial.println("");
 }
 
