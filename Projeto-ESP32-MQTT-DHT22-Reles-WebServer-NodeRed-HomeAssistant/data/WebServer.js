@@ -1,44 +1,38 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const switchButtons = document.querySelectorAll('.switch-button');
+    const WebServerToggle = document.getElementById('WebServerToggle');
+    const switchButtons = document.querySelectorAll('.switch-button input[type="checkbox"]');
 
     // Recupera o estado do dark mode do LocalStorage
-    const darkModeState = localStorage.getItem('darkModeState');
-    if (darkModeState === 'enabled') {
+    const WebServerState = localStorage.getItem('WebServerState');
+    if (WebServerState === 'enabled') {
         document.body.classList.add('dark-mode');
-        darkModeToggle.checked = true;
+        WebServerToggle.checked = true;
     }
 
-    darkModeToggle.addEventListener('change', () => {
+    WebServerToggle.addEventListener('change', () => {
         // Atualiza o estado do dark mode no LocalStorage
-        if (darkModeToggle.checked) {
+        if (WebServerToggle.checked) {
             document.body.classList.add('dark-mode');
-            localStorage.setItem('darkModeState', 'enabled');
+            localStorage.setItem('WebServerState', 'enabled');
         } else {
             document.body.classList.remove('dark-mode');
-            localStorage.setItem('darkModeState', 'disabled');
+            localStorage.setItem('WebServerState', 'disabled');
         }
     });
 
     switchButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            button.classList.toggle('active');
-
-            // Adicione aqui a lógica para armazenar o estado do botão no LocalStorage
-            const buttonId = button.id;
-            const buttonState = button.classList.contains('active') ? '1' : '0';
-            localStorage.setItem(buttonId, buttonState);
-
-            // Adicione aqui a lógica para enviar a alteração do estado ao servidor
-            updateButtonStateOnServer(buttonId, buttonState);
-        });
-
-        // Recupera o estado do botão do LocalStorage e aplica ao carregar a página
         const buttonId = button.id;
         const buttonState = localStorage.getItem(buttonId);
+
         if (buttonState === '1') {
-            button.classList.add('active');
+            button.checked = true;
         }
+
+        button.addEventListener('change', () => {
+            const newButtonState = button.checked ? '1' : '0';
+            localStorage.setItem(buttonId, newButtonState);
+            updateButtonStateOnServer(buttonId, newButtonState);
+        });
     });
 
     // Função para enviar a alteração do estado ao servidor
@@ -48,27 +42,44 @@ document.addEventListener('DOMContentLoaded', () => {
         xhr.send();
     }
 
-    // Função para atualizar o estado dos botões ao carregar a página
-    function updateButtonStates() {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                var buttonStates = JSON.parse(xhr.responseText);
+    // WebSocket para receber atualizações de estado dos botões do servidor MQTT
+    const gateway = `ws://192.168.10.10:8080/ws`;
+    let websocket;
 
-                // Atualiza o estado dos botões na página
-                for (var buttonId in buttonStates) {
-                    var button = document.getElementById(buttonId);
-                    if (button) {
-                        button.classList.toggle('active', buttonStates[buttonId] === '1');
-                    }
-                }
-            }
-        };
-
-        xhr.open("GET", "/getButtonStates", true);
-        xhr.send();
+    function initWebSocket() {
+        console.log('Trying to open a WebSocket connection…');
+        websocket = new WebSocket(gateway);
+        websocket.onopen = onOpen;
+        websocket.onclose = onClose;
+        websocket.onmessage = onMessage;
     }
 
-    // Atualiza o estado dos botões ao carregar a página
-    updateButtonStates();
+    function getReadings(){
+        websocket.send("getReadings");
+    }
+
+    // When websocket is established, call the getReadings() function
+    function onOpen(event) {
+        console.log('Connection opened');
+        getReadings();
+    }
+
+    function onClose(event) {
+        console.log('Connection closed');
+        setTimeout(initWebSocket, 2000);
+    }
+
+    // Function that receives the message from the ESP32 with the readings
+    function onMessage(event) {
+        console.log(event.data);
+        const myObj = JSON.parse(event.data);
+        const keys = Object.keys(myObj);
+
+        keys.forEach(key => {
+            const element = document.getElementById(key);
+            if (element) {
+                element.innerHTML = myObj[key];
+            }
+        });
+    }
 });

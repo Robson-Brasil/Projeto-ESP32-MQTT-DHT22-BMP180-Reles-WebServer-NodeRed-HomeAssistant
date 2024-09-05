@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const darkModeToggle = document.getElementById('darkModeToggle');
+    const WebServerToggle = document.getElementById('WebServerToggle');
     const switchButtons = document.querySelectorAll('.switch-button');
 
-    darkModeToggle.addEventListener('change', () => {
+    WebServerToggle.addEventListener('change', () => {
         document.body.classList.toggle('dark-mode');
     });
 

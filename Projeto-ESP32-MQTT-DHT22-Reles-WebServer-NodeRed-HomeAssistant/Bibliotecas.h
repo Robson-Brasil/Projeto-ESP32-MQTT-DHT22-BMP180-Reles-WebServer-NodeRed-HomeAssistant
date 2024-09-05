@@ -13,7 +13,9 @@
 #include <freertos/task.h>      // Função: Contém definições para tarefas do FreeRTOS.
 #include <EEPROM.h>             // Função: Permite a leitura e escrita de dados na EEPROM da placa Arduino.
 #include <Wire.h>               // Função: Permite a comunicação I2C entre dispositivos.
+#include <Adafruit_Sensor.h>    // Biblioteca base para sensores da Adafruit.
 #include <Adafruit_BMP085.h>    // Função: Biblioteca para interagir com o sensor de pressão atmosférica BMP180.
 #include <ESPmDNS.h>            // Função: Essa biblioteca implementa o suporte mDNS no ESP8266/ESP32. Isso permite que você atribua um nome de host ao seu dispositivo na rede local, facilitando a descoberta de dispositivos na mesma rede por meio de um nome amigável, como "esp8266.local" ou "esp32.local", em vez de depender de endereços IP.
 #include <ArduinoOTA.h>         // Função: Essa biblioteca facilita a implementação de atualizações de firmware OTA em projetos Arduino. Assim como a <ElegantOTA.h>, ela permite que você atualize o firmware de seus dispositivos remotamente, utilizando uma conexão Wi-Fi.
 #include <Update.h>             // Função: Permite a atualização de firmware de maneira personalizada em placas compatíveis com o Arduino.
+#include <NetworkUdp.h>         // Função: Biblioteca para envio e recebimento de pacotes UDP na rede

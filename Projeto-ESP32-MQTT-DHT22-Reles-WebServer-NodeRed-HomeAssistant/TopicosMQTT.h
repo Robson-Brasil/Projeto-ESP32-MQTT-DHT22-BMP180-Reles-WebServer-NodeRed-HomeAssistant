@@ -9,6 +9,7 @@ const char* sub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado";       // 
 const char* sub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado";       // Ligados ao MQTT/Alexa
 const char* sub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado";       // Ligados ao MQTT/Alexa
 const char* sub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado";       // Ligados ao MQTT/Alexa
+const char* sub18 = "ESP32/MinhaCasa/QuartoRobson/DesligarTudo/Estado";       // Ligados ao MQTT/Alexa
 
 //Sensor DHT22 (Temperatura e Umidade)
 const char* sub9  = "ESP32/MinhaCasa/QuartoRobson/Temperatura";               // Somente por MQTT
@@ -36,6 +37,7 @@ const char* pub5 = "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando";        /
 const char* pub6 = "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando";        // Ligados ao MQTT/Alexa
 const char* pub7 = "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando";        // Ligados ao MQTT/Alexa
 const char* pub8 = "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando";        // Ligados ao MQTT/Alexa
+const char* pub18 = "ESP32/MinhaCasa/QuartoRobson/DesligarTudo/Comando";        // Ligados ao MQTT/Alexa
 
 //Sensor DHT22 (Temperatura e Umidade)
 const char* pub9  = "ESP32/MinhaCasa/QuartoRobson/Temperatura";               // Somente por MQTT

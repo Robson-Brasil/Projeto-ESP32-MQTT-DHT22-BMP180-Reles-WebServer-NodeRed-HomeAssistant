@@ -1,7 +1,12 @@
-float diff = 1.0;
+// VariaveisGlobais.h
+#ifndef VARIAVEIS_GLOBAIS_H
+#define VARIAVEIS_GLOBAIS_H
 
-int val;
+#include <DNSServer.h>
+#include <IPAddress.h>
+#include <ESPAsyncWebServer.h>
 
+// Variáveis de estado de alternância
 int toggleState_0 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 0
 int toggleState_1 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 1
 int toggleState_2 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 2
@@ -12,22 +17,30 @@ int toggleState_6 = 1;  // Definir inteiro para lembrar o estado de alternância
 int toggleState_7 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 7
 int toggleState_8 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 8
 int toggleState_9 = 1;  // Definir inteiro para lembrar o estado de alternância para o relé 8 via sensor PIR
+int toggleState_10 = 1;  // Definir inteiro para lembrar o estado de alternância para o DesligarTudo
 int status_todos = 0;   // Definir inteiro para lembrar o estado de alternância para todos
+int status_desligatodos = 0;
 
-DNSServer dns;
+// Variável global
+extern float diff;
 
-// IP Estático
-IPAddress local_IP(192, 168, 15, 50);
-IPAddress gateway(192, 168, 15, 1);
-IPAddress subnet(255, 255, 255, 0);
+// Configuração do servidor DNS
+extern DNSServer dns;
 
-// DNS Estático
-IPAddress primaryDNS(1, 1, 1, 1);
-IPAddress secondaryDNS(8, 8, 8, 8);
+// Configuração de IP estático
+extern IPAddress local_IP;
+extern IPAddress gateway;
+extern IPAddress subnet;
 
-// Configuração da Porta do WebServer Usada Pelo AsyncWebServer
-AsyncWebServer server(3232);
+// Configuração de DNS estático
+extern IPAddress primaryDNS;
+extern IPAddress secondaryDNS;
 
-// Status do WebServer
-const char* PARAM_INPUT_1 = "relay";
-const char* PARAM_INPUT_2 = "state";
+// Configuração do servidor web
+extern AsyncWebServer server;
+
+// Parâmetros do servidor web
+extern const char* PARAM_INPUT_1;
+extern const char* PARAM_INPUT_2;
+
+#endif // VARIAVEIS_GLOBAIS_H

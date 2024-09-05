@@ -1,126 +1,223 @@
-/**********************************************************************************
+/******************************************************************************************************************************************
   IoT - Automação Residencial
   Autor : Robson Brasil
-  
-  Dispositivos : ESP32 WROOM32, DHT22, BMP180, Módulo Relé de 8 Canais e Sensor PIR (Sensor de Movimento)
+
+  Dispositivos : ESP32 WROOM32, DHT22, BMP180, Módulo Relé de 8 Canais
   Preferences--> URLs adicionais do Gerenciador de placas:
                                     ESP8266: http://arduino.esp8266.com/stable/package_esp8266com_index.json,
                                     ESP32  : https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
   Download Board ESP32 (x.x.x):
-  OTA e OTA WebServer
+  WebServer (Dashboard)
+  OTA
   Broker MQTT
   Node-Red / Google Assistant-Nora:  https://smart-nora.eu/
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 17 - Beta Tester
-  Última Modificação : 10/02/2024
-**********************************************************************************/
+  Versão : 2.0 - Release Candidate
+  Última Modificação : 31/08/2024
+******************************************************************************************************************************************/
 
 //Bibliotecas
 #include "LoginsSenhas.h"
 #include "TopicosMQTT.h"
 #include "Bibliotecas.h"
 #include "GPIOs.h"
-#include "WebServerOTA.h"
 #include "Sensores.h"
 #include "MQTT.h"
 #include "VariaveisGlobais.h"
+#include "Array.h"
+
+// Variável global
+float diff = 1.0;
+
+// Configuração do servidor DNS
+DNSServer dns;
+
+// Configuração de IP estático
+IPAddress local_IP(192, 168, 10, 10);
+IPAddress gateway(192, 168, 10, 1);
+IPAddress subnet(255, 255, 255, 0);
+
+// Configuração de DNS estático
+IPAddress primaryDNS(1, 1, 1, 1);
+IPAddress secondaryDNS(8, 8, 8, 8);
+
+// Configuração do servidor web
+AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
+
+const int numButtons = 8;
+bool buttonStates[numButtons] = { false };
+
+// Parâmetros do servidor web
+const char* PARAM_INPUT_1 = "relay";
+const char* PARAM_INPUT_2 = "state";
 
 void setup1();  // Declaração da função setup1()
 void loop1();   // Declaração da função loop1()
 
 // Configuração das funções dos botões da página WebServer
-const char login_html[] PROGMEM = R"rawliteral(
+const char serverIndex[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML>
 <html>
   %BUTTONPLACEHOLDER%
-<script>function toggleCheckbox(element) {
-  var xhr = new XMLHttpRequest();
-  if(element.checked){ xhr.open("GET", "/update?relay="+element.id+"&state=0", true); }
-  else { xhr.open("GET", "/update?relay="+element.id+"&state=1", true); }
-  xhr.send();
-}
-</script>
 </html>)rawliteral";
 
-const int numButtons = 8;
-bool buttonStates[numButtons];
+int relayPins[numButtons] = { RelayPin1, RelayPin2, RelayPin3, RelayPin4, RelayPin5, RelayPin6, RelayPin7, RelayPin8 };
+
+void notifyClients() {
+  String stateString = "";
+
+  // Criar uma string que representa o estado de todos os botões
+  for (int i = 0; i < numButtons; i++) {
+    stateString += String(buttonStates[i]) + ",";
+  }
+
+  // Remover a última vírgula da string
+  stateString.remove(stateString.length() - 1);
+
+  // Enviar a string com o estado para todos os clientes WebSocket conectados
+  ws.textAll(stateString);
+}
+
+void handleWebSocketMessage(void* arg, uint8_t* data, size_t len) {
+  AwsFrameInfo* info = (AwsFrameInfo*)arg;
+
+  // Verificar se a mensagem WebSocket está completa, é texto e os tamanhos correspondem
+  if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
+    // Garantir que o buffer de dados tem espaço para o terminador nulo
+    if (len < 128) {  // Defina um limite de tamanho para evitar estouro de buffer
+      data[len] = 0;  // Adicionar o terminador nulo ao final dos dados recebidos
+
+      // Converter os dados recebidos para um número inteiro
+      int relayId = atoi((char*)data);
+
+      // Verificar se o ID do relé é válido
+      if (relayId >= 0 && relayId < numButtons) {
+        // Alternar o estado do botão associado ao relé
+        buttonStates[relayId] = !buttonStates[relayId];
+
+        // Acionar o relé correspondente
+        digitalWrite(relayPins[relayId], buttonStates[relayId] ? HIGH : LOW);
+
+        // Notificar todos os clientes conectados sobre a mudança de estado
+        notifyClients();
+      } else {
+        Serial.printf("ID do relé inválido: %d\n", relayId);
+      }
+    } else {
+      Serial.println("Mensagem WebSocket muito longa para processar");
+    }
+  } else {
+    Serial.println("Mensagem WebSocket inválida ou incompleta recebida");
+  }
+}
+
+void onEvent(AsyncWebSocket* server, AsyncWebSocketClient* client, AwsEventType type,
+             void* arg, uint8_t* data, size_t len) {
+  switch (type) {
+    case WS_EVT_CONNECT:
+      // Cliente conectado
+      Serial.printf("WebSocket client #%lu connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+      break;
+    case WS_EVT_DISCONNECT:
+      // Cliente desconectado
+      Serial.printf("WebSocket client #%lu disconnected\n", client->id());
+      break;
+    case WS_EVT_DATA:
+      // Dados recebidos do cliente
+      handleWebSocketMessage(arg, data, len);
+      break;
+    case WS_EVT_PONG:
+      // Resposta ao ping (opcional)
+      break;
+    case WS_EVT_ERROR:
+      // Tratamento de erro (opcional)
+      Serial.printf("Erro no WebSocket client #%lu\n", client->id());
+      break;
+  }
+}
+
+// Função: Inicializa o WebSocket
+void initWebSocket() {
+  // Configurar o evento do WebSocket
+  ws.onEvent(onEvent);
+
+  // Adicionar o WebSocket ao servidor
+  server.addHandler(&ws);
+}
+
+
+String outputState(int buttonId) {
+  return buttonStates[buttonId] ? "checked" : "";
+}
 
 String processor(const String& var) {
-  //Serial.println(var);
   if (var == "BUTTONPLACEHOLDER1") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Interruptor 1</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"26\" " + outputState(26) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 1</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"0\" " + outputState(0) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
 
   if (var == "BUTTONPLACEHOLDER2") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Interruptor 2</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"13\" " + outputState(13) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 2</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"1\" " + outputState(1) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
 
   if (var == "BUTTONPLACEHOLDER3") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Interruptor 3</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"14\" " + outputState(14) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 3</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"2\" " + outputState(2) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
 
   if (var == "BUTTONPLACEHOLDER4") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Interruptor 4</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"32\" " + outputState(32) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 4</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"3\" " + outputState(3) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
 
   if (var == "BUTTONPLACEHOLDER5") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Interruptor 5</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"16\" " + outputState(16) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 5</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"4\" " + outputState(4) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
 
   if (var == "BUTTONPLACEHOLDER6") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Interruptor 6</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"17\" " + outputState(17) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 6</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"5\" " + outputState(5) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
 
   if (var == "BUTTONPLACEHOLDER7") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Interruptor 7</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"18\" " + outputState(18) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 7</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"6\" " + outputState(6) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
 
   if (var == "BUTTONPLACEHOLDER8") {
     String buttons = "";
     buttons += "<div id=\"buttonContainer\"></div>";
-    buttons += "<h4>Interruptor 8</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"19\" " + outputState(19) + "><span class=\"slider\"></span></label>";
+    buttons += "<h4>Interruptor 8</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this)\" id=\"7\" " + outputState(7) + "><span class=\"slider\"></span></label>";
     return buttons;
   }
 
   return String();
 }
 
-// Função para processar a mudança de estado do botão e atualizar no mapa
 void toggleCheckbox(int checkboxId, bool checkboxState) {
-  // Atualiza o estado no array
   buttonStates[checkboxId] = checkboxState;
+  digitalWrite(relayPins[checkboxId], checkboxState ? HIGH : LOW);
 }
 
-String outputState(int buttonId) {
-  if (buttonStates[buttonId]) {
-    return "checked";
-  } else {
-    return "";
-  }
-}
 
 #define MSG_BUFFER_SIZE (1000)
 
@@ -128,7 +225,6 @@ String outputState(int buttonId) {
 unsigned long lastMsgDHT = 0;
 unsigned long lastMsgBMP180 = 0;
 unsigned long lastMsgMQTT = 0;
-unsigned long lastMsgPIR = 0;
 unsigned long delayTime = 0;
 int value = 0;
 
@@ -140,34 +236,24 @@ void reconectWiFi();
 void MQTT_CallBack(char* topic, byte* payload, unsigned int length);
 void VerificaConexoesWiFIeMQTT();
 void initOutput();
-void initESPmDNS();
 void initSPIFFS();
+void initOTA();
+void SensoresMQTT();
+void RelayMQTT();
 
 // Função: Inicializa o output em nível lógico baixo
 void initOutput() {
+  for (int i = 0; i < numRelays; i++) {
+    pinMode(RelayPins[i], OUTPUT);
+    digitalWrite(RelayPins[i], HIGH);  // Durante a partida, todos os Relés iniciam desligados
+  }
 
-  pinMode(RelayPin1, OUTPUT);
-  pinMode(RelayPin2, OUTPUT);
-  pinMode(RelayPin3, OUTPUT);
-  pinMode(RelayPin4, OUTPUT);
-  pinMode(RelayPin5, OUTPUT);
-  pinMode(RelayPin6, OUTPUT);
-  pinMode(RelayPin7, OUTPUT);
-  pinMode(RelayPin8, OUTPUT);
+  // Adiciona um pequeno delay para estabilizar o estado inicial dos pinos
+  delay(1000);
 
   // Durante a partida o LED WiFI, inicia desligado
   pinMode(wifiLed, OUTPUT);
   digitalWrite(wifiLed, HIGH);
-
-  // Durante a partida, todos os Relés iniciam desligados
-  digitalWrite(RelayPin1, HIGH);
-  digitalWrite(RelayPin2, HIGH);
-  digitalWrite(RelayPin3, HIGH);
-  digitalWrite(RelayPin4, HIGH);
-  digitalWrite(RelayPin5, HIGH);
-  digitalWrite(RelayPin6, HIGH);
-  digitalWrite(RelayPin7, HIGH);
-  digitalWrite(RelayPin8, HIGH);
 }
 
 //Função: Inicializa comunicação serial com baudrate 115200 (para fins de monitorar no terminal serial
@@ -191,162 +277,50 @@ void initWiFi() {
 // Função: Inicializa parâmetros de conexão MQTT(endereço do broker, porta e seta função de callback)
 void initMQTT() {
 
-  MQTT.setServer(BrokerMQTT, PortaBroker);    // Informa qual broker e porta deve ser conectado
-  MQTT.setCallback(MQTT_CallBack);            // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
-  MQTT.setKeepAlive(MQTT_KeepAlive);          // Defina o keep-alive
+  MQTT.setServer(BrokerMQTT, PortaBroker);  // Informa qual broker e porta deve ser conectado
+  MQTT.setCallback(MQTT_CallBack);          // Atribui função de callback (função chamada quando qualquer informação de um dos tópicos subescritos chega)
+  MQTT.setKeepAlive(MQTT_KeepAlive);        // Defina o keep-alive
 }
 
-//Função: Inicializa o EPmDNS para usar o Hostname
-void initESPmDNS() {
-  // Configuração do mDNS
-  if (MDNS.begin(hostname)) {
-    Serial.println("mDNS iniciado");
-    Serial.println("");
-  } else {
-    Serial.println("Erro ao iniciar o mDNS");
-    Serial.println("");
-  }
-}
-
-//Função: Inicializa o SPIFFS
+// Função: Inicializa o SPIFFS
 void initSPIFFS() {
-
+  // Inicializa o SPIFFS e verifica se ocorreu algum erro
   if (!SPIFFS.begin(true)) {
     Serial.println("Ocorreu um erro ao montar o SPIFFS");
     return;
   }
 
-  // Rota para main.html
-  server.on("/principal", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/main.html", "text/html");
-  });
-
-  // Rota para access.html
-  server.on("/access", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/access.html", "text/html");
-  });
-
-  // Rota para upload.html
-  server.on("/upload", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/upload.html", "text/html");
-  });
-
-  // Rota para o processamento do formulário de upload
-  server.on("/upload", HTTP_POST, [](AsyncWebServerRequest * request) {
-    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
-    response->addHeader("Connection", "close");
-    request->send(response);
-  }, [](AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
-    if (!index) {
-      Serial.printf("Update: %s\n", filename.c_str());
-      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
-        Update.printError(Serial);
-      }
-    }
-    if (Update.write(data, len) != len) {
-      Update.printError(Serial);
-    }
-    if (final) {
-      if (Update.end(true)) {
-        Serial.printf("Update Success: %u\nRebooting...\n", index + len);
-      } else {
-        Update.printError(Serial);
-      }
-    }
-
-    // Inicia a atualização OTA
-    ArduinoOTA.begin();
-
-    Serial.println("Ready");
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
-  });
-
-  // Rota para avatar.png
-  server.on("/avatar", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/avatar.png", "image/png");
-  });
-
-  // Rota para style.css
-  server.on("/styleota", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/styleota.css", "text/css");
-  });
-
-  /*OBSERVAÇÃO: Se estiver atualizando o SPIFFS, este seria o local para desmontar o SPIFFS usando SPIFFS.end()*/
-  server.on("/ota", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(200, "text/html", loginIndex);
-  });
-
+  // Rota para a página de índice do servidor
   server.on("/serverIndex", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(200, "text/html", serverIndex);
   });
 
-  server.on("/update", HTTP_POST, [](AsyncWebServerRequest * request) {
-    request->send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
-    ESP.restart();
-  }, [](AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
-    if (!index) {
-      Serial.printf("Update: %s\n", filename.c_str());
-      if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
-        Update.printError(Serial);
-      }
-    }
-    if (Update.write(data, len) != len) {
-      Update.printError(Serial);
-    }
-    if (final) {
-      if (Update.end(true)) {
-        Serial.printf("Update Success: %u\nRebooting...\n", index + len);
-      } else {
-        Update.printError(Serial);
-      }
-    }
-
-    // Inicia a atualização OTA
-    ArduinoOTA.begin();
-
-    Serial.println("Ready");
-    Serial.print("Endereço de IP: ");
-    Serial.println(WiFi.localIP());
-
-    request->send(200, "text/plain", "Atualização OTA iniciada. Isso pode levar alguns minutos. Acesse o monitor serial para obter mais informações.");
-  });
-
-  // Rota para o WebServer.html
+  // Rota para o arquivo WebServer.html (exige autenticação)
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(LoginDoHTTP, SenhaDoHTTP))
       return request->requestAuthentication();
     request->send(SPIFFS, "/WebServer.html", String(), false, processor);
   });
 
+  // Serve arquivos estáticos diretamente do SPIFFS
   server.serveStatic("/", SPIFFS, "/");
 
-  // Rota para o CSS
+  // Rota para servir o arquivo CSS
   server.on("/WebServer.css", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/WebServer.css", "text/css");
   });
 
-  // Rota para o JavaScript
-  server.on("/darkmode.js", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/darkmode.js", "application/javascript");
+  // Rota para servir o arquivo JavaScript
+  server.on("/WebServer.js", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/WebServer.js", "application/javascript");
   });
 
-  // Rota para o DarkMode
-  server.on("/darkmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/darkmode.png", "image/png");
+  // Rota para servir o logo
+  server.on("/logo.png", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/logo.png", "image/png");
   });
 
-  // Rota para o LightMode
-  server.on("/lightmode.png", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/lightmode.png", "image/png");
-  });
-
-  // Rota para o Logo
-  server.on("/logo-1.png", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/logo-1.png", "image/png");
-  });
-
-  // Rota para o ações dos botões do WebServer
+  // Rota para controlar as ações dos botões no WebServer
   server.on("/update", HTTP_GET, [](AsyncWebServerRequest * request) {
     String inputMessage1;
     String inputParam1;
@@ -362,13 +336,10 @@ void initSPIFFS() {
       inputMessage1 = "Mensagem não enviada";
       inputMessage2 = "Mensagem não enviada";
     }
-    Serial.print("GPIO: ");
-    Serial.print(inputMessage1);
-    Serial.print(" - Comando Ligar - Desligar: ");
-    Serial.println(inputMessage2);
     request->send(200, "text/plain", "OK");
   });
 
+  // Carrega e executa o código do arquivo WebServer.txt
   File file = SPIFFS.open("/WebServer.txt", "r");
   if (!file) {
     Serial.println("Falha ao abrir o arquivo WebServer.txt");
@@ -378,12 +349,80 @@ void initSPIFFS() {
   String code = file.readString();
   file.close();
 
-  // Executar o código lido do arquivo
+  // Executa o código lido do arquivo
   if (code.length() > 0) {
-    Serial.println("SPIFF : Executando código do arquivo WebServer.txt");
+    Serial.println("SPIFFS: Executando código do arquivo WebServer.txt");
     Serial.println("");
   } else {
     Serial.println("O arquivo WebServer.txt está vazio");
+  }
+}
+
+// Função: Para leitura dos Estados dos Relés e envio ao MQTT Broker
+void RelayMQTT(){
+  unsigned long currentTimeMQTT = millis();
+
+  if (currentTimeMQTT - lastMsgMQTT > 100) {
+    lastMsgMQTT = currentTimeMQTT;  // Atualiza o último tempo de execução
+
+    // Código executado a cada 100 milissegundos
+    if (digitalRead(RelayPin1) == HIGH) {
+      MQTT.publish(pub1, "0", true);
+    } else {
+      MQTT.publish(pub1, "1", true);
+    }
+
+    if (digitalRead(RelayPin2) == HIGH) {
+      MQTT.publish(pub2, "0", true);
+    } else {
+      MQTT.publish(pub2, "1", true);
+    }
+
+    if (digitalRead(RelayPin3) == HIGH) {
+      MQTT.publish(pub3, "0", true);
+    } else {
+      MQTT.publish(pub3, "1", true);
+    }
+
+    if (digitalRead(RelayPin4) == HIGH) {
+      MQTT.publish(pub4, "0", true);
+    } else {
+      MQTT.publish(pub4, "1", true);
+    }
+
+    if (digitalRead(RelayPin5) == HIGH) {
+      MQTT.publish(pub5, "0", true);
+    } else {
+      MQTT.publish(pub5, "1", true);
+    }
+
+    if (digitalRead(RelayPin6) == HIGH) {
+      MQTT.publish(pub6, "0", true);
+    } else {
+      MQTT.publish(pub6, "1", true);
+    }
+
+    if (digitalRead(RelayPin7) == HIGH) {
+      MQTT.publish(pub7, "0", true);
+    } else {
+      MQTT.publish(pub7, "1", true);
+    }
+
+    if (digitalRead(RelayPin8) == HIGH) {
+      MQTT.publish(pub8, "0", true);
+    } else {
+      MQTT.publish(pub8, "1", true);
+    }
+
+    if (status_todos == 1) {
+      MQTT.publish(pub0, "1", true);
+    } else {
+      MQTT.publish(pub0, "0", true);
+    }
+
+    if (status_desligatodos == 0) {
+      MQTT.publish(pub18, "1", true);
+    }
   }
 }
 
@@ -394,53 +433,15 @@ void setup() {
   initSerial();
   initWiFi();
   initMQTT();
-  initESPmDNS();
   initSPIFFS();
+  initOTA();
+  initWebSocket();
+
+  // Adiciona um pequeno delay para estabilizar o estado inicial dos pinos
+  delay(1000);
 
   //Chama a função setup1()
   setup1();
-
-  // Escolha qual porta usar no seu ESP32
-  ArduinoOTA.setPort(3232);
-
-  // Esolha qual o Hostname usar para esp32-[MAC]
-  ArduinoOTA.setHostname("ESP32-IoT");
-
-  // Senha para autenticar a atulização OTA (Se não tiver, qualquer um pode autlizar sem sua permissão)
-  ArduinoOTA.setPassword("loboalfa");
-
-  // A senha pode ser definida com o seu valor MD5 também.(Senha mais avançada)
-  // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
-  // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
-
-  // Inicio da configuração do Servidor OTA
-  ArduinoOTA
-  .onStart([]() {
-    String type;
-    if (ArduinoOTA.getCommand() == U_FLASH)
-      type = "sketch";
-    else // U_SPIFFS
-      type = "filesystem";
-
-    Serial.println("Iniciando a atualização. " + type);
-  })
-  .onEnd([]() {
-    Serial.println("\nEnd");
-  })
-  .onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("Progresso: %u%%\r", (progress / (total / 100)));
-  })
-  .onError([](ota_error_t error) {
-    Serial.printf("Erro[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) Serial.println("Autenticação Falhou");
-    else if (error == OTA_BEGIN_ERROR) Serial.println("Início falhou.");
-    else if (error == OTA_CONNECT_ERROR) Serial.println("Conexão Falhou");
-    else if (error == OTA_RECEIVE_ERROR) Serial.println("Recepção falhou");
-    else if (error == OTA_END_ERROR) Serial.println("Encerramento falhou.");
-  });
-
-  // Start do Servidor OTA
-  ArduinoOTA.begin();
 
   // Start do Servidor WebServer
   server.begin();
@@ -448,11 +449,6 @@ void setup() {
   // Inicialize os estados dos botões como falso (desligado) ao iniciar o programa
   for (int i = 0; i < numButtons; ++i) {
     buttonStates[i] = false;
-  }
-  // Start do Sensor BMP180
-  if (!bmp.begin()) {
-    Serial.println("Não foi possível encontrar um sensor BMP180 válido, por favor, verifique a conexão!");
-    while (1) {}
   }
 }
 
@@ -463,94 +459,78 @@ void loop() {
   //Keep-Alive da comunicação com Broker MQTT
   MQTT.loop();
 
-  loop1();
-
-  // Lida com atualizações OTA
   ArduinoOTA.handle();
 
-  unsigned long currentTimeMQTT = millis();
+  loop1();
 
-  // Verifica o overflow de millis
-  if (currentTimeMQTT < lastMsgMQTT) {
-    // Overflow ocorreu
-    // Lógica para lidar com o overflow, se necessário
-    // Por exemplo, reiniciar o último tempo para o valor atual
-    lastMsgMQTT = currentTimeMQTT;
-  } else {
-    if (currentTimeMQTT - lastMsgMQTT > 100) {
-      lastMsgMQTT = currentTimeMQTT;
+  ws.cleanupClients();
 
-      // Código executado a cada 100 milissegundos
+  RelayMQTT();
 
-      if (digitalRead(RelayPin1) == HIGH) {
-        MQTT.publish(pub1, "0", true);
-      } else {
-        MQTT.publish(pub1, "1", true);
-      }
-      if (digitalRead(RelayPin2) == HIGH) {
-        MQTT.publish(pub2, "0", true);
-      } else {
-        MQTT.publish(pub2, "1", true);
-      }
-      if (digitalRead(RelayPin3) == HIGH) {
-        MQTT.publish(pub3, "0", true);
-      } else {
-        MQTT.publish(pub3, "1", true);
-      }
-      if (digitalRead(RelayPin4) == HIGH) {
-        MQTT.publish(pub4, "0", true);
-      } else {
-        MQTT.publish(pub4, "1", true);
-      }
-      if (digitalRead(RelayPin5) == HIGH) {
-        MQTT.publish(pub5, "0", true);
-      } else {
-        MQTT.publish(pub5, "1", true);
-      }
-      if (digitalRead(RelayPin6) == HIGH) {
-        MQTT.publish(pub6, "0", true);
-      } else {
-        MQTT.publish(pub6, "1", true);
-      }
-      if (digitalRead(RelayPin7) == HIGH) {
-        MQTT.publish(pub7, "0", true);
-      } else {
-        MQTT.publish(pub7, "1", true);
-      }
-      if (digitalRead(RelayPin8) == HIGH) {
-        MQTT.publish(pub8, "0", true);
-      } else {
-        MQTT.publish(pub8, "1", true);
-      }
-      /*if (digitalRead(RelayPin1) == HIGH) {  // Liga o relé sem a necessidade de configuração, seja no, Node Red ou HomeAssistant
-        MQTT.publish(pub12, "Sem Movimento");
-        } else {
-        MQTT.publish(pub12, "Movimento Detectado");
-        }*/
-      if (status_todos == 1) {
-        MQTT.publish(pub0, "1", true);
-      } else {
-        MQTT.publish(pub0, "0", true);
-      }
+}
+
+// Função: Inicializa o OTA
+void initOTA() {
+  // Port defaults to 3232
+  ArduinoOTA.setPort(3232);
+
+  // Hostname defaults to esp3232-[MAC]
+  ArduinoOTA.setHostname("ESP32-IoT");
+
+  // No authentication by default
+  ArduinoOTA.setPassword("S3nh@S3gur@");
+
+  // Password can be set with it's md5 value as well
+  // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
+  // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
+
+  ArduinoOTA
+  .onStart([]() {
+    String type;
+    if (ArduinoOTA.getCommand() == U_FLASH) {
+      type = "sketch";
+    } else {  // U_SPIFFS
+      type = "filesystem";
     }
-  }
+
+    // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+    Serial.println("Start updating " + type);
+  })
+  .onEnd([]() {
+    Serial.println("\nEnd");
+  })
+  .onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+  })
+  .onError([](ota_error_t error) {
+    Serial.printf("Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) {
+      Serial.println("Auth Failed");
+    } else if (error == OTA_BEGIN_ERROR) {
+      Serial.println("Begin Failed");
+    } else if (error == OTA_CONNECT_ERROR) {
+      Serial.println("Connect Failed");
+    } else if (error == OTA_RECEIVE_ERROR) {
+      Serial.println("Receive Failed");
+    } else if (error == OTA_END_ERROR) {
+      Serial.println("End Failed");
+    }
+  });
+
+  ArduinoOTA.begin();
 }
 
 // Função: Inicializa o callback, esta função é chamada toda vez que uma informação de um dos tópicos subescritos chega.
 void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
 
-  Serial.print("Mensagem enviada ao Broker MQTT no Tópico -> [");
-  Serial.print(topic);
-  Serial.print("] ");
   payload[length] = '\0';
   String data = "";
 
   if (strstr(topic, sub0)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
+      //Serial.print((char)payload[i]);
       data += (char)payload[i];
     }
-    Serial.println();
 
     if ((char)payload[0] == '0') {
 
@@ -564,7 +544,7 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
       status_todos = 0;
       toggleState_0 = 0;
-      MQTT.publish(pub0, "0", true);
+      MQTT.publish(pub0, "0");
     } else {
       digitalWrite(RelayPin1, LOW);  // Desligua o Relé tornando a tensão BAIXA
       digitalWrite(RelayPin2, LOW);  // Desligua o Relé tornando a tensão BAIXA
@@ -576,15 +556,13 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
       digitalWrite(RelayPin8, LOW);  // Desligua o Relé tornando a tensão BAIXA
       status_todos = 1;
       toggleState_0 = 1;
-      MQTT.publish(pub0, "1", true);
+      MQTT.publish(pub0, "1");
     }
   }
   if (strstr(topic, sub1)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
       data += (char)payload[i];
     }
-    Serial.println();
 
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin1, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
@@ -598,10 +576,8 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
   }
   if (strstr(topic, sub2)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
       data += (char)payload[i];
     }
-    Serial.println();
 
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin2, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
@@ -615,10 +591,8 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
   }
   if (strstr(topic, sub3)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
       data += (char)payload[i];
     }
-    Serial.println();
 
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin3, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
@@ -632,10 +606,8 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
   }
   if (strstr(topic, sub4)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
       data += (char)payload[i];
     }
-    Serial.println();
 
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin4, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
@@ -649,10 +621,8 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
   }
   if (strstr(topic, sub5)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
       data += (char)payload[i];
     }
-    Serial.println();
 
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin5, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
@@ -666,10 +636,8 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
   }
   if (strstr(topic, sub6)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
       data += (char)payload[i];
     }
-    Serial.println();
 
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin6, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
@@ -683,10 +651,8 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
   }
   if (strstr(topic, sub7)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
       data += (char)payload[i];
     }
-    Serial.println();
 
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin7, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
@@ -700,10 +666,8 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
   }
   if (strstr(topic, sub8)) {
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)payload[i]);
       data += (char)payload[i];
     }
-    Serial.println();
 
     if ((char)payload[0] == '0') {
       digitalWrite(RelayPin8, HIGH);  // Ligua o relé. Note que HIGH é o nível de tensão.
@@ -715,7 +679,6 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
       MQTT.publish(pub8, "1", true);
     }
   }
-  Serial.println("");
 }
 
 /* Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
@@ -723,18 +686,19 @@ void MQTT_CallBack(char* topic, byte* payload, unsigned int length) {
 void reconnectMQTT() {
 
   unsigned long currentTime = millis();
-  unsigned long reconnectTime = 2000;  // Tempo para tentar reconectar (em milissegundos)
+  unsigned long reconnectTime = 5000;  // Tempo para tentar reconectar (em milissegundos)
+  static unsigned long lastReconnectAttempt = 0; // Armazena o último tempo de tentativa
 
   // Verifica o overflow de millis
-  if (currentTime < delayTime) {
-    // Overflow ocorreu
-    // Lógica para lidar com o overflow, se necessário
-    // Por exemplo, reiniciar o último tempo para o valor atual
-    delayTime = currentTime;
-  } else {
-    delayTime = currentTime;
+  if (currentTime < lastReconnectAttempt) {
+    /* Overflow ocorreu
+       Lógica para lidar com o overflow, se necessário
+       Por exemplo, reiniciar o último tempo para o valor atual */
+    lastReconnectAttempt = currentTime;
+  }
 
-    while (!MQTT.connected()) {
+  if (!MQTT.connected()) {
+    if (currentTime - lastReconnectAttempt > reconnectTime) {
       Serial.print(".....Tentando se conectar ao Broker MQTT: ");
       Serial.println(BrokerMQTT);
       if (MQTT.connect(ID_MQTT, LoginDoMQTT, SenhaMQTT)) {
@@ -749,33 +713,23 @@ void reconnectMQTT() {
         MQTT.subscribe(sub6);
         MQTT.subscribe(sub7);
         MQTT.subscribe(sub8);
-        //MQTT.subscribe(sub9);
-        //MQTT.subscribe(sub10);
-        //MQTT.subscribe(sub11);
-        //MQTT.subscribe(sub12);
-        //MQTT.subscribe(sub13);
-        //MQTT.subscribe(sub14);
-        //MQTT.subscribe(sub15);
-        //MQTT.subscribe(sub16);
-        //MQTT.subscribe(sub17);
+        MQTT.subscribe(sub18);
       } else {
         Serial.println("Falha ao reconectar no broker.");
         Serial.print(MQTT.state());
-        // Verifica o overflow de millis para o próximo tempo de reconexão
-        if (millis() - currentTime > reconnectTime) {
-          Serial.println("Haverá nova tentativa de conexão em 2s");
-          // Reinicia o último tempo para o valor atual
-          currentTime = millis();
-        }
+        Serial.println(" Haverá nova tentativa de conexão em 5s");
       }
+      lastReconnectAttempt = currentTime;  // Atualiza o último tempo de tentativa de reconexão
     }
+  } else {
+    lastReconnectAttempt = currentTime;  // Atualiza o último tempo caso a conexão seja bem-sucedida
   }
 }
 
 // Função: Reconectar-se ao WiFi
 void reconectWiFi() {
   /* Se já está conectado a rede WI-FI, nada é feito.
-    Caso contrário, são efetuadas tentativas de conexão*/
+    Caso contrário, são efetuadas tentativas de conexão */
   if (WiFi.status() == WL_CONNECTED)
     return;
 
@@ -809,14 +763,75 @@ void reconectWiFi() {
 }
 
 /* Função: Verifica o estado das conexões WiFI e ao broker MQTT.
-  Em caso de desconexão (qualquer uma das duas), a conexão  é refeita.*/
+   Em caso de desconexão (qualquer uma das duas), a conexão  é refeita. */
 void VerificaConexoesWiFIeMQTT() {
 
   if (!MQTT.connected())
 
     reconnectMQTT();  // se não há conexão com o Broker, a conexão é refeita
 
-    reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
+  reconectWiFi();  // se não há conexão com o WiFI, a conexão é refeita "apagar essa linha depois pra testar"
+}
+
+// Função: Para leitura dos sensores DHT22 e BMP180 e envio pro MQTT Broker
+void SensoresMQTT(){
+  // Sensor DHT22  - Temperatura e Umidade
+  unsigned long currentTimeDHT = millis();
+
+  if (currentTimeDHT - lastMsgDHT > 60000) {
+    lastMsgDHT = currentTimeDHT;  // Atualiza o último tempo de execução
+
+    // Código executado a cada 60000 milissegundos (1 minuto)
+    float temp_data = dht.readTemperature();
+    dtostrf(temp_data, 6, 2, str_temp_data);
+
+    float hum_data = dht.readHumidity();
+    dtostrf(hum_data, 6, 2, str_hum_data);
+
+    float tempF_data = dht.readTemperature(true);
+    dtostrf(tempF_data, 6, 2, str_tempF_data);
+
+    float tempterm_data = dht.computeHeatIndex(tempF_data, hum_data);
+    tempterm_data = dht.convertFtoC(tempterm_data);
+    dtostrf(tempterm_data, 6, 2, str_tempterm_data);
+
+    // Publica os dados no MQTT
+    MQTT.publish(pub9, str_temp_data);
+    MQTT.publish(pub10, str_hum_data);
+    MQTT.publish(pub11, str_tempterm_data);
+  }
+
+  // Sensor BMP180
+  // Leitura da Temperatura, Altitude e Pressão Atmosférica
+  unsigned long currentTimeBMP180 = millis();
+
+  if (currentTimeBMP180 - lastMsgBMP180 > 120000) {
+    lastMsgBMP180 = currentTimeBMP180;  // Atualiza o último tempo de execução
+
+    // Código executado a cada 120000 milissegundos (2 minutos)
+    float pressaoNivelMar = 1012;  // Pressão ao nível do mar em hPa
+    float altitudeNivelMar = 92;   // Altitude da cidade em metros
+
+    char buffer[10];  // Buffer para armazenar a string convertida
+
+    // Pressão Real
+    dtostrf(bmp.readPressure() / 100.0, 2, 2, buffer);
+    MQTT.publish(pub14, buffer);
+
+    // Pressão ao Nível do Mar (calculada)
+    dtostrf(bmp.readSealevelPressure(pressaoNivelMar) / 100.0, 2, 2, buffer);
+    MQTT.publish(pub15, buffer);
+
+    // Altitude Real
+    float altitudeReal = bmp.readAltitude(pressaoNivelMar * 100);
+    dtostrf(altitudeReal, 2, 2, buffer);
+    MQTT.publish(pub16, buffer);
+
+    // Altitude ao Nível do Mar ajustada pela altitude da cidade
+    float altitudeAoNivelDoMar = altitudeReal + altitudeNivelMar;
+    dtostrf(altitudeAoNivelDoMar, 2, 2, buffer);
+    MQTT.publish(pub17, buffer);
+  }
 }
 
 //Implementação das Funções Principais do Core1 do ESP32
@@ -825,150 +840,23 @@ void setup1() {
   initMQTT();
 
   dht.begin();  // inicializa o sensor DHT11
+
+  // Start do Sensor BMP180
+  if (!bmp.begin()) {
+    Serial.println("Não foi possível encontrar um sensor BMP180 válido, por favor, verifique a conexão!");
+    // Em vez de entrar em loop infinito, apenas pule a inicialização do sensor e continue a execução
+  } else {
+    Serial.println("Sensor BMP180 encontrado e inicializado com sucesso.");
+    // Continue com a configuração do sensor BMP180 aqui, se necessário
+  }
 }
 
-// Implementação do Programa Principal no Loop do Core1 do ESP32
 void loop1() {
   // Garante funcionamento das conexões WiFi e ao Broker MQTT
   VerificaConexoesWiFIeMQTT();
   // Keep-Alive da comunicação com Broker MQTT
   MQTT.loop();  // Verifica se há novas mensagens no Broker MQTT
-
-  //Sensor DHT11  - Temperatua e Umidade  unsigned long currentTimeDHT = millis();
-  unsigned long currentTimeDHT = millis();
-
-  if (currentTimeDHT - lastMsgDHT > 60000) {
-
-    // Verifica o overflow de millis
-    if (currentTimeDHT < lastMsgDHT) {
-      // Overflow ocorreu
-      // Lógica para lidar com o overflow, se necessário
-      // Por exemplo, reiniciar o último tempo para o valor atual
-      lastMsgDHT = currentTimeDHT;
-    } else {
-      lastMsgDHT = currentTimeDHT;
-
-      // Código executado a cada 60000 milissegundos (1 minuto)
-
-      float temp_data = dht.readTemperature();
-      dtostrf(temp_data, 6, 2, str_temp_data);
-
-      float hum_data = dht.readHumidity();
-      dtostrf(hum_data, 6, 2, str_hum_data);
-
-      float tempF_data = dht.readTemperature(true);
-      dtostrf(tempF_data, 6, 2, str_tempF_data);
-
-      float tempterm_data = dht.computeHeatIndex(tempF_data, hum_data);
-      tempterm_data = dht.convertFtoC(tempterm_data);
-      dtostrf(tempterm_data, 6, 2, str_tempterm_data);
-
-      // Publica os dados no MQTT
-      MQTT.publish(pub9, str_temp_data);
-      MQTT.publish(pub10, str_hum_data);
-      MQTT.publish(pub11, str_tempterm_data);
-    }
-  }
-
-//Sensor PIR - Detector de Presença
-unsigned long currentTimePIR = millis();
-unsigned long motionDetectedTime = 0;
-unsigned long relayDuration = 15000;  // Tempo de duração do relé em milissegundos (5 segundos)
-
-if (currentTimePIR - lastMsgPIR > 100) {
-
-    // Verifica o overflow de millis
-    if (currentTimePIR < lastMsgPIR) {
-        // Overflow ocorreu
-        // Lógica para lidar com o overflow, se necessário
-        // Por exemplo, reiniciar o último tempo para o valor atual
-        lastMsgPIR = currentTimePIR;
-    } else {
-        lastMsgPIR = currentTimePIR;
-
-        val = digitalRead(SensorPIR);
-        if (val == LOW) {
-            // Serial.println("Sem Movimento");
-            MQTT.publish(pub12, "Sem Movimento");
-            digitalWrite(RelayPin1, HIGH);  // Desliga o relé
-        } else {
-            MQTT.publish(pub12, "Movimento Detectado");
-            //Serial.println("Movimento Detectado");
-            motionDetectedTime = currentTimePIR;  // Armazena o momento em que o movimento foi detectado
-            digitalWrite(RelayPin1, LOW);         // Liga o relé
-        }
-    }
-}
-
-if (motionDetectedTime > 0 && millis() - motionDetectedTime > relayDuration) {
-    motionDetectedTime = 0;
-    digitalWrite(RelayPin1, HIGH);  // Desliga o relé após o tempo de duração definido
-    MQTT.publish(pub12, "0");        // Publica mensagem MQTT indicando que o relé foi desligado
-}
-
-  // Sensor SMP180
-  // Leitura da temperatura
-  unsigned long currentTimeBMP180 = millis();
-
-  if (currentTimeBMP180 - lastMsgBMP180 > 120000) {
-
-    // Verifica o overflow de millis
-    if (currentTimeBMP180 < lastMsgBMP180) {
-      // Overflow ocorreu
-      // Lógica para lidar com o overflow, se necessário
-      // Por exemplo, reiniciar o último tempo para o valor atual
-      lastMsgBMP180 = currentTimeBMP180;
-    } else {
-      lastMsgBMP180 = currentTimeBMP180;
-
-      // Código executado a cada 120000 milissegundos (2 minutos)
-
-      float pressaoNivelMar = 1013.0;  // Pressão ao nível do mar
-
-      Serial.print("Temperatura do Sensor BMP180 = ");
-      Serial.print(bmp.readTemperature());
-      Serial.println(" *C");
-
-      Serial.print("Pressão Real = ");
-      Serial.print(bmp.readPressure() / 100.0, 2);  // Convertendo para milibares e usando 2 casas decimais
-      Serial.println(" mb");
-
-      Serial.print("Pressão ao Nível do Mar = ");
-      Serial.print(bmp.readSealevelPressure() / 100.0);  // Convertendo para milibares e usando 2 casas decimais
-      Serial.println(" mb");
-
-      /* Calcule a altitude assumindo uma pressão barométrica 'padrão'
-         de 1013,25 milibares = 101325 pascals.
-         Você pode obter uma medida mais precisa da altitude
-         se souber a pressão ao nível do mar atual, que
-         muda com o clima e outros fatores. Se for 1015 milibares
-         isso é equivalente a 101500 pascals.  */
-
-      Serial.print("Altitude Real = ");
-      Serial.print(bmp.readAltitude());
-      Serial.println(" metros");
-
-      Serial.print("Altitude ao Nível do Mar = ");
-      Serial.print(bmp.readAltitude(1013.0 * 100));
-      Serial.println(" metros");
-
-      Serial.println();
-
-      Serial.println();
-
-      char buffer[10];  // Buffer para armazenar a string convertida
-
-      dtostrf(bmp.readPressure() / 100.0, 2, 2, buffer);  //Pressão Real
-      MQTT.publish(pub14, buffer);
-
-      dtostrf(bmp.readSealevelPressure(pressaoNivelMar) / 100.0, 2, 2, buffer);  //Pressão ao nível do mar (calculada)
-      MQTT.publish(pub15, buffer);
-
-      dtostrf(bmp.readAltitude(), 2, 2, buffer);  //Altitude Real
-      MQTT.publish(pub16, buffer);
-
-      dtostrf(bmp.readAltitude(1013.0 * 100), 2, 2, buffer);  //Altitude ao Nível do Mar
-      MQTT.publish(pub17, buffer);
-    }
-  }
+  // Garante a leitura dos sensores DHT22 e BMP180
+  SensoresMQTT();
+  
 }

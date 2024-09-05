@@ -9,13 +9,10 @@
 #define RelayPin8 19  // D19 Ligados ao MQTT
 
 // WiFi Status Relé
-#define wifiLed   0   // D0
+#define wifiLed   2   // D0
 
 // DHT11 ou DHT22 para leitura dos valores  de Temperatura e Umidade
 #define DHTPIN    25  // D25
-
-//Sennsor PIR
-#define SensorPIR 27  // D27
 
 /*Sensor BMP180 Ligação I2C
 SDA               21
