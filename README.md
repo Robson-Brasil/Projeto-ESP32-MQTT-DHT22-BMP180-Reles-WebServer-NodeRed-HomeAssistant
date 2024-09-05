@@ -1,6 +1,6 @@
 # Esse é meu primeiro projeto de IoT-Automação Residencial.
 
-## Nesse projeto usei o ESP32, DHT22, Sensor PIR e Módulo Relé de 8 Canais.
+## Nesse projeto usei o ESP32 Wroon de 38 Pinos, DHT22, Sensor BMP180 e Módulo Relé de 8 Canais.
 
 Como estou sem recursos financeiros para a compra de equipamentos específicos para um bom funcionamento, estou usando o Broker MQTT rodando em um celular.
 
@@ -12,9 +12,9 @@ Funciona até que bem, mas em determinadas horas, tenho que resetar o Servidor M
   Tutorial pra configuração do SmartNora:
   https://www.youtube.com/watch?v=cK8-hTdW2Kg&t=752s
 
-- Alexa-SirincPro https://portal.sinric.pro
-  Tutorial para configuração do SirincPro:
-  https://www.youtube.com/watch?v=FoOigVOs-Pc&t=1s
+- SmartNora - Google Assitant
+  Tutorial para configuração do SmartNora:
+  https://www.youtube.com/watch?v=irrOqCr7UMY
 
 - Home Assistant
   Para Instalação do Home Assistant :
