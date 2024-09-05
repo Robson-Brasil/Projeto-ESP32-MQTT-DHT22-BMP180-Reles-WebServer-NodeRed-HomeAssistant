@@ -1,0 +1,292 @@
+[
+    {
+        "id": "b69b33fb538d2281",
+        "type": "tab",
+        "label": "Login",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ae401c668a9a4c60",
+        "type": "group",
+        "z": "b69b33fb538d2281",
+        "name": "login e logout",
+        "style": {
+            "stroke": "#ffC000",
+            "fill": "#0070c0",
+            "fill-opacity": "1",
+            "label": true,
+            "color": "#ffffff"
+        },
+        "nodes": [
+            "01266b39a58019b8",
+            "14ece12359ea6209",
+            "d4a470b61dfb8730",
+            "c3f391e4272d373e",
+            "f9041c3cad7cd524",
+            "9a811791224880b7",
+            "5775275c35f8fee6",
+            "2537d39696205641"
+        ],
+        "x": 250,
+        "y": 231,
+        "w": 776,
+        "h": 266
+    },
+    {
+        "id": "14ece12359ea6209",
+        "type": "function",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "Senha",
+        "func": "if (msg.payload === 'S3nh@S3gur@') {\n   \n    node.send({ payload: { 'page': 'Automação Residêncial' }});\n\n\n    setTimeout(function () {\n        node.send({\n            payload: {\n                groups: {\n                    show: [\n                        'Automação Residêncial:Automação Residêncial',\n                        'Automação Residêncial:Temperatura',\n                        'Automação Residêncial:Umidade',\n                        'Automação Residêncial:Sensação Térmica',\n                        'Automação Residêncial:Altitude NM',\n                        'Automação Residêncial:Altitude R',\n                        'Automação Residêncial:Pressão Atmosférica NM',\n                        'Automação Residêncial:Pressão Atmosférica R',\n                        'Automação Residêncial:Logoff'\n                    ]\n                }\n            }\n        });\n    }, 10);\n\n\n    setTimeout(function () {\n        node.send({ payload: { pages: { hide: ['Automação Residêncial'] } } });\n    }, 20);\n\n\n    setTimeout(function () {\n        node.send({ payload: { pages: { hide: ['Login'] } } });\n    }, 30);\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 518,
+        "y": 272,
+        "wires": [
+            [
+                "d4a470b61dfb8730",
+                "5775275c35f8fee6"
+            ]
+        ]
+    },
+    {
+        "id": "f9041c3cad7cd524",
+        "type": "function",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "Logoff",
+        "func": "node.send([{payload:{\"page\":\"Login\"}}])\n\nsetTimeout(function () {\n    node.send([{payload:{pages:{ hide: [\"Automação Residêncial\", \"Login\"]}}}])\n}, 10);\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 746,
+        "y": 456,
+        "wires": [
+            [
+                "d4a470b61dfb8730"
+            ]
+        ]
+    },
+    {
+        "id": "9a811791224880b7",
+        "type": "function",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "Senha",
+        "func": "if (msg.payload === 'loboalfa') {\n   \n    node.send({ payload: { 'page': 'Automação Residêncial' }});\n\n\n    setTimeout(function () {\n        node.send({\n            payload: {\n                groups: {\n                    show: [\n                        'Automação Residêncial:Automação Residêncial',\n                        'Automação Residêncial:Temperatura',\n                        'Automação Residêncial:Umidade',\n                        'Automação Residêncial:Sensação Térmica',\n                        'Automação Residêncial:Altitude NM',\n                        'Automação Residêncial:Altitude R',\n                        'Automação Residêncial:Pressão Atmosférica NM',\n                        'Automação Residêncial:Pressão Atmosférica R',\n                        'Automação Residêncial:Logoff'                        \n                    ]\n                }\n            }\n        });\n    }, 10);\n\n\n    setTimeout(function () {\n        node.send({\n            payload: {\n                groups: {\n                    hide: [\n                        'Automação Residêncial:Temperatura',\n                        'Automação Residêncial:Umidade',\n                        'Automação Residêncial:Sensação Térmica',\n                        'Automação Residêncial:Altitude NM',\n                        'Automação Residêncial:Altitude R',\n                        'Automação Residêncial:Pressão Atmosférica NM',\n                        'Automação Residêncial:Pressão Atmosférica R'\n                    ]\n                }\n            }\n        });\n    }, 20);\n\n\n    setTimeout(function () {\n        node.send({ payload: { pages: { hide: ['Automação Residêncial'] } } });\n    }, 30);\n\n\n    setTimeout(function () {\n        node.send({ payload: { pages: { hide: ['Login'] } } });\n    }, 40);\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 518,
+        "y": 352,
+        "wires": [
+            [
+                "d4a470b61dfb8730",
+                "5775275c35f8fee6"
+            ]
+        ]
+    },
+    {
+        "id": "5775275c35f8fee6",
+        "type": "delay",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "Auto Logoff",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "minutes",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 722,
+        "y": 368,
+        "wires": [
+            [
+                "f9041c3cad7cd524"
+            ]
+        ]
+    },
+    {
+        "id": "2537d39696205641",
+        "type": "template",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "Reset",
+        "field": "reset",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "reset",
+        "output": "str",
+        "x": 518,
+        "y": 416,
+        "wires": [
+            [
+                "5775275c35f8fee6"
+            ]
+        ]
+    },
+    {
+        "id": "01266b39a58019b8",
+        "type": "ui-template",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "group": "",
+        "page": "98cf65ccbe16e910",
+        "ui": "",
+        "name": "Login",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n    <div class=\"card_login\" :class=\"{ 'background_login': active }\">\n        <v-text-field class=\"input_login\" type=\"password\" label=\"Digite sua Senha\" variant=\"outlined\" v-model=\"senha\"\n            @keyup.enter=\"sendOTP\"></v-text-field>\n        <v-btn class=\"button_login\" @click=\"sendOTP\">Autorizar</v-btn>\n    </div>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                senha: '',\n                active: false\n            };\n        },\n        methods: {\n            sendOTP() {\n                this.active = true;\n                setTimeout(() => {\n                    this.send({ payload: this.senha });\n                    this.senha = '';\n                    this.active = false;\n                }, 1000);\n            },\n        }\n    }\n</script>\n\n<style>\n    .card_login {\n        display: flex;\n        margin: auto;\n        flex-direction: column;\n        height: 130px !important;\n        width: 250px !important;\n        background-color: #4F4F4F;\n        border-radius: 18px;\n        padding: 10px;\n        border: 2px solid transparent;\n        position: relative;\n        z-index: 1;\n    }\n\n    .card_login::before {\n        content: \"\";\n        position: absolute;\n        top: -2px;\n        left: -2px;\n        right: -2px;\n        bottom: -2px;\n        background: linear-gradient(270deg, #ff8c009a, #FFD700, #ff8c009a);\n        background-size: 200% 200%;\n        border-radius: 18px;\n        z-index: -1;\n        animation: borderAnimation 4s ease infinite;\n    }\n\n    @keyframes borderAnimation {\n        0% {\n            background-position: 0% 50%;\n        }\n        100% {\n            background-position: 200% 50%;\n        }\n    }\n\n    .background_login {\n        background-color: #FF8C00;\n    }\n\n    .input_login {\n        margin: auto;\n        height: 20%;\n        width: 90%;\n        font-size: 25px;\n    }\n\n    .button_login {\n        margin: auto;\n        background-color: #4F4F4F;\n        border: 1px solid #000000;\n        border-radius: 10px;\n        color: #000000;\n        transition: background-color 0.3s ease, transform 0.3s ease;\n    }\n\n    .button_login:hover {\n        background-color: #FF8C00;\n        transform: scale(1.05);\n    }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "widget:page",
+        "className": "",
+        "x": 326,
+        "y": 304,
+        "wires": [
+            [
+                "14ece12359ea6209",
+                "9a811791224880b7"
+            ]
+        ]
+    },
+    {
+        "id": "c3f391e4272d373e",
+        "type": "ui-template",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "group": "1b08ae51c3ab086c",
+        "page": "",
+        "ui": "",
+        "name": "Logoff",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"buton_logoff\" ref=\"botao\" stacked @click=\"start\">\n      <div class=\"title_logoff\">Logoff</div>\n      <v-icon class=\"icon_logoff\" ref=\"icon\" style=\"font-size: 40px;\">{{ icone }}</v-icon>\n    </v-btn>\n</template>\n\n\n<script>\n  export default {\n    data() {\n      return {\n        icone: 'mdi-power-on'\n       };\n    },\n    methods: {\n      start: function () {        \n        this.icone = 'mdi-power-cycle';\n        this.$refs.icon.$el.style.color = '#A9A9A9';\n        this.$refs.icon.$el.style.textShadow = '0px 0px 0px';    \n       \n        setTimeout(() => {\n          this.icone = 'mdi-power-off';\n          this.$refs.icon.$el.style.color = '#A9A9A9';\n          this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n        }, 1000);\n\n\n        setTimeout(() => {\n          this.send({ payload: 'ON' });\n        }, 2000);\n\n\n      },\n    }\n  };\n</script>\n\n\n<style>\n  .buton_logoff {\n    display: flex;\n    flex-direction: column;\n    margin: auto;\n    height: 50px;\n    width: 50px;\n    background-color: #FF8C00;\n    color: #000000;\n    border: 1px solid #000000;\n    font-size: 14px;\n    border-radius: 18px;\n  }\n  .title_logoff {\n    font-size: 75%;\n  }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 330,
+        "y": 456,
+        "wires": [
+            [
+                "f9041c3cad7cd524",
+                "2537d39696205641"
+            ]
+        ]
+    },
+    {
+        "id": "d4a470b61dfb8730",
+        "type": "ui-control",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "",
+        "ui": "c4aa02a2614fb60c",
+        "events": "all",
+        "x": 940,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "98cf65ccbe16e910",
+        "type": "ui-page",
+        "name": "Login",
+        "ui": "c4aa02a2614fb60c",
+        "path": "/login",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "ae0b1c08b294a8a0",
+        "order": 2,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "1b08ae51c3ab086c",
+        "type": "ui-group",
+        "name": "Logoff",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "1",
+        "height": "1",
+        "order": 1,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "c4aa02a2614fb60c",
+        "type": "ui-base",
+        "name": "Automação Residêncial",
+        "path": "/dashboard",
+        "includeClientData": false,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": true,
+        "showPageTitle": true,
+        "navigationStyle": "default",
+        "titleBarStyle": "fixed"
+    },
+    {
+        "id": "ae0b1c08b294a8a0",
+        "type": "ui-theme",
+        "name": "Meu Tema",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#ff0000",
+            "bgPage": "#000000",
+            "groupBg": "#000000",
+            "groupOutline": "#ffffff"
+        },
+        "sizes": {
+            "pagePadding": "20px",
+            "groupGap": "16px",
+            "groupBorderRadius": "6px",
+            "widgetGap": "10px"
+        }
+    },
+    {
+        "id": "63b4fc1c1e61cbe0",
+        "type": "ui-page",
+        "name": "Automação Residêncial",
+        "ui": "c4aa02a2614fb60c",
+        "path": "/painel",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "ae0b1c08b294a8a0",
+        "order": 1,
+        "className": "",
+        "visible": true,
+        "disabled": false
+    }
+]

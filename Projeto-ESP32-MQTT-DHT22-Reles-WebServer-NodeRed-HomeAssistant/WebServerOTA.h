@@ -33,7 +33,7 @@ const char* loginIndex =
   "<script>"
   "function check(form)"
   "{"
-  "if(form.userid.value=='RobsonBrasil' && form.pwd.value=='loboalfa')"
+  "if(form.userid.value=='Login Aqui' && form.pwd.value=='Senha Aqui')"
   "{"
   "window.open('/serverIndex')"
   "}"

@@ -1,0 +1,1134 @@
+[
+    {
+        "id": "eea54e06e09c6b13",
+        "type": "tab",
+        "label": "Guages",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a1c2a32cd8dcbafc",
+        "type": "group",
+        "z": "eea54e06e09c6b13",
+        "name": "temperatura - umidade e sensação térmica",
+        "style": {
+            "stroke": "#ffC000",
+            "fill": "#ff0000",
+            "fill-opacity": "0.49",
+            "label": true,
+            "color": "#ffffff"
+        },
+        "nodes": [
+            "b6d9594b665edb04",
+            "96ed5379d6b04947",
+            "f5fde4c4d32ebea9",
+            "744c9c0082dacd51",
+            "354be5a24ceb034f",
+            "a67d5debcf3127ea",
+            "2bdda29178907183",
+            "bf67e0d29253459c",
+            "270eb5830c97593b"
+        ],
+        "x": 306,
+        "y": 95,
+        "w": 672,
+        "h": 194
+    },
+    {
+        "id": "69b9413bc040740a",
+        "type": "group",
+        "z": "eea54e06e09c6b13",
+        "name": "pressão atmoférica",
+        "style": {
+            "stroke": "#ffC000",
+            "fill": "#3f93cf",
+            "fill-opacity": "0.57",
+            "label": true,
+            "color": "#ffffff"
+        },
+        "nodes": [
+            "a5f90660e4b638e3",
+            "60552e4ca807d761",
+            "ddf1a69e33c9ec90",
+            "6453e9e2b6a03dc4",
+            "9b4646918abe4af7",
+            "b48ccdcf8b1b1193"
+        ],
+        "x": 262,
+        "y": 303,
+        "w": 760,
+        "h": 138
+    },
+    {
+        "id": "1692ac83f53b5cf9",
+        "type": "group",
+        "z": "eea54e06e09c6b13",
+        "name": "altitude",
+        "style": {
+            "stroke": "#ffC000",
+            "fill": "#ffff3f",
+            "fill-opacity": "0.58",
+            "label": true,
+            "color": "#ffffff"
+        },
+        "nodes": [
+            "dede4d68ea3224be",
+            "f1d57728fd2a8a8c",
+            "0a20227f49f91088",
+            "fa480c98daae7414",
+            "f9868307702f89eb",
+            "6e080ab2106a7eaf"
+        ],
+        "x": 358,
+        "y": 455,
+        "w": 572,
+        "h": 138
+    },
+    {
+        "id": "b6d9594b665edb04",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Temperatura",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Temperatura",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 402,
+        "y": 136,
+        "wires": [
+            [
+                "2bdda29178907183"
+            ]
+        ]
+    },
+    {
+        "id": "f5fde4c4d32ebea9",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Umidade",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Umidade",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 396,
+        "y": 192,
+        "wires": [
+            [
+                "bf67e0d29253459c"
+            ]
+        ]
+    },
+    {
+        "id": "354be5a24ceb034f",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Sensação Térmica",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 422,
+        "y": 248,
+        "wires": [
+            [
+                "270eb5830c97593b"
+            ]
+        ]
+    },
+    {
+        "id": "60552e4ca807d761",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "name": "Pressão Atmosférica Real",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/Real",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 398,
+        "y": 344,
+        "wires": [
+            [
+                "9b4646918abe4af7"
+            ]
+        ]
+    },
+    {
+        "id": "6453e9e2b6a03dc4",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "name": "Pressão Atmosférica Nível do Mar",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/NivelMar",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 432,
+        "y": 400,
+        "wires": [
+            [
+                "b48ccdcf8b1b1193"
+            ]
+        ]
+    },
+    {
+        "id": "f1d57728fd2a8a8c",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "name": "Altitude Real",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeReal",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 454,
+        "y": 496,
+        "wires": [
+            [
+                "f9868307702f89eb"
+            ]
+        ]
+    },
+    {
+        "id": "fa480c98daae7414",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "name": "Altitude Nível do Mar",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeNivelMar",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 474,
+        "y": 552,
+        "wires": [
+            [
+                "6e080ab2106a7eaf"
+            ]
+        ]
+    },
+    {
+        "id": "2bdda29178907183",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "group": "be8f03815e51a3c3",
+        "name": "Temperatura",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "0",
+        "ymax": "100",
+        "action": "append",
+        "pointShape": "line",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#ff9500",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 654,
+        "y": 136,
+        "wires": [
+            [
+                "a67d5debcf3127ea"
+            ]
+        ]
+    },
+    {
+        "id": "bf67e0d29253459c",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "group": "0b4a985590644278",
+        "name": "Umidade",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "0",
+        "ymax": "100",
+        "action": "append",
+        "pointShape": "line",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#00ffe1",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 660,
+        "y": 192,
+        "wires": [
+            [
+                "96ed5379d6b04947"
+            ]
+        ]
+    },
+    {
+        "id": "270eb5830c97593b",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "group": "bfb26d0e49c560e4",
+        "name": "Sensação Térmica",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "0",
+        "ymax": "100",
+        "action": "append",
+        "pointShape": "line",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#ff9500",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 654,
+        "y": 248,
+        "wires": [
+            [
+                "744c9c0082dacd51"
+            ]
+        ]
+    },
+    {
+        "id": "9b4646918abe4af7",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "group": "8ecc529be5cd55f7",
+        "name": "Pressão Atmoférica",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "",
+        "ymax": "",
+        "action": "append",
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 706,
+        "y": 344,
+        "wires": [
+            [
+                "a5f90660e4b638e3"
+            ]
+        ]
+    },
+    {
+        "id": "b48ccdcf8b1b1193",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "group": "d524cebdeb2fa729",
+        "name": "Pressão Atmosférica",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "",
+        "ymax": "",
+        "action": "append",
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 712,
+        "y": 400,
+        "wires": [
+            [
+                "ddf1a69e33c9ec90"
+            ]
+        ]
+    },
+    {
+        "id": "f9868307702f89eb",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "group": "f391a11084219d44",
+        "name": "Altitude",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "",
+        "ymax": "",
+        "action": "append",
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 668,
+        "y": 496,
+        "wires": [
+            [
+                "dede4d68ea3224be"
+            ]
+        ]
+    },
+    {
+        "id": "6e080ab2106a7eaf",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "group": "5193d6c03cea43c5",
+        "name": "Altitude",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "",
+        "ymax": "",
+        "action": "append",
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 668,
+        "y": 552,
+        "wires": [
+            [
+                "0a20227f49f91088"
+            ]
+        ]
+    },
+    {
+        "id": "96ed5379d6b04947",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Umidade",
+        "group": "0b4a985590644278",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Umidade",
+        "units": "%",
+        "icon": "",
+        "prefix": "",
+        "suffix": "%",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00e9fa"
+            },
+            {
+                "from": "25",
+                "color": "#00ff00"
+            },
+            {
+                "from": "40",
+                "color": "#ffc800"
+            },
+            {
+                "from": "90",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": "10",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 892,
+        "y": 192,
+        "wires": []
+    },
+    {
+        "id": "744c9c0082dacd51",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Sensação Témica",
+        "group": "bfb26d0e49c560e4",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Sensação Térmica",
+        "units": "°C",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00ffd5"
+            },
+            {
+                "from": "25",
+                "color": "#00ff00"
+            },
+            {
+                "from": "35",
+                "color": "#ffc800"
+            },
+            {
+                "from": "40",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": "10",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 862,
+        "y": 248,
+        "wires": []
+    },
+    {
+        "id": "a5f90660e4b638e3",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "name": "",
+        "group": "8ecc529be5cd55f7",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Real",
+        "units": "kPa",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00ff00"
+            },
+            {
+                "from": "250",
+                "color": "#ffc800"
+            },
+            {
+                "from": "900",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "1500",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 946,
+        "y": 344,
+        "wires": []
+    },
+    {
+        "id": "ddf1a69e33c9ec90",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "name": "",
+        "group": "d524cebdeb2fa729",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Nível do Mar",
+        "units": "kPa",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00ff00"
+            },
+            {
+                "from": "250",
+                "color": "#ffc800"
+            },
+            {
+                "from": "900",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "1500",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 926,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "dede4d68ea3224be",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "name": "",
+        "group": "f391a11084219d44",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Real",
+        "units": "Metros",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00ff00"
+            },
+            {
+                "from": "50",
+                "color": "#ffc800"
+            },
+            {
+                "from": "100",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "200",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": "10",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 854,
+        "y": 496,
+        "wires": []
+    },
+    {
+        "id": "0a20227f49f91088",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "name": "",
+        "group": "5193d6c03cea43c5",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Nível do Mar",
+        "units": "Metros",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00ff00"
+            },
+            {
+                "from": "50",
+                "color": "#ffc800"
+            },
+            {
+                "from": "100",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "200",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 834,
+        "y": 552,
+        "wires": []
+    },
+    {
+        "id": "a67d5debcf3127ea",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Tempratura",
+        "group": "be8f03815e51a3c3",
+        "order": 1,
+        "width": "3",
+        "height": "3",
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Temperatura",
+        "units": "°C",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00e1ff"
+            },
+            {
+                "from": "25",
+                "color": "#00ff00"
+            },
+            {
+                "from": "35",
+                "color": "#ffc800"
+            },
+            {
+                "from": "40",
+                "color": "#ff0000"
+            }
+        ],
+        "min": "0",
+        "max": "100",
+        "sizeThickness": "16",
+        "sizeGap": "4",
+        "sizeKeyThickness": "10",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 878,
+        "y": 136,
+        "wires": []
+    },
+    {
+        "id": "0f257e850b1b1272",
+        "type": "mqtt-broker",
+        "name": "MQTT Home Assistant",
+        "broker": "192.168.134.149",
+        "port": "1883",
+        "clientid": "Node-Red",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": false,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "be8f03815e51a3c3",
+        "type": "ui-group",
+        "name": "Temperatura",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 3,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "0b4a985590644278",
+        "type": "ui-group",
+        "name": "Umidade",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 4,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "bfb26d0e49c560e4",
+        "type": "ui-group",
+        "name": "Sensação Térmica",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 5,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "8ecc529be5cd55f7",
+        "type": "ui-group",
+        "name": "Pressão Atmosférica R",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 9,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "d524cebdeb2fa729",
+        "type": "ui-group",
+        "name": "Pressão Atmosférica NM",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 8,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "f391a11084219d44",
+        "type": "ui-group",
+        "name": "Altitude R",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 7,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "5193d6c03cea43c5",
+        "type": "ui-group",
+        "name": "Altitude NM",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 6,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "63b4fc1c1e61cbe0",
+        "type": "ui-page",
+        "name": "Automação Residêncial",
+        "ui": "c4aa02a2614fb60c",
+        "path": "/painel",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "ae0b1c08b294a8a0",
+        "order": 1,
+        "className": "",
+        "visible": true,
+        "disabled": false
+    },
+    {
+        "id": "c4aa02a2614fb60c",
+        "type": "ui-base",
+        "name": "Automação Residêncial",
+        "path": "/dashboard",
+        "includeClientData": false,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": true,
+        "showPageTitle": true,
+        "navigationStyle": "default",
+        "titleBarStyle": "fixed"
+    },
+    {
+        "id": "ae0b1c08b294a8a0",
+        "type": "ui-theme",
+        "name": "Meu Tema",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#ff0000",
+            "bgPage": "#000000",
+            "groupBg": "#000000",
+            "groupOutline": "#ffffff"
+        },
+        "sizes": {
+            "pagePadding": "20px",
+            "groupGap": "16px",
+            "groupBorderRadius": "6px",
+            "widgetGap": "10px"
+        }
+    }
+]

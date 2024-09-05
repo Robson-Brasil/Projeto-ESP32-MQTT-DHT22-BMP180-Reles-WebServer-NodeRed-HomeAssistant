@@ -1,0 +1,2684 @@
+[
+    {
+        "id": "f9f0ac7f99118331",
+        "type": "tab",
+        "label": "Dashboard 2.0",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "eea54e06e09c6b13",
+        "type": "tab",
+        "label": "Guages",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b69b33fb538d2281",
+        "type": "tab",
+        "label": "Login",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "92a584795966449e",
+        "type": "tab",
+        "label": "Plugins Para Baixar",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a1c2a32cd8dcbafc",
+        "type": "group",
+        "z": "eea54e06e09c6b13",
+        "name": "temperatura - umidade e sensação térmica",
+        "style": {
+            "stroke": "#ffC000",
+            "fill": "#ff0000",
+            "fill-opacity": "0.49",
+            "label": true,
+            "color": "#ffffff"
+        },
+        "nodes": [
+            "b6d9594b665edb04",
+            "96ed5379d6b04947",
+            "f5fde4c4d32ebea9",
+            "744c9c0082dacd51",
+            "354be5a24ceb034f",
+            "a67d5debcf3127ea",
+            "2bdda29178907183",
+            "bf67e0d29253459c",
+            "270eb5830c97593b"
+        ],
+        "x": 306,
+        "y": 95,
+        "w": 672,
+        "h": 194
+    },
+    {
+        "id": "69b9413bc040740a",
+        "type": "group",
+        "z": "eea54e06e09c6b13",
+        "name": "pressão atmoférica",
+        "style": {
+            "stroke": "#ffC000",
+            "fill": "#3f93cf",
+            "fill-opacity": "0.57",
+            "label": true,
+            "color": "#ffffff"
+        },
+        "nodes": [
+            "a5f90660e4b638e3",
+            "60552e4ca807d761",
+            "ddf1a69e33c9ec90",
+            "6453e9e2b6a03dc4",
+            "9b4646918abe4af7",
+            "b48ccdcf8b1b1193"
+        ],
+        "x": 262,
+        "y": 303,
+        "w": 760,
+        "h": 138
+    },
+    {
+        "id": "1692ac83f53b5cf9",
+        "type": "group",
+        "z": "eea54e06e09c6b13",
+        "name": "altitude",
+        "style": {
+            "stroke": "#ffC000",
+            "fill": "#ffff3f",
+            "fill-opacity": "0.58",
+            "label": true,
+            "color": "#ffffff"
+        },
+        "nodes": [
+            "dede4d68ea3224be",
+            "f1d57728fd2a8a8c",
+            "0a20227f49f91088",
+            "fa480c98daae7414",
+            "f9868307702f89eb",
+            "6e080ab2106a7eaf"
+        ],
+        "x": 358,
+        "y": 455,
+        "w": 572,
+        "h": 138
+    },
+    {
+        "id": "ae401c668a9a4c60",
+        "type": "group",
+        "z": "b69b33fb538d2281",
+        "name": "login e logout",
+        "style": {
+            "stroke": "#ffC000",
+            "fill": "#0070c0",
+            "fill-opacity": "1",
+            "label": true,
+            "color": "#ffffff"
+        },
+        "nodes": [
+            "01266b39a58019b8",
+            "14ece12359ea6209",
+            "d4a470b61dfb8730",
+            "c3f391e4272d373e",
+            "f9041c3cad7cd524",
+            "9a811791224880b7",
+            "5775275c35f8fee6",
+            "2537d39696205641"
+        ],
+        "x": 250,
+        "y": 231,
+        "w": 776,
+        "h": 266
+    },
+    {
+        "id": "a7a79cb89f9aa491",
+        "type": "group",
+        "z": "92a584795966449e",
+        "name": "PLUGINS PARA BAIXAR",
+        "style": {
+            "stroke": "#ff0000",
+            "fill": "#ff0000",
+            "label": true,
+            "label-position": "n",
+            "color": "#ffffff"
+        },
+        "nodes": [
+            "9f8429887dd3582a"
+        ],
+        "x": 474,
+        "y": 279,
+        "w": 312,
+        "h": 82
+    },
+    {
+        "id": "9533c41a248d3709",
+        "type": "group",
+        "z": "f9f0ac7f99118331",
+        "name": "",
+        "style": {
+            "stroke": "#ff0000",
+            "fill": "#ffC000",
+            "label": true
+        },
+        "nodes": [
+            "738aba37eab10fd0",
+            "10075d8cc3dab9b6",
+            "2133d856179a3f5c",
+            "039789c20341bf19",
+            "6cde74f1baa26870"
+        ],
+        "x": 364,
+        "y": 5,
+        "w": 652,
+        "h": 130
+    },
+    {
+        "id": "564eca91cc690ad0",
+        "type": "group",
+        "z": "f9f0ac7f99118331",
+        "name": "",
+        "style": {
+            "stroke": "#ff0000",
+            "fill": "#ffC000",
+            "label": true
+        },
+        "nodes": [
+            "dbbfdf39c6f90e14",
+            "105e43cb73f7dee4",
+            "aa17d3119a8aa880",
+            "fa4f18fdc7d134e4",
+            "844e492f6ebafb44"
+        ],
+        "x": 4,
+        "y": 149,
+        "w": 652.9999771118164,
+        "h": 127.99997997283936
+    },
+    {
+        "id": "d117c1cbe32fcf7f",
+        "type": "group",
+        "z": "f9f0ac7f99118331",
+        "name": "",
+        "style": {
+            "stroke": "#ff0000",
+            "fill": "#ffC000",
+            "label": true
+        },
+        "nodes": [
+            "b6bdb07c6c9afc28",
+            "9d74375ca91d9d4c",
+            "6f30257579b3b6c2",
+            "e8fd90455671f55d",
+            "2f2a51db795f79cf"
+        ],
+        "x": 5,
+        "y": 291,
+        "w": 652,
+        "h": 127.99999237060547
+    },
+    {
+        "id": "2de24dd6841d2139",
+        "type": "group",
+        "z": "f9f0ac7f99118331",
+        "name": "",
+        "style": {
+            "stroke": "#ff0000",
+            "fill": "#ffC000",
+            "label": true
+        },
+        "nodes": [
+            "519a8211a4071e09",
+            "d40fde2afe121589",
+            "4bfc5b506142f2d5",
+            "af23916c4938a236",
+            "a46f3b2f636657e5"
+        ],
+        "x": 5,
+        "y": 433,
+        "w": 652,
+        "h": 130
+    },
+    {
+        "id": "bd62f9f9fa60a573",
+        "type": "group",
+        "z": "f9f0ac7f99118331",
+        "name": "",
+        "style": {
+            "stroke": "#ff0000",
+            "fill": "#ffC000",
+            "label": true
+        },
+        "nodes": [
+            "97118961b076e5fc",
+            "0cc28845966e046e",
+            "a563d49e01e21aa0",
+            "5e06bcef668aadb0",
+            "f2930181ab5d7d43"
+        ],
+        "x": 5,
+        "y": 578,
+        "w": 652,
+        "h": 130
+    },
+    {
+        "id": "651c0c5f34d29726",
+        "type": "group",
+        "z": "f9f0ac7f99118331",
+        "name": "",
+        "style": {
+            "stroke": "#ff0000",
+            "fill": "#ffC000",
+            "label": true
+        },
+        "nodes": [
+            "11eed79ffb2c1609",
+            "4e7c74bdaaafc0f9",
+            "5f0892c593e3ff4d",
+            "926ce02b523ede78"
+        ],
+        "x": 664,
+        "y": 147.99998092651367,
+        "w": 630.9999923706055,
+        "h": 129.99999809265137
+    },
+    {
+        "id": "635bfeb81ea84cbe",
+        "type": "group",
+        "z": "f9f0ac7f99118331",
+        "name": "",
+        "style": {
+            "stroke": "#ff0000",
+            "fill": "#ffC000",
+            "label": true
+        },
+        "nodes": [
+            "fdc26f2c35d1e52a",
+            "5f92a707f9b1b49e",
+            "26949243f4383767",
+            "5735bdefcc115b24"
+        ],
+        "x": 665,
+        "y": 292,
+        "w": 632,
+        "h": 126.99999237060547
+    },
+    {
+        "id": "bb82d0898dcd010a",
+        "type": "group",
+        "z": "f9f0ac7f99118331",
+        "name": "",
+        "style": {
+            "stroke": "#ff0000",
+            "fill": "#ffC000",
+            "label": true
+        },
+        "nodes": [
+            "981d2c84a3f4255e",
+            "9ee4a511bf4846d2",
+            "d2ad60ae78d324f6",
+            "cfe1f61f601718f5"
+        ],
+        "x": 665,
+        "y": 433.99999046325684,
+        "w": 636,
+        "h": 130.00000953674316
+    },
+    {
+        "id": "5deec3e0f6de479f",
+        "type": "group",
+        "z": "f9f0ac7f99118331",
+        "name": "",
+        "style": {
+            "stroke": "#ff0000",
+            "fill": "#ffC000",
+            "label": true
+        },
+        "nodes": [
+            "c647f83227a6b3bb",
+            "a9c178e310fa058a",
+            "cb1ee2235ef6bf62",
+            "d19f1755f85314ea"
+        ],
+        "x": 666,
+        "y": 579.0000171661377,
+        "w": 636.9999923706055,
+        "h": 129.99999809265137
+    },
+    {
+        "id": "789d5bb3d86fe585",
+        "type": "group",
+        "z": "f9f0ac7f99118331",
+        "name": "Broker MQTT",
+        "style": {
+            "stroke": "#ffC000",
+            "fill": "#92d04f",
+            "label": true,
+            "label-position": "n",
+            "color": "#ffffff",
+            "fill-opacity": "0.79"
+        },
+        "nodes": [
+            "50e87bc063fa7b13"
+        ],
+        "x": 579.7373046875,
+        "y": 714.7442016601562,
+        "w": 152,
+        "h": 82
+    },
+    {
+        "id": "0f257e850b1b1272",
+        "type": "mqtt-broker",
+        "name": "MQTT Home Assistant",
+        "broker": "192.168.134.149",
+        "port": "1883",
+        "clientid": "Node-Red",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": false,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "c4aa02a2614fb60c",
+        "type": "ui-base",
+        "name": "Automação Residêncial",
+        "path": "/dashboard",
+        "includeClientData": false,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": true,
+        "showPageTitle": true,
+        "navigationStyle": "default",
+        "titleBarStyle": "fixed"
+    },
+    {
+        "id": "63b4fc1c1e61cbe0",
+        "type": "ui-page",
+        "name": "Automação Residêncial",
+        "ui": "c4aa02a2614fb60c",
+        "path": "/painel",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "ae0b1c08b294a8a0",
+        "order": 1,
+        "className": "",
+        "visible": true,
+        "disabled": false
+    },
+    {
+        "id": "98cf65ccbe16e910",
+        "type": "ui-page",
+        "name": "Login",
+        "ui": "c4aa02a2614fb60c",
+        "path": "/login",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "ae0b1c08b294a8a0",
+        "order": 2,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "6dddaf2e8aac5701",
+        "type": "ui-group",
+        "name": "Automação Residêncial",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "be8f03815e51a3c3",
+        "type": "ui-group",
+        "name": "Temperatura",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 3,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "0b4a985590644278",
+        "type": "ui-group",
+        "name": "Umidade",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 4,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "bfb26d0e49c560e4",
+        "type": "ui-group",
+        "name": "Sensação Térmica",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 5,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "8ecc529be5cd55f7",
+        "type": "ui-group",
+        "name": "Pressão Atmosférica R",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 9,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "d524cebdeb2fa729",
+        "type": "ui-group",
+        "name": "Pressão Atmosférica NM",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 8,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "f391a11084219d44",
+        "type": "ui-group",
+        "name": "Altitude R",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 7,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "5193d6c03cea43c5",
+        "type": "ui-group",
+        "name": "Altitude NM",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "3",
+        "height": "1",
+        "order": 6,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "1b08ae51c3ab086c",
+        "type": "ui-group",
+        "name": "Logoff",
+        "page": "63b4fc1c1e61cbe0",
+        "width": "1",
+        "height": "1",
+        "order": 1,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "ae0b1c08b294a8a0",
+        "type": "ui-theme",
+        "name": "Meu Tema",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#ff0000",
+            "bgPage": "#000000",
+            "groupBg": "#000000",
+            "groupOutline": "#ffffff"
+        },
+        "sizes": {
+            "pagePadding": "20px",
+            "groupGap": "16px",
+            "groupBorderRadius": "6px",
+            "widgetGap": "10px"
+        }
+    },
+    {
+        "id": "bf2335351d119ded",
+        "type": "noraf-config",
+        "name": "Nora",
+        "group": "Casa",
+        "twofactor": "off",
+        "twofactorpin": "",
+        "localexecution": true,
+        "structure": "Robson's House",
+        "storeStateInContext": true,
+        "disableValidationErrors": false,
+        "sendDeviceNameAndLocation": false
+    },
+    {
+        "id": "97118961b076e5fc",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "bd62f9f9fa60a573",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 551,
+        "y": 619,
+        "wires": []
+    },
+    {
+        "id": "b6bdb07c6c9afc28",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "d117c1cbe32fcf7f",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Comando",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 551,
+        "y": 332,
+        "wires": []
+    },
+    {
+        "id": "dbbfdf39c6f90e14",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "564eca91cc690ad0",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Comando",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 549.9999771118164,
+        "y": 190.99998092651367,
+        "wires": []
+    },
+    {
+        "id": "519a8211a4071e09",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "2de24dd6841d2139",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 551,
+        "y": 474,
+        "wires": []
+    },
+    {
+        "id": "738aba37eab10fd0",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "9533c41a248d3709",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 910,
+        "y": 46,
+        "wires": []
+    },
+    {
+        "id": "10075d8cc3dab9b6",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "9533c41a248d3709",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 910,
+        "y": 94,
+        "wires": []
+    },
+    {
+        "id": "105e43cb73f7dee4",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "564eca91cc690ad0",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 550.9999771118164,
+        "y": 235.99997997283936,
+        "wires": []
+    },
+    {
+        "id": "9d74375ca91d9d4c",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "d117c1cbe32fcf7f",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 549.9999771118164,
+        "y": 377.99999237060547,
+        "wires": []
+    },
+    {
+        "id": "0cc28845966e046e",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "bd62f9f9fa60a573",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 551,
+        "y": 667,
+        "wires": []
+    },
+    {
+        "id": "d40fde2afe121589",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "2de24dd6841d2139",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 551,
+        "y": 522,
+        "wires": []
+    },
+    {
+        "id": "af23916c4938a236",
+        "type": "mqtt in",
+        "z": "f9f0ac7f99118331",
+        "g": "2de24dd6841d2139",
+        "name": "Varanda",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 91,
+        "y": 490,
+        "wires": [
+            [
+                "4bfc5b506142f2d5",
+                "a46f3b2f636657e5"
+            ]
+        ]
+    },
+    {
+        "id": "5e06bcef668aadb0",
+        "type": "mqtt in",
+        "z": "f9f0ac7f99118331",
+        "g": "bd62f9f9fa60a573",
+        "name": "Som Bluetooh",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 101,
+        "y": 639,
+        "wires": [
+            [
+                "a563d49e01e21aa0",
+                "f2930181ab5d7d43"
+            ]
+        ]
+    },
+    {
+        "id": "e8fd90455671f55d",
+        "type": "mqtt in",
+        "z": "f9f0ac7f99118331",
+        "g": "d117c1cbe32fcf7f",
+        "name": "Cooler Notebook",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 111,
+        "y": 352,
+        "wires": [
+            [
+                "6f30257579b3b6c2",
+                "2f2a51db795f79cf"
+            ]
+        ]
+    },
+    {
+        "id": "fa4f18fdc7d134e4",
+        "type": "mqtt in",
+        "z": "f9f0ac7f99118331",
+        "g": "564eca91cc690ad0",
+        "name": "Luz da Bancada",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 110,
+        "y": 206,
+        "wires": [
+            [
+                "aa17d3119a8aa880",
+                "844e492f6ebafb44"
+            ]
+        ]
+    },
+    {
+        "id": "039789c20341bf19",
+        "type": "mqtt in",
+        "z": "f9f0ac7f99118331",
+        "g": "9533c41a248d3709",
+        "name": "Quarto 1",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 450,
+        "y": 66,
+        "wires": [
+            [
+                "2133d856179a3f5c",
+                "6cde74f1baa26870"
+            ]
+        ]
+    },
+    {
+        "id": "cfe1f61f601718f5",
+        "type": "mqtt in",
+        "z": "f9f0ac7f99118331",
+        "g": "bb82d0898dcd010a",
+        "name": "Corredor Lateral",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 771,
+        "y": 499,
+        "wires": [
+            [
+                "d2ad60ae78d324f6"
+            ]
+        ]
+    },
+    {
+        "id": "fdc26f2c35d1e52a",
+        "type": "mqtt in",
+        "z": "f9f0ac7f99118331",
+        "g": "635bfeb81ea84cbe",
+        "name": "Luz do Quarto 3",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 771,
+        "y": 363,
+        "wires": [
+            [
+                "5735bdefcc115b24"
+            ]
+        ]
+    },
+    {
+        "id": "11eed79ffb2c1609",
+        "type": "mqtt in",
+        "z": "f9f0ac7f99118331",
+        "g": "651c0c5f34d29726",
+        "name": "Luz do Quarto 2",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 770,
+        "y": 220,
+        "wires": [
+            [
+                "5f0892c593e3ff4d"
+            ]
+        ]
+    },
+    {
+        "id": "926ce02b523ede78",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "651c0c5f34d29726",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 1187.9999923706055,
+        "y": 188.99998092651367,
+        "wires": []
+    },
+    {
+        "id": "4e7c74bdaaafc0f9",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "651c0c5f34d29726",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 1188.9999923706055,
+        "y": 236.99997901916504,
+        "wires": []
+    },
+    {
+        "id": "5f92a707f9b1b49e",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "635bfeb81ea84cbe",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 1191,
+        "y": 333,
+        "wires": []
+    },
+    {
+        "id": "26949243f4383767",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "635bfeb81ea84cbe",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 1190.9999923706055,
+        "y": 377.99999237060547,
+        "wires": []
+    },
+    {
+        "id": "981d2c84a3f4255e",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "bb82d0898dcd010a",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 1194.9999923706055,
+        "y": 474.99999046325684,
+        "wires": []
+    },
+    {
+        "id": "9ee4a511bf4846d2",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "bb82d0898dcd010a",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 1195,
+        "y": 523,
+        "wires": []
+    },
+    {
+        "id": "c647f83227a6b3bb",
+        "type": "mqtt in",
+        "z": "f9f0ac7f99118331",
+        "g": "5deec3e0f6de479f",
+        "name": "Desligar Tudo",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 762,
+        "y": 649,
+        "wires": [
+            [
+                "d19f1755f85314ea"
+            ]
+        ]
+    },
+    {
+        "id": "a9c178e310fa058a",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "5deec3e0f6de479f",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 1196.9999923706055,
+        "y": 620.0000171661377,
+        "wires": []
+    },
+    {
+        "id": "cb1ee2235ef6bf62",
+        "type": "mqtt out",
+        "z": "f9f0ac7f99118331",
+        "g": "5deec3e0f6de479f",
+        "name": "Envia ao Broker",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0f257e850b1b1272",
+        "x": 1195.9999923706055,
+        "y": 668.0000152587891,
+        "wires": []
+    },
+    {
+        "id": "6cde74f1baa26870",
+        "type": "ui-template",
+        "z": "f9f0ac7f99118331",
+        "g": "9533c41a248d3709",
+        "group": "6dddaf2e8aac5701",
+        "page": "",
+        "ui": "",
+        "name": "Quarto 1",
+        "order": 1,
+        "width": "1",
+        "height": "1",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"button_animado_1\" stacked @click=\"alternar\">\n        <div class=\"title_animado_1\">Rodrigo</div>\n        <v-icon class=\"icon_animado_1\" ref=\"icon\" :class=\"{ 'icon-active': value === 1, 'icon-spin': value === 1 }\">\n            mdi-lightbulb\n        </v-icon>\n    </v-btn>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                value: null,\n                dialog: false,\n                senha: ''\n            };\n        },\n        mounted() {\n            // Subscrição para receber o estado atual do relé\n            this.$socket.subscribe('ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado');\n            this.$socket.on('ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado', (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n\n            // Código para carregar o estado inicial do widget\n            this.$socket.on('widget-load:' + this.id, (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n        },\n        methods: {\n            alternar() {\n                if (this.value === 1) {\n                    this.off_alternar();\n                } else {\n                    this.on_alternar();\n                }\n            },\n            on_alternar() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px #00f708';\n                this.value = 1;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando', payload: 1 });\n            },\n            off_alternar() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor1/Comando', payload: 0 });\n            },\n            on() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px ##00f708';\n                this.value = 1;\n            },\n            off() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n            }\n        },\n        watch: {\n            msg: function() {\n                if (this.msg.payload === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }                        \n            }\n        }\n    }\n</script>\n\n<style>\n    .button_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: auto;\n        height: 300px !important;\n        width: 300px !important;\n        background-color: #4F4F4F;\n        color: #ff0000;\n        border: 2px solid transparent;\n        font-size: 14px;\n        border-radius: 18px;\n        position: relative;\n        z-index: 1;\n        overflow: hidden;\n    }\n\n    .button_animado_1::before {\n        content: \"\";\n        position: absolute;\n        top: -2px;\n        left: -2px;\n        right: -2px;\n        bottom: -2px;\n        background: linear-gradient(270deg, #ff8c009a, #FFD700, #ff8c009a);\n        background-size: 200% 200%;\n        border-radius: 18px;\n        z-index: -1;\n        animation: borderAnimation 4s ease infinite;\n    }\n\n    @keyframes borderAnimation {\n        0% {\n            background-position: 0% 50%;\n        }\n\n        100% {\n            background-position: 200% 50%;\n        }\n    }\n\n    .title_animado_1 {\n        font-size: 75%;\n    }\n\n    .icon_animado_1 {\n        font-size: 300%;\n    }\n\n    .icon-spin {\n        animation: spin 2s linear infinite;\n    }\n\n    @keyframes spin {\n        0% {\n            transform: rotate(0deg);\n        }\n\n        100% {\n            transform: rotate(360deg);\n        }\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 690,
+        "y": 46,
+        "wires": [
+            [
+                "738aba37eab10fd0",
+                "10075d8cc3dab9b6",
+                "2133d856179a3f5c"
+            ]
+        ]
+    },
+    {
+        "id": "844e492f6ebafb44",
+        "type": "ui-template",
+        "z": "f9f0ac7f99118331",
+        "g": "564eca91cc690ad0",
+        "group": "6dddaf2e8aac5701",
+        "page": "",
+        "ui": "",
+        "name": "Bancada",
+        "order": 2,
+        "width": "1",
+        "height": "1",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"button_animado_1\" stacked @click=\"alternar\">\n        <div class=\"title_animado_1\">Bancada</div>\n        <v-icon class=\"icon_animado_1\" ref=\"icon\" :class=\"{ 'icon-active': value === 1, 'icon-spin': value === 1 }\">\n            mdi-lightbulb</v-icon>\n    </v-btn>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                value: null,\n                dialog: false,\n                senha: ''\n            };\n        },\n        mounted() {\n            // Subscrição para receber o estado atual do relé\n            this.$socket.subscribe('ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado');\n            this.$socket.on('ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado', (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n\n            // Código para carregar o estado inicial do widget\n            this.$socket.on('widget-load:' + this.id, (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n        },\n        methods: {\n            alternar() {\n                if (this.value === 1) {\n                    this.off_alternar();\n                } else {\n                    this.on_alternar();\n                }\n            },\n            on_alternar() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px #00f708';\n                this.value = 1;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor2/Comando', payload: 1 });\n            },\n            off_alternar() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor2/Comando', payload: 0 });\n            },\n            on() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px ##00f708';\n                this.value = 1;\n            },\n            off() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n            }\n        },\n        watch: {\n            msg: function() {\n                if (this.msg.payload === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }                        \n            }\n        }\n    }\n</script>\n\n<style>\n    .dialog_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        background-color: #A9A9A9;\n        border: 1px solid #ffee00;\n        border-radius: 18px;\n        height: 150px;\n        width: 300px;\n    }\n\n    .button_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        height: 70px !important;\n        width: 70px !important;\n        background-color: #4F4F4F;\n        color: #ffee00;\n        border: 1px solid #000000;\n        font-size: 14px;\n        border-radius: 18px;\n    }\n\n    .title_animado_1 {\n        font-size: 75%;\n    }\n\n    .icon_animado_1 {\n        font-size: 300%;\n    }\n\n    .icon-spin {\n        animation: spin 2s linear infinite;\n    }\n\n    @keyframes spin {\n        0% {\n            transform: rotate(0deg);\n        }\n\n        100% {\n            transform: rotate(360deg);\n        }\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 338,
+        "y": 190,
+        "wires": [
+            [
+                "dbbfdf39c6f90e14",
+                "105e43cb73f7dee4",
+                "aa17d3119a8aa880"
+            ]
+        ]
+    },
+    {
+        "id": "2f2a51db795f79cf",
+        "type": "ui-template",
+        "z": "f9f0ac7f99118331",
+        "g": "d117c1cbe32fcf7f",
+        "group": "6dddaf2e8aac5701",
+        "page": "",
+        "ui": "",
+        "name": "Cooler",
+        "order": 3,
+        "width": "1",
+        "height": "1",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"button_animado_1\" stacked @click=\"alternar\">\n        <div class=\"title_animado_1\">Cooler</div>\n        <v-icon class=\"icon_animado_1\" ref=\"icon\" :class=\"{ 'icon-active': value === 1, 'icon-spin': value === 1 }\">\n            mdi-lightbulb</v-icon>\n    </v-btn>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                value: null,\n                dialog: false,\n                senha: ''\n            };\n        },\n        mounted() {\n            // Subscrição para receber o estado atual do relé\n            this.$socket.subscribe('ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado');\n            this.$socket.on('ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado', (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n\n            // Código para carregar o estado inicial do widget\n            this.$socket.on('widget-load:' + this.id, (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n        },\n        methods: {\n            alternar() {\n                if (this.value === 1) {\n                    this.off_alternar();\n                } else {\n                    this.on_alternar();\n                }\n            },\n            on_alternar() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px #00f708';\n                this.value = 1;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor3/Comando', payload: 1 });\n            },\n            off_alternar() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor3/Comando', payload: 0 });\n            },\n            on() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px ##00f708';\n                this.value = 1;\n            },\n            off() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n            }\n        },\n        watch: {\n            msg: function() {\n                if (this.msg.payload === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }                        \n            }\n        }\n    }\n</script>\n\n<style>\n    .dialog_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        background-color: #A9A9A9;\n        border: 1px solid #ffee00;\n        border-radius: 18px;\n        height: 150px;\n        width: 300px;\n    }\n\n    .button_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        height: 70px !important;\n        width: 70px !important;\n        background-color: #4F4F4F;\n        color: #ffee00;\n        border: 1px solid #000000;\n        font-size: 14px;\n        border-radius: 18px;\n    }\n\n    .title_animado_1 {\n        font-size: 75%;\n    }\n\n    .icon_animado_1 {\n        font-size: 300%;\n    }\n\n    .icon-spin {\n        animation: spin 2s linear infinite;\n    }\n\n    @keyframes spin {\n        0% {\n            transform: rotate(0deg);\n        }\n\n        100% {\n            transform: rotate(360deg);\n        }\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 341,
+        "y": 332,
+        "wires": [
+            [
+                "b6bdb07c6c9afc28",
+                "9d74375ca91d9d4c",
+                "6f30257579b3b6c2"
+            ]
+        ]
+    },
+    {
+        "id": "a46f3b2f636657e5",
+        "type": "ui-template",
+        "z": "f9f0ac7f99118331",
+        "g": "2de24dd6841d2139",
+        "group": "6dddaf2e8aac5701",
+        "page": "",
+        "ui": "",
+        "name": "Varanda",
+        "order": 4,
+        "width": "1",
+        "height": "1",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"button_animado_1\" stacked @click=\"alternar\">\n        <div class=\"title_animado_1\">Varanda</div>\n        <v-icon class=\"icon_animado_1\" ref=\"icon\" :class=\"{ 'icon-active': value === 1, 'icon-spin': value === 1 }\">\n            mdi-lightbulb</v-icon>\n    </v-btn>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                value: null,\n                dialog: false,\n                senha: ''\n            };\n        },\n        mounted() {\n            // Subscrição para receber o estado atual do relé\n            this.$socket.subscribe('ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado');\n            this.$socket.on('ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado', (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n\n            // Código para carregar o estado inicial do widget\n            this.$socket.on('widget-load:' + this.id, (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n        },\n        methods: {\n            alternar() {\n                if (this.value === 1) {\n                    this.off_alternar();\n                } else {\n                    this.on_alternar();\n                }\n            },\n            on_alternar() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px #00f708';\n                this.value = 1;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando', payload: 1 });\n            },\n            off_alternar() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor8/Comando', payload: 0 });\n            },\n            on() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px ##00f708';\n                this.value = 1;\n            },\n            off() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n            }\n        },\n        watch: {\n            msg: function() {\n                if (this.msg.payload === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }                        \n            }\n        }\n    }\n</script>\n\n<style>\n    .dialog_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        background-color: #A9A9A9;\n        border: 1px solid #ffee00;\n        border-radius: 18px;\n        height: 150px;\n        width: 300px;\n    }\n\n    .button_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        height: 70px !important;\n        width: 70px !important;\n        background-color: #4F4F4F;\n        color: #ffee00;\n        border: 1px solid #000000;\n        font-size: 14px;\n        border-radius: 18px;\n    }\n\n    .title_animado_1 {\n        font-size: 75%;\n    }\n\n    .icon_animado_1 {\n        font-size: 300%;\n    }\n\n    .icon-spin {\n        animation: spin 2s linear infinite;\n    }\n\n    @keyframes spin {\n        0% {\n            transform: rotate(0deg);\n        }\n\n        100% {\n            transform: rotate(360deg);\n        }\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 331,
+        "y": 474,
+        "wires": [
+            [
+                "519a8211a4071e09",
+                "d40fde2afe121589",
+                "4bfc5b506142f2d5"
+            ]
+        ]
+    },
+    {
+        "id": "f2930181ab5d7d43",
+        "type": "ui-template",
+        "z": "f9f0ac7f99118331",
+        "g": "bd62f9f9fa60a573",
+        "group": "6dddaf2e8aac5701",
+        "page": "",
+        "ui": "",
+        "name": "Bluetooth",
+        "order": 5,
+        "width": "1",
+        "height": "1",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"button_animado_1\" stacked @click=\"alternar\">\n        <div class=\"title_animado_1\">Bluetooth</div>\n        <v-icon class=\"icon_animado_1\" ref=\"icon\" :class=\"{ 'icon-active': value === 1, 'icon-spin': value === 1 }\">\n            mdi-lightbulb</v-icon>\n    </v-btn>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                value: null,\n                dialog: false,\n                senha: ''\n            };\n        },\n        mounted() {\n            // Subscrição para receber o estado atual do relé\n            this.$socket.subscribe('ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado');\n            this.$socket.on('ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado', (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n\n            // Código para carregar o estado inicial do widget\n            this.$socket.on('widget-load:' + this.id, (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n        },\n        methods: {\n            alternar() {\n                if (this.value === 1) {\n                    this.off_alternar();\n                } else {\n                    this.on_alternar();\n                }\n            },\n            on_alternar() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px #00f708';\n                this.value = 1;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando', payload: 1 });\n            },\n            off_alternar() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor6/Comando', payload: 0 });\n            },\n            on() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px ##00f708';\n                this.value = 1;\n            },\n            off() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n            }\n        },\n        watch: {\n            msg: function() {\n                if (this.msg.payload === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }                        \n            }\n        }\n    }\n</script>\n\n<style>\n    .dialog_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        background-color: #A9A9A9;\n        border: 1px solid #ffee00;\n        border-radius: 18px;\n        height: 150px;\n        width: 300px;\n    }\n\n    .button_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        height: 70px !important;\n        width: 70px !important;\n        background-color: #4F4F4F;\n        color: #ffee00;\n        border: 1px solid #000000;\n        font-size: 14px;\n        border-radius: 18px;\n    }\n\n    .title_animado_1 {\n        font-size: 75%;\n    }\n\n    .icon_animado_1 {\n        font-size: 300%;\n    }\n\n    .icon-spin {\n        animation: spin 2s linear infinite;\n    }\n\n    @keyframes spin {\n        0% {\n            transform: rotate(0deg);\n        }\n\n        100% {\n            transform: rotate(360deg);\n        }\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 331,
+        "y": 619,
+        "wires": [
+            [
+                "97118961b076e5fc",
+                "0cc28845966e046e",
+                "a563d49e01e21aa0"
+            ]
+        ]
+    },
+    {
+        "id": "5f0892c593e3ff4d",
+        "type": "ui-template",
+        "z": "f9f0ac7f99118331",
+        "g": "651c0c5f34d29726",
+        "group": "6dddaf2e8aac5701",
+        "page": "",
+        "ui": "",
+        "name": "Quarto 2",
+        "order": 6,
+        "width": "1",
+        "height": "1",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"button_animado_1\" stacked @click=\"alternar\">\n        <div class=\"title_animado_1\">Robson</div>\n        <v-icon class=\"icon_animado_1\" ref=\"icon\" :class=\"{ 'icon-active': value === 1, 'icon-spin': value === 1 }\">\n            mdi-lightbulb</v-icon>\n    </v-btn>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                value: null,\n                dialog: false,\n                senha: ''\n            };\n        },\n        mounted() {\n            // Subscrição para receber o estado atual do relé\n            this.$socket.subscribe('ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado');\n            this.$socket.on('ESP32/MinhaCasa/QuartoRobson/Interruptor4/Estado', (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n\n            // Código para carregar o estado inicial do widget\n            this.$socket.on('widget-load:' + this.id, (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n        },\n        methods: {\n            alternar() {\n                if (this.value === 1) {\n                    this.off_alternar();\n                } else {\n                    this.on_alternar();\n                }\n            },\n            on_alternar() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px #00f708';\n                this.value = 1;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando', payload: 1 });\n            },\n            off_alternar() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor4/Comando', payload: 0 });\n            },\n            on() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px ##00f708';\n                this.value = 1;\n            },\n            off() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n            }\n        },\n        watch: {\n            msg: function() {\n                if (this.msg.payload === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }                        \n            }\n        }\n    }\n</script>\n\n<style>\n    .dialog_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        background-color: #A9A9A9;\n        border: 1px solid #ffee00;\n        border-radius: 18px;\n        height: 150px;\n        width: 300px;\n    }\n\n    .button_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        height: 70px !important;\n        width: 70px !important;\n        background-color: #4F4F4F;\n        color: #ffee00;\n        border: 1px solid #000000;\n        font-size: 14px;\n        border-radius: 18px;\n    }\n\n    .title_animado_1 {\n        font-size: 75%;\n    }\n\n    .icon_animado_1 {\n        font-size: 300%;\n    }\n\n    .icon-spin {\n        animation: spin 2s linear infinite;\n    }\n\n    @keyframes spin {\n        0% {\n            transform: rotate(0deg);\n        }\n\n        100% {\n            transform: rotate(360deg);\n        }\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 974,
+        "y": 220,
+        "wires": [
+            [
+                "926ce02b523ede78",
+                "4e7c74bdaaafc0f9"
+            ]
+        ]
+    },
+    {
+        "id": "5735bdefcc115b24",
+        "type": "ui-template",
+        "z": "f9f0ac7f99118331",
+        "g": "635bfeb81ea84cbe",
+        "group": "6dddaf2e8aac5701",
+        "page": "",
+        "ui": "",
+        "name": "Quarto 3",
+        "order": 7,
+        "width": "1",
+        "height": "1",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"button_animado_1\" stacked @click=\"alternar\">\n        <div class=\"title_animado_1\">Val</div>\n        <v-icon class=\"icon_animado_1\" ref=\"icon\" :class=\"{ 'icon-active': value === 1, 'icon-spin': value === 1 }\">\n            mdi-lightbulb</v-icon>\n    </v-btn>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                value: null,\n                dialog: false,\n                senha: ''\n            };\n        },\n        mounted() {\n            // Subscrição para receber o estado atual do relé\n            this.$socket.subscribe('ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado');\n            this.$socket.on('ESP32/MinhaCasa/QuartoRobson/Interruptor5/Estado', (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n\n            // Código para carregar o estado inicial do widget\n            this.$socket.on('widget-load:' + this.id, (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n        },\n        methods: {\n            alternar() {\n                if (this.value === 1) {\n                    this.off_alternar();\n                } else {\n                    this.on_alternar();\n                }\n            },\n            on_alternar() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px #00f708';\n                this.value = 1;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando', payload: 1 });\n            },\n            off_alternar() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor5/Comando', payload: 0 });\n            },\n            on() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px ##00f708';\n                this.value = 1;\n            },\n            off() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n            }\n        },\n        watch: {\n            msg: function() {\n                if (this.msg.payload === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }                        \n            }\n        }\n    }\n</script>\n\n<style>\n    .dialog_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        background-color: #A9A9A9;\n        border: 1px solid #ffee00;\n        border-radius: 18px;\n        height: 150px;\n        width: 300px;\n    }\n\n    .button_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        height: 70px !important;\n        width: 70px !important;\n        background-color: #4F4F4F;\n        color: #ff0000;\n        border: 1px solid #000000;\n        font-size: 14px;\n        border-radius: 18px;\n    }\n\n    .title_animado_1 {\n        font-size: 75%;\n    }\n\n    .icon_animado_1 {\n        font-size: 300%;\n    }\n\n    .icon-spin {\n        animation: spin 2s linear infinite;\n    }\n\n    @keyframes spin {\n        0% {\n            transform: rotate(0deg);\n        }\n\n        100% {\n            transform: rotate(360deg);\n        }\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 975,
+        "y": 363,
+        "wires": [
+            [
+                "5f92a707f9b1b49e",
+                "26949243f4383767"
+            ]
+        ]
+    },
+    {
+        "id": "d2ad60ae78d324f6",
+        "type": "ui-template",
+        "z": "f9f0ac7f99118331",
+        "g": "bb82d0898dcd010a",
+        "group": "6dddaf2e8aac5701",
+        "page": "",
+        "ui": "",
+        "name": "Corredor",
+        "order": 8,
+        "width": "1",
+        "height": "1",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"button_animado_1\" stacked @click=\"alternar\">\n        <div class=\"title_animado_1\">Corredor</div>\n        <v-icon class=\"icon_animado_1\" ref=\"icon\" :class=\"{ 'icon-active': value === 1, 'icon-spin': value === 1 }\">\n            mdi-lightbulb</v-icon>\n    </v-btn>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                value: null,\n                dialog: false,\n                senha: ''\n            };\n        },\n        mounted() {\n            // Subscrição para receber o estado atual do relé\n            this.$socket.subscribe('ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado');\n            this.$socket.on('ESP32/MinhaCasa/QuartoRobson/Interruptor7/Estado', (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n\n            // Código para carregar o estado inicial do widget\n            this.$socket.on('widget-load:' + this.id, (msg) => {\n                this.value = msg.payload;\n                if (this.value === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }\n            });\n        },\n        methods: {\n            alternar() {\n                if (this.value === 1) {\n                    this.off_alternar();\n                } else {\n                    this.on_alternar();\n                }\n            },\n            on_alternar() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px #00f708';\n                this.value = 1;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando', payload: 1 });\n            },\n            off_alternar() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Interruptor7/Comando', payload: 0 });\n            },\n            on() {\n                this.$refs.icon.$el.style.color = '#00f708';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 10px ##00f708';\n                this.value = 1;\n            },\n            off() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n            }\n        },\n        watch: {\n            msg: function() {\n                if (this.msg.payload === 1) {\n                    this.on();\n                } else {\n                    this.off();\n                }                        \n            }\n        }\n    }\n</script>\n\n<style>\n    .dialog_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        background-color: #A9A9A9;\n        border: 1px solid #ffee00;\n        border-radius: 18px;\n        height: 150px;\n        width: 300px;\n    }\n\n    .button_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        height: 70px !important;\n        width: 70px !important;\n        background-color: #4F4F4F;\n        color: #ffee00;\n        border: 1px solid #000000;\n        font-size: 14px;\n        border-radius: 18px;\n    }\n\n    .title_animado_1 {\n        font-size: 75%;\n    }\n\n    .icon_animado_1 {\n        font-size: 300%;\n    }\n\n    .icon-spin {\n        animation: spin 2s linear infinite;\n    }\n\n    @keyframes spin {\n        0% {\n            transform: rotate(0deg);\n        }\n\n        100% {\n            transform: rotate(360deg);\n        }\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 967,
+        "y": 499,
+        "wires": [
+            [
+                "981d2c84a3f4255e",
+                "9ee4a511bf4846d2"
+            ]
+        ]
+    },
+    {
+        "id": "d19f1755f85314ea",
+        "type": "ui-template",
+        "z": "f9f0ac7f99118331",
+        "g": "5deec3e0f6de479f",
+        "group": "6dddaf2e8aac5701",
+        "page": "",
+        "ui": "",
+        "name": "Emergência",
+        "order": 9,
+        "width": "1",
+        "height": "1",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"button_animado_1\" stacked @click=\"off_alternar\">\n        <div class=\"title_animado_1\">Emergência</div>\n        <v-icon class=\"icon_animado_1\" ref=\"icon\" :class=\"{ 'icon-spin': value === 0 }\">\n            mdi-lightbulb-outline</v-icon>\n    </v-btn>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                value: null,\n                dialog: false,\n                senha: ''\n            };\n        },\n        mounted() {\n            // Subscrição para receber o estado atual do relé\n            this.$socket.subscribe('ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado');\n            this.$socket.on('ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Estado', (msg) => {\n                this.value = msg.payload;\n                this.off(); // Sempre chama off() para manter o estado em 0\n            });\n\n            // Código para carregar o estado inicial do widget\n            this.$socket.on('widget-load:' + this.id, (msg) => {\n                this.value = msg.payload;\n                this.off(); // Sempre chama off() para manter o estado em 0\n            });\n        },\n        methods: {\n            off_alternar() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n                this.send({ topic: 'ESP32/MinhaCasa/QuartoRobson/Ligar-DesligarTudo/Comando', payload: 0 });\n            },\n            off() {\n                this.$refs.icon.$el.style.color = '#f70000';\n                this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n                this.value = 0;\n            }\n        }\n    }\n</script>\n\n<style>\n    .dialog_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        background-color: #A9A9A9;\n        border: 1px solid #ffee00;\n        border-radius: 18px;\n        height: 150px;\n        width: 300px;\n    }\n\n    .button_animado_1 {\n        display: flex;\n        flex-direction: column;\n        margin: animado_1;\n        height: 70px !important;\n        width: 70px !important;\n        background-color: #4F4F4F;\n        color: #ff0000;\n        border: 1px solid #000000;\n        font-size: 14px;\n        border-radius: 18px;\n    }\n\n    .title_animado_1 {\n        font-size: 90%;\n    }\n\n    .icon_animado_1 {\n        font-size: 355%;\n    }\n\n    .icon-spin {\n        animation: spin 2s linear infinite;\n    }\n\n    @keyframes spin {\n        0% {\n            transform: rotate(0deg);\n        }\n\n        100% {\n            transform: rotate(360deg);\n        }\n    }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 982,
+        "y": 649,
+        "wires": [
+            [
+                "a9c178e310fa058a",
+                "cb1ee2235ef6bf62"
+            ]
+        ]
+    },
+    {
+        "id": "2133d856179a3f5c",
+        "type": "noraf-light",
+        "z": "f9f0ac7f99118331",
+        "g": "9533c41a248d3709",
+        "devicename": "Lâmpada do Quarto 1",
+        "lightcolor": false,
+        "brightnesscontrol": false,
+        "commandonlycolor": false,
+        "turnonwhenbrightnesschanges": false,
+        "passthru": false,
+        "errorifstateunchaged": false,
+        "statepayload": true,
+        "brightnessoverride": "",
+        "roomhint": "Lâmpada do Quarto 1",
+        "name": "Lâmpada do Quarto 1",
+        "colortype": "hsv",
+        "nora": "bf2335351d119ded",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor1/Estado",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "temperaturemin": "2700",
+        "temperaturemax": "5500",
+        "twofactor": "off",
+        "twofactorpin": "",
+        "filter": false,
+        "x": 690,
+        "y": 86,
+        "wires": [
+            [
+                "738aba37eab10fd0",
+                "10075d8cc3dab9b6",
+                "6cde74f1baa26870"
+            ]
+        ],
+        "inputLabels": [
+            "Ligado"
+        ]
+    },
+    {
+        "id": "aa17d3119a8aa880",
+        "type": "noraf-light",
+        "z": "f9f0ac7f99118331",
+        "g": "564eca91cc690ad0",
+        "devicename": "Lâmpada da Bancada",
+        "lightcolor": false,
+        "brightnesscontrol": false,
+        "commandonlycolor": false,
+        "turnonwhenbrightnesschanges": false,
+        "passthru": false,
+        "errorifstateunchaged": false,
+        "statepayload": true,
+        "brightnessoverride": "",
+        "roomhint": "Lâmpada da Bancada",
+        "name": "Lâmpada da Bancada",
+        "colortype": "hsv",
+        "nora": "bf2335351d119ded",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor2/Estado",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "temperaturemin": "2700",
+        "temperaturemax": "5500",
+        "twofactor": "off",
+        "twofactorpin": "",
+        "filter": false,
+        "x": 338,
+        "y": 230,
+        "wires": [
+            [
+                "dbbfdf39c6f90e14",
+                "105e43cb73f7dee4",
+                "844e492f6ebafb44"
+            ]
+        ]
+    },
+    {
+        "id": "a563d49e01e21aa0",
+        "type": "noraf-light",
+        "z": "f9f0ac7f99118331",
+        "g": "bd62f9f9fa60a573",
+        "devicename": "Som Bluetooth",
+        "lightcolor": false,
+        "brightnesscontrol": false,
+        "commandonlycolor": false,
+        "turnonwhenbrightnesschanges": false,
+        "passthru": false,
+        "errorifstateunchaged": false,
+        "statepayload": true,
+        "brightnessoverride": "",
+        "roomhint": "Som Bluetooth",
+        "name": "Som Bluetooth",
+        "colortype": "hsv",
+        "nora": "bf2335351d119ded",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor6/Estado",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "temperaturemin": "2700",
+        "temperaturemax": "5500",
+        "twofactor": "off",
+        "twofactorpin": "",
+        "filter": false,
+        "x": 331,
+        "y": 659,
+        "wires": [
+            [
+                "97118961b076e5fc",
+                "0cc28845966e046e",
+                "f2930181ab5d7d43"
+            ]
+        ]
+    },
+    {
+        "id": "6f30257579b3b6c2",
+        "type": "noraf-light",
+        "z": "f9f0ac7f99118331",
+        "g": "d117c1cbe32fcf7f",
+        "devicename": "Cooler do Notebook",
+        "lightcolor": false,
+        "brightnesscontrol": false,
+        "commandonlycolor": false,
+        "turnonwhenbrightnesschanges": false,
+        "passthru": false,
+        "errorifstateunchaged": false,
+        "statepayload": false,
+        "brightnessoverride": "",
+        "roomhint": "Cooler do Notebook",
+        "name": "Cooler do Notebook",
+        "colortype": "hsv",
+        "nora": "bf2335351d119ded",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor3/Estado",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "temperaturemin": "2700",
+        "temperaturemax": "5500",
+        "twofactor": "off",
+        "twofactorpin": "",
+        "filter": false,
+        "x": 331,
+        "y": 372,
+        "wires": [
+            [
+                "b6bdb07c6c9afc28",
+                "9d74375ca91d9d4c",
+                "2f2a51db795f79cf"
+            ]
+        ]
+    },
+    {
+        "id": "4bfc5b506142f2d5",
+        "type": "noraf-light",
+        "z": "f9f0ac7f99118331",
+        "g": "2de24dd6841d2139",
+        "devicename": "Lâmpada da Varanda",
+        "lightcolor": false,
+        "brightnesscontrol": false,
+        "commandonlycolor": false,
+        "turnonwhenbrightnesschanges": false,
+        "passthru": false,
+        "errorifstateunchaged": false,
+        "statepayload": true,
+        "brightnessoverride": "",
+        "roomhint": "Lâmpada da Varanda",
+        "name": "Lâmpada da Varanda",
+        "colortype": "hsv",
+        "nora": "bf2335351d119ded",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Interruptor8/Estado",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "temperaturemin": "2700",
+        "temperaturemax": "5500",
+        "twofactor": "off",
+        "twofactorpin": "",
+        "filter": false,
+        "x": 323,
+        "y": 514,
+        "wires": [
+            [
+                "519a8211a4071e09",
+                "d40fde2afe121589",
+                "a46f3b2f636657e5"
+            ]
+        ]
+    },
+    {
+        "id": "50e87bc063fa7b13",
+        "type": "aedes broker",
+        "z": "f9f0ac7f99118331",
+        "g": "789d5bb3d86fe585",
+        "name": "MQTT",
+        "mqtt_port": 1883,
+        "mqtt_ws_bind": "port",
+        "mqtt_ws_port": "",
+        "mqtt_ws_path": "",
+        "cert": "",
+        "key": "",
+        "certname": "",
+        "keyname": "",
+        "persistence_bind": "memory",
+        "dburl": "",
+        "usetls": false,
+        "x": 655.7373046875,
+        "y": 755.7442016601562,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "b6d9594b665edb04",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Temperatura",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Temperatura",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 402,
+        "y": 136,
+        "wires": [
+            [
+                "2bdda29178907183"
+            ]
+        ]
+    },
+    {
+        "id": "f5fde4c4d32ebea9",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Umidade",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/Umidade",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 396,
+        "y": 192,
+        "wires": [
+            [
+                "bf67e0d29253459c"
+            ]
+        ]
+    },
+    {
+        "id": "354be5a24ceb034f",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Sensação Térmica",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/SensacaoTermica",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 422,
+        "y": 248,
+        "wires": [
+            [
+                "270eb5830c97593b"
+            ]
+        ]
+    },
+    {
+        "id": "60552e4ca807d761",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "name": "Pressão Atmosférica Real",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/Real",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 398,
+        "y": 344,
+        "wires": [
+            [
+                "9b4646918abe4af7"
+            ]
+        ]
+    },
+    {
+        "id": "6453e9e2b6a03dc4",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "name": "Pressão Atmosférica Nível do Mar",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/NivelMar",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 432,
+        "y": 400,
+        "wires": [
+            [
+                "b48ccdcf8b1b1193"
+            ]
+        ]
+    },
+    {
+        "id": "f1d57728fd2a8a8c",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "name": "Altitude Real",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeReal",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 454,
+        "y": 496,
+        "wires": [
+            [
+                "f9868307702f89eb"
+            ]
+        ]
+    },
+    {
+        "id": "fa480c98daae7414",
+        "type": "mqtt in",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "name": "Altitude Nível do Mar",
+        "topic": "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeNivelMar",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "0f257e850b1b1272",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 474,
+        "y": 552,
+        "wires": [
+            [
+                "6e080ab2106a7eaf"
+            ]
+        ]
+    },
+    {
+        "id": "2bdda29178907183",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "group": "be8f03815e51a3c3",
+        "name": "Temperatura",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "0",
+        "ymax": "100",
+        "action": "append",
+        "pointShape": "line",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#ff9500",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 654,
+        "y": 136,
+        "wires": [
+            [
+                "a67d5debcf3127ea"
+            ]
+        ]
+    },
+    {
+        "id": "bf67e0d29253459c",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "group": "0b4a985590644278",
+        "name": "Umidade",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "0",
+        "ymax": "100",
+        "action": "append",
+        "pointShape": "line",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#00ffe1",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 660,
+        "y": 192,
+        "wires": [
+            [
+                "96ed5379d6b04947"
+            ]
+        ]
+    },
+    {
+        "id": "270eb5830c97593b",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "group": "bfb26d0e49c560e4",
+        "name": "Sensação Térmica",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "0",
+        "ymax": "100",
+        "action": "append",
+        "pointShape": "line",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#ff9500",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 654,
+        "y": 248,
+        "wires": [
+            [
+                "744c9c0082dacd51"
+            ]
+        ]
+    },
+    {
+        "id": "9b4646918abe4af7",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "group": "8ecc529be5cd55f7",
+        "name": "Pressão Atmoférica",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "",
+        "ymax": "",
+        "action": "append",
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 706,
+        "y": 344,
+        "wires": [
+            [
+                "a5f90660e4b638e3"
+            ]
+        ]
+    },
+    {
+        "id": "b48ccdcf8b1b1193",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "group": "d524cebdeb2fa729",
+        "name": "Pressão Atmosférica",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "",
+        "ymax": "",
+        "action": "append",
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 712,
+        "y": 400,
+        "wires": [
+            [
+                "ddf1a69e33c9ec90"
+            ]
+        ]
+    },
+    {
+        "id": "f9868307702f89eb",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "group": "f391a11084219d44",
+        "name": "Altitude",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "",
+        "ymax": "",
+        "action": "append",
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 668,
+        "y": 496,
+        "wires": [
+            [
+                "dede4d68ea3224be"
+            ]
+        ]
+    },
+    {
+        "id": "6e080ab2106a7eaf",
+        "type": "ui-chart",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "group": "5193d6c03cea43c5",
+        "name": "Altitude",
+        "label": "",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "msg",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "HH:mm",
+        "yAxisLabel": "",
+        "yAxisProperty": "",
+        "ymin": "",
+        "ymax": "",
+        "action": "append",
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "3",
+        "height": "1",
+        "className": "",
+        "x": 668,
+        "y": 552,
+        "wires": [
+            [
+                "0a20227f49f91088"
+            ]
+        ]
+    },
+    {
+        "id": "96ed5379d6b04947",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Umidade",
+        "group": "0b4a985590644278",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Umidade",
+        "units": "%",
+        "icon": "",
+        "prefix": "",
+        "suffix": "%",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00e9fa"
+            },
+            {
+                "from": "25",
+                "color": "#00ff00"
+            },
+            {
+                "from": "40",
+                "color": "#ffc800"
+            },
+            {
+                "from": "90",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": "10",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 892,
+        "y": 192,
+        "wires": []
+    },
+    {
+        "id": "744c9c0082dacd51",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Sensação Témica",
+        "group": "bfb26d0e49c560e4",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Sensação Térmica",
+        "units": "°C",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00ffd5"
+            },
+            {
+                "from": "25",
+                "color": "#00ff00"
+            },
+            {
+                "from": "35",
+                "color": "#ffc800"
+            },
+            {
+                "from": "40",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": "10",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 862,
+        "y": 248,
+        "wires": []
+    },
+    {
+        "id": "a5f90660e4b638e3",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "name": "",
+        "group": "8ecc529be5cd55f7",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Real",
+        "units": "kPa",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00ff00"
+            },
+            {
+                "from": "250",
+                "color": "#ffc800"
+            },
+            {
+                "from": "900",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "1500",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 946,
+        "y": 344,
+        "wires": []
+    },
+    {
+        "id": "ddf1a69e33c9ec90",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "69b9413bc040740a",
+        "name": "",
+        "group": "d524cebdeb2fa729",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Nível do Mar",
+        "units": "kPa",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00ff00"
+            },
+            {
+                "from": "250",
+                "color": "#ffc800"
+            },
+            {
+                "from": "900",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "1500",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 926,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "dede4d68ea3224be",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "name": "",
+        "group": "f391a11084219d44",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Real",
+        "units": "Metros",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00ff00"
+            },
+            {
+                "from": "50",
+                "color": "#ffc800"
+            },
+            {
+                "from": "100",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "200",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": "10",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 854,
+        "y": 496,
+        "wires": []
+    },
+    {
+        "id": "0a20227f49f91088",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "1692ac83f53b5cf9",
+        "name": "",
+        "group": "5193d6c03cea43c5",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Nível do Mar",
+        "units": "Metros",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00ff00"
+            },
+            {
+                "from": "50",
+                "color": "#ffc800"
+            },
+            {
+                "from": "100",
+                "color": "#ff0000"
+            }
+        ],
+        "min": 0,
+        "max": "200",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 834,
+        "y": 552,
+        "wires": []
+    },
+    {
+        "id": "a67d5debcf3127ea",
+        "type": "ui-gauge",
+        "z": "eea54e06e09c6b13",
+        "g": "a1c2a32cd8dcbafc",
+        "name": "Tempratura",
+        "group": "be8f03815e51a3c3",
+        "order": 1,
+        "width": "3",
+        "height": "3",
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Temperatura",
+        "units": "°C",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#00e1ff"
+            },
+            {
+                "from": "25",
+                "color": "#00ff00"
+            },
+            {
+                "from": "35",
+                "color": "#ffc800"
+            },
+            {
+                "from": "40",
+                "color": "#ff0000"
+            }
+        ],
+        "min": "0",
+        "max": "100",
+        "sizeThickness": "16",
+        "sizeGap": "4",
+        "sizeKeyThickness": "10",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 878,
+        "y": 136,
+        "wires": []
+    },
+    {
+        "id": "14ece12359ea6209",
+        "type": "function",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "Senha",
+        "func": "if (msg.payload === 'S3nh@S3gur@') {\n   \n    node.send({ payload: { 'page': 'Automação Residêncial' }});\n\n\n    setTimeout(function () {\n        node.send({\n            payload: {\n                groups: {\n                    show: [\n                        'Automação Residêncial:Automação Residêncial',\n                        'Automação Residêncial:Temperatura',\n                        'Automação Residêncial:Umidade',\n                        'Automação Residêncial:Sensação Térmica',\n                        'Automação Residêncial:Altitude NM',\n                        'Automação Residêncial:Altitude R',\n                        'Automação Residêncial:Pressão Atmosférica NM',\n                        'Automação Residêncial:Pressão Atmosférica R',\n                        'Automação Residêncial:Logoff'\n                    ]\n                }\n            }\n        });\n    }, 10);\n\n\n    setTimeout(function () {\n        node.send({ payload: { pages: { hide: ['Automação Residêncial'] } } });\n    }, 20);\n\n\n    setTimeout(function () {\n        node.send({ payload: { pages: { hide: ['Login'] } } });\n    }, 30);\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 518,
+        "y": 272,
+        "wires": [
+            [
+                "d4a470b61dfb8730",
+                "5775275c35f8fee6"
+            ]
+        ]
+    },
+    {
+        "id": "f9041c3cad7cd524",
+        "type": "function",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "Logoff",
+        "func": "node.send([{payload:{\"page\":\"Login\"}}])\n\nsetTimeout(function () {\n    node.send([{payload:{pages:{ hide: [\"Automação Residêncial\", \"Login\"]}}}])\n}, 10);\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 746,
+        "y": 456,
+        "wires": [
+            [
+                "d4a470b61dfb8730"
+            ]
+        ]
+    },
+    {
+        "id": "9a811791224880b7",
+        "type": "function",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "Senha",
+        "func": "if (msg.payload === 'loboalfa') {\n   \n    node.send({ payload: { 'page': 'Automação Residêncial' }});\n\n\n    setTimeout(function () {\n        node.send({\n            payload: {\n                groups: {\n                    show: [\n                        'Automação Residêncial:Automação Residêncial',\n                        'Automação Residêncial:Temperatura',\n                        'Automação Residêncial:Umidade',\n                        'Automação Residêncial:Sensação Térmica',\n                        'Automação Residêncial:Altitude NM',\n                        'Automação Residêncial:Altitude R',\n                        'Automação Residêncial:Pressão Atmosférica NM',\n                        'Automação Residêncial:Pressão Atmosférica R',\n                        'Automação Residêncial:Logoff'                        \n                    ]\n                }\n            }\n        });\n    }, 10);\n\n\n    setTimeout(function () {\n        node.send({\n            payload: {\n                groups: {\n                    hide: [\n                        'Automação Residêncial:Temperatura',\n                        'Automação Residêncial:Umidade',\n                        'Automação Residêncial:Sensação Térmica',\n                        'Automação Residêncial:Altitude NM',\n                        'Automação Residêncial:Altitude R',\n                        'Automação Residêncial:Pressão Atmosférica NM',\n                        'Automação Residêncial:Pressão Atmosférica R'\n                    ]\n                }\n            }\n        });\n    }, 20);\n\n\n    setTimeout(function () {\n        node.send({ payload: { pages: { hide: ['Automação Residêncial'] } } });\n    }, 30);\n\n\n    setTimeout(function () {\n        node.send({ payload: { pages: { hide: ['Login'] } } });\n    }, 40);\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 518,
+        "y": 352,
+        "wires": [
+            [
+                "d4a470b61dfb8730",
+                "5775275c35f8fee6"
+            ]
+        ]
+    },
+    {
+        "id": "5775275c35f8fee6",
+        "type": "delay",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "Auto Logoff",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "minutes",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 722,
+        "y": 368,
+        "wires": [
+            [
+                "f9041c3cad7cd524"
+            ]
+        ]
+    },
+    {
+        "id": "2537d39696205641",
+        "type": "template",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "Reset",
+        "field": "reset",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "reset",
+        "output": "str",
+        "x": 518,
+        "y": 416,
+        "wires": [
+            [
+                "5775275c35f8fee6"
+            ]
+        ]
+    },
+    {
+        "id": "01266b39a58019b8",
+        "type": "ui-template",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "group": "",
+        "page": "98cf65ccbe16e910",
+        "ui": "",
+        "name": "Login",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n    <div class=\"card_login\" :class=\"{ 'background_login': active }\">\n        <v-text-field class=\"input_login\" type=\"password\" label=\"Digite sua Senha\" variant=\"outlined\" v-model=\"senha\"\n            @keyup.enter=\"sendOTP\"></v-text-field>\n        <v-btn class=\"button_login\" @click=\"sendOTP\">Autorizar</v-btn>\n    </div>\n</template>\n\n<script>\n    export default {\n        data() {\n            return {\n                senha: '',\n                active: false\n            };\n        },\n        methods: {\n            sendOTP() {\n                this.active = true;\n                setTimeout(() => {\n                    this.send({ payload: this.senha });\n                    this.senha = '';\n                    this.active = false;\n                }, 1000);\n            },\n        }\n    }\n</script>\n\n<style>\n    .card_login {\n        display: flex;\n        margin: auto;\n        flex-direction: column;\n        height: 130px !important;\n        width: 250px !important;\n        background-color: #4F4F4F;\n        border-radius: 18px;\n        padding: 10px;\n        border: 2px solid transparent;\n        position: relative;\n        z-index: 1;\n    }\n\n    .card_login::before {\n        content: \"\";\n        position: absolute;\n        top: -2px;\n        left: -2px;\n        right: -2px;\n        bottom: -2px;\n        background: linear-gradient(270deg, #ff8c009a, #FFD700, #ff8c009a);\n        background-size: 200% 200%;\n        border-radius: 18px;\n        z-index: -1;\n        animation: borderAnimation 4s ease infinite;\n    }\n\n    @keyframes borderAnimation {\n        0% {\n            background-position: 0% 50%;\n        }\n        100% {\n            background-position: 200% 50%;\n        }\n    }\n\n    .background_login {\n        background-color: #FF8C00;\n    }\n\n    .input_login {\n        margin: auto;\n        height: 20%;\n        width: 90%;\n        font-size: 25px;\n    }\n\n    .button_login {\n        margin: auto;\n        background-color: #4F4F4F;\n        border: 1px solid #000000;\n        border-radius: 10px;\n        color: #000000;\n        transition: background-color 0.3s ease, transform 0.3s ease;\n    }\n\n    .button_login:hover {\n        background-color: #FF8C00;\n        transform: scale(1.05);\n    }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "widget:page",
+        "className": "",
+        "x": 326,
+        "y": 304,
+        "wires": [
+            [
+                "14ece12359ea6209",
+                "9a811791224880b7"
+            ]
+        ]
+    },
+    {
+        "id": "c3f391e4272d373e",
+        "type": "ui-template",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "group": "1b08ae51c3ab086c",
+        "page": "",
+        "ui": "",
+        "name": "Logoff",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "head": "",
+        "format": "<template>\n    <v-btn class=\"buton_logoff\" ref=\"botao\" stacked @click=\"start\">\n      <div class=\"title_logoff\">Logoff</div>\n      <v-icon class=\"icon_logoff\" ref=\"icon\" style=\"font-size: 40px;\">{{ icone }}</v-icon>\n    </v-btn>\n</template>\n\n\n<script>\n  export default {\n    data() {\n      return {\n        icone: 'mdi-power-on'\n       };\n    },\n    methods: {\n      start: function () {        \n        this.icone = 'mdi-power-cycle';\n        this.$refs.icon.$el.style.color = '#A9A9A9';\n        this.$refs.icon.$el.style.textShadow = '0px 0px 0px';    \n       \n        setTimeout(() => {\n          this.icone = 'mdi-power-off';\n          this.$refs.icon.$el.style.color = '#A9A9A9';\n          this.$refs.icon.$el.style.textShadow = '0px 0px 0px';\n        }, 1000);\n\n\n        setTimeout(() => {\n          this.send({ payload: 'ON' });\n        }, 2000);\n\n\n      },\n    }\n  };\n</script>\n\n\n<style>\n  .buton_logoff {\n    display: flex;\n    flex-direction: column;\n    margin: auto;\n    height: 50px;\n    width: 50px;\n    background-color: #FF8C00;\n    color: #000000;\n    border: 1px solid #000000;\n    font-size: 14px;\n    border-radius: 18px;\n  }\n  .title_logoff {\n    font-size: 75%;\n  }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 330,
+        "y": 456,
+        "wires": [
+            [
+                "f9041c3cad7cd524",
+                "2537d39696205641"
+            ]
+        ]
+    },
+    {
+        "id": "d4a470b61dfb8730",
+        "type": "ui-control",
+        "z": "b69b33fb538d2281",
+        "g": "ae401c668a9a4c60",
+        "name": "",
+        "ui": "c4aa02a2614fb60c",
+        "events": "all",
+        "x": 940,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9f8429887dd3582a",
+        "type": "comment",
+        "z": "92a584795966449e",
+        "g": "a7a79cb89f9aa491",
+        "name": "Relação de Plugins Para Baixar",
+        "info": "@flowfuse/node-red-dashboard\n1.13.0\n\n@node-red-contrib-themes/theme-collection\n4.0.7\n\n@node-red\n4.0.2\n\n@node-red-contrib-aedes\n0.6.0\n\n@node-red-contrib-modbus\n5.41.0\n\n@node-red-contrib-modbus-flex-server\n1.0.0\n\n@node-red-contrib-mqtt-broker\n0.2.9\n\n@node-red-contrib-smartnora\n1.22.1\n\n@node-red-dashboard\n3.6.5\n",
+        "x": 630,
+        "y": 320,
+        "wires": []
+    }
+]

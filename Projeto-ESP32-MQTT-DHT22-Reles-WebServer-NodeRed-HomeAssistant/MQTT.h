@@ -7,7 +7,7 @@
 // Configurações do Broker MQTT
 const int PortaBroker = 1883;  // Porta do Broker MQTT
 
-#define ID_MQTT "BrokerMQTT-ESP32-IoT" /* ID MQTT (para identificação de sessão)
+#define ID_MQTT "Escolha um Nome único e diferente" /* ID MQTT (para identificação de sessão)
                                           IMPORTANTE: Este deve ser único no broker (ou seja,
                                           se um client MQTT tentar entrar com o mesmo
                                           ID de outro já conectado ao broker, o broker

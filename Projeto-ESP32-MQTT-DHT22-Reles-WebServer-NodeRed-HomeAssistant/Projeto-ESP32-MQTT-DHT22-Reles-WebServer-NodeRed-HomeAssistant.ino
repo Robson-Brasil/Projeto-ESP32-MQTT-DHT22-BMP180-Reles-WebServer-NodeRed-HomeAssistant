@@ -14,8 +14,8 @@
   Para Instalação do Node-Red:       https://nodered.org/docs/getting-started/
   Home Assistant
   Para Instalação do Home Assistant: https://www.home-assistant.io/installation/
-  Versão : 2.0 - Release Candidate
-  Última Modificação : 31/08/2024
+  Versão : 1.0 - Release Candidate
+  Última Modificação : 05/09/2024
 ******************************************************************************************************************************************/
 
 //Bibliotecas
@@ -35,13 +35,13 @@ float diff = 1.0;
 DNSServer dns;
 
 // Configuração de IP estático
-IPAddress local_IP(192, 168, 10, 10);
-IPAddress gateway(192, 168, 10, 1);
-IPAddress subnet(255, 255, 255, 0);
+IPAddress local_IP(192, 168, 10, 10); // <-- Altere aqui pro IP da sua rede
+IPAddress gateway(192, 168, 10, 1);   // <-- Altere aqui pro Gateay da sua rede
+IPAddress subnet(255, 255, 255, 0);   // <-- Aqui, normalmente não se altera
 
 // Configuração de DNS estático
-IPAddress primaryDNS(1, 1, 1, 1);
-IPAddress secondaryDNS(8, 8, 8, 8);
+IPAddress primaryDNS(1, 1, 1, 1);     // <-- Aqui, normalmente não se altera
+IPAddress secondaryDNS(8, 8, 8, 8);   // <-- Aqui, normalmente não se altera
 
 // Configuração do servidor web
 AsyncWebServer server(80);
