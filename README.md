@@ -1,6 +1,6 @@
 # Projeto IoT - Automação Residencial
 
-Este é o meu primeiro projeto de automação residencial utilizando IoT, desenvolvido com o ESP32 Wroom de 38 pinos, sensores DHT22 e BMP180, e um módulo relé de 8 canais. O objetivo foi criar uma solução acessível para controlar dispositivos eletrônicos remotamente e monitorar condições ambientais como temperatura e umidade.
+Este é o meu primeiro projeto de automação residencial utilizando IoT, desenvolvido com o ESP32 Wroom de 38 pinos, sensores DHT22 e BMP180, e um módulo relé de 8 canais. O objetivo foi criar uma solução acessível para controlar dispositivos eletrônicos remotamente e monitorar condições ambientais como temperatura, umidade, pressão atmosférica e altitude.
 
 ## Visão Geral
 
