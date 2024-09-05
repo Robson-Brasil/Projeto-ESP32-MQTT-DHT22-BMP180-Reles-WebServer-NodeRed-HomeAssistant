@@ -1,3 +1,4 @@
+// Todas as bibliotecas baixei direto do IDE do Arduino, caso você não encontre, basta uma procurada no Google e tudo será resolvido
 // Bibliotecas
 #include <WiFi.h>               // Função: Fornece suporte para comunicação Wi-Fi em projetos Arduino. Permite a conexão a redes Wi-Fi e a criação de servidores ou clientes.
 #include <PubSubClient.h>       // Função: Biblioteca para implementação do protocolo MQTT em projetos Arduino. É comumente utilizada para comunicação entre dispositivos IoT.

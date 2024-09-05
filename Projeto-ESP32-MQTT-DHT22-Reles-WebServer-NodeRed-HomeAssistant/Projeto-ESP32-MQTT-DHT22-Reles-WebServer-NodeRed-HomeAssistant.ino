@@ -218,7 +218,6 @@ void toggleCheckbox(int checkboxId, bool checkboxState) {
   digitalWrite(relayPins[checkboxId], checkboxState ? HIGH : LOW);
 }
 
-
 #define MSG_BUFFER_SIZE (1000)
 
 //Função MILLIS
@@ -418,10 +417,6 @@ void RelayMQTT(){
       MQTT.publish(pub0, "1", true);
     } else {
       MQTT.publish(pub0, "0", true);
-    }
-
-    if (status_desligatodos == 0) {
-      MQTT.publish(pub18, "1", true);
     }
   }
 }
@@ -713,7 +708,6 @@ void reconnectMQTT() {
         MQTT.subscribe(sub6);
         MQTT.subscribe(sub7);
         MQTT.subscribe(sub8);
-        MQTT.subscribe(sub18);
       } else {
         Serial.println("Falha ao reconectar no broker.");
         Serial.print(MQTT.state());
@@ -782,18 +776,18 @@ void SensoresMQTT(){
     lastMsgDHT = currentTimeDHT;  // Atualiza o último tempo de execução
 
     // Código executado a cada 60000 milissegundos (1 minuto)
-    float temp_data = dht.readTemperature();
-    dtostrf(temp_data, 6, 2, str_temp_data);
+    float temp_data = dht.readTemperature();      // Leitura da temperatura em graus Celsius (°C) pelo sensor DHT22
+    dtostrf(temp_data, 6, 2, str_temp_data);      // Conversão do valor float de temperatura para string com 6 caracteres e 2 casas decimais
 
-    float hum_data = dht.readHumidity();
-    dtostrf(hum_data, 6, 2, str_hum_data);
+    float hum_data = dht.readHumidity();          // Leitura da umidade relativa do ar (%)
+    dtostrf(hum_data, 6, 2, str_hum_data);        // Conversão do valor float de umidade para string com 6 caracteres e 2 casas decimais
 
-    float tempF_data = dht.readTemperature(true);
-    dtostrf(tempF_data, 6, 2, str_tempF_data);
+    float tempF_data = dht.readTemperature(true); // Leitura da temperatura em graus Fahrenheit (°F)
+    dtostrf(tempF_data, 6, 2, str_tempF_data);    // Conversão do valor float de temperatura em Fahrenheit para string com 6 caracteres e 2 casas decimais
 
-    float tempterm_data = dht.computeHeatIndex(tempF_data, hum_data);
-    tempterm_data = dht.convertFtoC(tempterm_data);
-    dtostrf(tempterm_data, 6, 2, str_tempterm_data);
+    float tempterm_data = dht.computeHeatIndex(tempF_data, hum_data); // Cálculo da sensação térmica (heat index) com base na temperatura em Fahrenheit e umidade
+    tempterm_data = dht.convertFtoC(tempterm_data);   // Conversão da sensação térmica de Fahrenheit para Celsius
+    dtostrf(tempterm_data, 6, 2, str_tempterm_data);  // Conversão do valor float de sensação térmica para string com 6 caracteres e 2 casas decimais
 
     // Publica os dados no MQTT
     MQTT.publish(pub9, str_temp_data);
@@ -814,22 +808,21 @@ void SensoresMQTT(){
 
     char buffer[10];  // Buffer para armazenar a string convertida
 
-    // Pressão Real
-    dtostrf(bmp.readPressure() / 100.0, 2, 2, buffer);
+    // Leitura da pressão atmosférica (hPa) a partir do sensor BMP180
+    dtostrf(bmp.readPressure() / 100.0, 2, 2, buffer);  // A pressão lida é convertida de Pascal para hectopascal (hPa) ao dividir por 100.0
     MQTT.publish(pub14, buffer);
 
-    // Pressão ao Nível do Mar (calculada)
-    dtostrf(bmp.readSealevelPressure(pressaoNivelMar) / 100.0, 2, 2, buffer);
+    // Leitura da pressão ao nível do mar (calculada)
+    dtostrf(bmp.readSealevelPressure(pressaoNivelMar) / 100.0, 2, 2, buffer); // Utiliza o valor de pressão ao nível do mar definido (pressaoNivelMar) para o cálculo
     MQTT.publish(pub15, buffer);
 
-    // Altitude Real
-    float altitudeReal = bmp.readAltitude(pressaoNivelMar * 100);
-    dtostrf(altitudeReal, 2, 2, buffer);
+    float altitudeReal = bmp.readAltitude(pressaoNivelMar * 100); // Leitura da altitude real (metros) com base na pressão lida e na pressão ao nível do mar
+    dtostrf(altitudeReal, 2, 2, buffer);  // Conversão do valor da altitude para string com 2 casas decimais
     MQTT.publish(pub16, buffer);
 
-    // Altitude ao Nível do Mar ajustada pela altitude da cidade
-    float altitudeAoNivelDoMar = altitudeReal + altitudeNivelMar;
-    dtostrf(altitudeAoNivelDoMar, 2, 2, buffer);
+    // Cálculo da altitude ajustada ao nível do mar, somando a altitude real com a altitude da cidade (altitudeNivelMar)
+    float altitudeAoNivelDoMar = altitudeReal + altitudeNivelMar; // Isso ajusta o valor da altitude com base na localização específica da cidade
+    dtostrf(altitudeAoNivelDoMar, 2, 2, buffer);  // Conversão do valor da altitude ajustada para string com 2 casas decimais
     MQTT.publish(pub17, buffer);
   }
 }
@@ -858,5 +851,4 @@ void loop1() {
   MQTT.loop();  // Verifica se há novas mensagens no Broker MQTT
   // Garante a leitura dos sensores DHT22 e BMP180
   SensoresMQTT();
-  
 }
