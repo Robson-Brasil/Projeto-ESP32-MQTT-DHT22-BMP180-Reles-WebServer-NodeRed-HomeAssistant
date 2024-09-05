@@ -27,8 +27,13 @@ Ligações na Protoboard
 
 ## Dashboards usadas no Celular
 
-Vituíno MQTT
-![Screenshot_20220830-233657](https://user-images.githubusercontent.com/66142021/187596297-efb1cd1e-e8bb-4784-9439-6de4913525d4.png)
+Vituíno6 MQTT
+Relés e DHT22
+![Screenshot_20240905-153253_Virtuino 6](https://github.com/user-attachments/assets/3e5bca48-1559-4dd4-8305-67f7b9377dd9)
 
-Home Assistant
+Virtuino6 MQTT
+BMP180
+![Screenshot_20240905-153347_Virtuino 6](https://github.com/user-attachments/assets/e06621c2-2a99-4a30-9d99-bac14ab401ea)
+
+Home Assistant (Desatualizada)
 ![Screenshot_20220830-233639](https://user-images.githubusercontent.com/66142021/187596337-b61de278-251a-4ec3-80ad-c39e651a6c50.png)
