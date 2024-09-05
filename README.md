@@ -23,7 +23,7 @@ Funciona até que bem, mas em determinadas horas, tenho que resetar o Servidor M
 ## Para Instalação do Node-Red : https://nodered.org/docs/getting-started/
 
 Ligações na Protoboard
-![Meu Projeto de IoT](https://user-images.githubusercontent.com/66142021/187596240-c7b705b2-5383-481c-bd41-8a28741f5f4a.png)
+![Meu Projeto de IoT](https://github.com/user-attachments/assets/44182bec-8cb9-4c78-b2b9-41a09ed213f8)
 
 ## Dashboards usadas no Celular
 
@@ -32,6 +32,3 @@ Vituíno MQTT
 
 Home Assistant
 ![Screenshot_20220830-233639](https://user-images.githubusercontent.com/66142021/187596337-b61de278-251a-4ec3-80ad-c39e651a6c50.png)
-
-MQTT Dashboard
-![Screenshot_20220830-233717](https://user-images.githubusercontent.com/66142021/187596376-13b5ca4d-3c68-48cb-b1c0-dd2af1915e60.png)
