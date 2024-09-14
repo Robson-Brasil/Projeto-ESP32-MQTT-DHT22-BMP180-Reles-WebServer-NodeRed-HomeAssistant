@@ -7,10 +7,6 @@
     font-weight: bold;
 }
 
-body {
-    background-color: #800080;
-}
-
 .bg {
     width: 100%;
     height: 100vh;
@@ -24,12 +20,13 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
+    height: 100vh;
+    overflow: auto;
+    padding: 0;
 }
 
 .glass li {
-    position: absolute;
+    position: sticky;
     display: block;
     list-style: none;
     width: 20px;
@@ -38,6 +35,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.18);
     animation: spin 5s linear infinite;
     bottom: -150px;
+    margin: 0;
 }
 
 .glass li:nth-child(1) {
@@ -115,6 +113,22 @@ body {
     animation-duration: 11s;
 }
 
+.glass li:nth-child(11) {
+    left: 95%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 0s;
+    animation-duration: 11s;
+}
+
+.glass li:nth-child(12) {
+    left: 5%;
+    width: 120px;
+    height: 120px;
+    animation-delay: 0s;
+    animation-duration: 5s;
+}
+
 @keyframes spin {
     0% {
         transform: translateY(0) rotate(0deg);
@@ -129,47 +143,41 @@ body {
     }
 }
 
+
 html, body {
-    height: 100%;
-}
-
-
-body {
+    background-color: #800080;
+    height: 100vh;
     font-family: Arial, sans-serif;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: bold;
     margin: 0;
     padding: 0;
-    transition: background-color 0.3s;
-    /* Para garantir que a altura do corpo ocupe toda a tela */
-    background-image: url("IoT.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 100vh;
     align-items: center;
+
 }
 
 header {
     display: flex;
     justify-content:center;
     align-items: center;
-    padding: 0.5rem;
+    padding: 0rem;
     background-color: #f30c0c00;
     font: #000000;
     box-shadow: 0 0 20px #000000, 0 0 60px #000000, 0 0 90px #000000;
+    margin-top: -140px;
 }
 
 .logo {
     max-height: 100px;
 }
 
+.h1 {
+    font-size: 30px;  /* Reduz o tamanho da fonte do título */
+    align-items: center;
+}
+
 .switch {
-    position: relative;
-    display: inline-block;
-    margin: 20px;
-    width: 55px;
-    height: 34px;
+    display: none;
 }
 
 .switch input {
@@ -276,7 +284,6 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
 
 .switch-container {
@@ -284,7 +291,7 @@ main {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 10rem;
+    padding: 0rem;
 }
 
 .switch-row {
@@ -393,83 +400,110 @@ footer {
     transition-delay: 0.2s;
 }
 
-@media (max-width: 368px) {
-
-    .h1 {
-        justify-content: space-between;
-        align-items: center;
-        font-size: 5px;
+@media (max-width: 1366px) {
+    /* Ajustes para o header */
+    header {
+        padding: 0rem;
+        gap: 0.5rem;
+        text-align: center;
     }
+
+    .logo {
+        max-height: 50px;  /* Reduz o tamanho do logo para caber melhor em telas pequenas */
+        margin-bottom: 0rem;  /* Espaçamento entre o logo e o título */
+    }
+
+    h1 {
+        font-size: 30px;  /* Reduz o tamanho da fonte do título */
+    }
+
     .switch-container {
-        padding: 0.5rem;
+        padding: 0px;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
+        gap: 0rem;
+        margin-top: 0px;
+        width: 100%;
     }
 
-    html, body {
-        height: 100vh;
+    .switch-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+        margin-bottom: 3rem;
+        margin-top: -25px;
+        padding: 0px;
+    }
+
+}
+
+@media (max-width: 480px) {
+    /* Ajustes para o header */
+    header {
+        flex-direction: column;
+        padding: 0.5rem;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .logo {
+        max-height: 70px;  /* Reduz o tamanho do logo para caber melhor em telas pequenas */
+        margin-bottom: 0.5rem;  /* Espaçamento entre o logo e o título */
+    }
+
+    h1 {
+        font-size: 30px;  /* Reduz o tamanho da fonte do título */
+    }
+
+    .switch-container {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0rem;
+        margin-top: -40px;
+        margin-bottom: 50px;
+        width: 100%;
     }
 
     main {
-        height: 50vh;
-    }
-
-    header {
-        display: flex;
-        justify-content: space-between;
+        width: 100%;
+        padding: 0px;
         align-items: center;
-        padding: 0.5rem;
-        gap: 1px;
     }
 
-    footer {
-        text-align: center;
-        margin-bottom: 10%;
+    .button-name {
+        margin-top: -20px;
+        font-size: 15px;
+        flex-direction: row;
+        justify-content:space-around;
     }
 
     .switch {
-        position: relative;
-        display: inline-block;
-        width: 55px;
-        height: 32px;
+        display: none;
     }
 
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
+    .switch-row {
+        bottom: 180px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+        margin-top: 0.0rem;
+        padding: 5px;
     }
 
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        transition-delay: 0.2s;
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 24px;
-        width: 24px;
-        left: 4px;
-        bottom: 4px;
-        transition-delay: 0.2s;
-    }
-
-    input:checked+.slider:before {
-        transform: translateX(24px);
-    }
-
-    .slider.round {
-        border-radius: 50px;
-    }
-
-    .slider.round:before {
-        border-radius: 50%;
+    /* Ajustes para o footer */
+    footer {
+        text-align: center;
+        font-size: 15px;  /* Reduz o tamanho da fonte no footer */
+        padding: 0rem;  /* Ajusta o espaçamento no footer */
+        margin-bottom: 70px;
     }
 }
+
