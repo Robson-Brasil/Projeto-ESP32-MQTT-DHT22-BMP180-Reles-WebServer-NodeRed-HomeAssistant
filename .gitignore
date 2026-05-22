@@ -1,0 +1,37 @@
+# Arduino / ESP32
+*.tmp
+*.log
+*.bin
+*.elf
+*.map
+*.zip
+*.gz
+*.exe
+*.spec
+*.o
+*.d
+build/
+dist/
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+desktop.ini
+
+# Secrets
+*.env
+credentials.h
+secrets.h
+config_login.h
+LoginsSenhas.h
+Credenciais.h
+
+# OS
+Thumbs.db
+.Spotlight-V100
+.Trashes
