@@ -1,3 +1,6 @@
+#ifndef TOPICOSMQTT_H
+#define TOPICOSMQTT_H
+
 // Aqui são os tópicos que eu uso, você escolhe os seu próprios tópicos
 
 // Tópicos do Subscribe
@@ -53,3 +56,5 @@ const char* pub14 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/Real
 const char* pub15 = "ESP32/MinhaCasa/QuartoRobson/BMP180/PressaoAtmosferica/NivelMar";  // Somente por MQTT
 const char* pub16 = "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeReal";                 // Somente por MQTT
 const char* pub17 = "ESP32/MinhaCasa/QuartoRobson/BMP180/AltitudeNivelMar";             // Somente por MQTT
+
+#endif
