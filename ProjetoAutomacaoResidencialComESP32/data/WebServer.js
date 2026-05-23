@@ -82,4 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    initWebSocket();
 });

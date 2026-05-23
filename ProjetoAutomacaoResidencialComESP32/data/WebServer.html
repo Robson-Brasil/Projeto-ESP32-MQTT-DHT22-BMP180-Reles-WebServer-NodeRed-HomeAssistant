@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Robson Brasil">
+    <meta name="description" content="Sistema de Automação Residencial com controle de iluminação">
+    <meta name="keywords" content="iot, internet of things, internet das coisas, automação residencial, programação em C++, home assistant, esp32, alexa, google assistant" />
+    <link rel="icon" href="logo.png" />
+    <link rel="stylesheet" href="WebServer.css" />
+    <title>IoT - Internet of Things</title>
+    <style>
+        .switch-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .switch-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .switch-button {
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .button-name {
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .slider-button {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .slider-button input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-button:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider-button:before {
+            transform: translateX(26px);
+        }
+
+        @media (max-width: 600px) {
+            .switch-button {
+                width: 100px;
+            }
+        }
+
+        @media (min-width: 601px) and (max-width: 1024px) {
+            .switch-button {
+                width: 120px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .switch-button {
+                width: 140px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg" role="main">
+        <ul class="glass" aria-hidden="true">
+            <li></li>
+            <header>
+                <img src="logo.png" alt="Logo da Automação Residencial" class="logo" />
+                <h1>AUTOMAÇÃO RESIDENCIAL</h1>
+            </header>
+            <li></li>
+            <li></li>
+            <label class="switch" for="WebServerToggle">
+                <input type="checkbox" id="WebServerToggle" aria-label="Alternar modo escuro" />
+                <span class="slider round"></span>
+            </label>
+            <main>
+                <div class="switch-container">
+                    <div class="switch-row">
+                        <label class="switch-button">
+                            <span class="button-name">Quarto 1</span>
+                            <input type="checkbox" id="26" aria-label="Alternar luz do Quarto 1" />
+                            <span class="slider-button"></span>
+                        </label>
+                        <label class="switch-button">
+                            <span class="button-name">Bancada</span>
+                            <input type="checkbox" id="13" aria-label="Alternar luz da Bancada" />
+                            <span class="slider-button"></span>
+                        </label>
+                        <label class="switch-button">
+                            <span class="button-name">Cooler</span>
+                            <input type="checkbox" id="14" aria-label="Alternar Cooler" />
+                            <span class="slider-button"></span>
+                        </label>
+                        <label class="switch-button">
+                            <span class="button-name">Varanda</span>
+                            <input type="checkbox" id="19" aria-label="Alternar luz da Varanda" />
+                            <span class="slider-button"></span>
+                        </label>
+                    </div>
+                    <div class="switch-row">
+                        <label class="switch-button">
+                            <span class="button-name">Quarto 2</span>
+                            <input type="checkbox" id="16" aria-label="Alternar luz do Quarto 2" />
+                            <span class="slider-button"></span>
+                        </label>
+                        <label class="switch-button">
+                            <span class="button-name">Quarto 3</span>
+                            <input type="checkbox" id="17" aria-label="Alternar luz do Quarto 3" />
+                            <span class="slider-button"></span>
+                        </label>
+                        <label class="switch-button">
+                            <span class="button-name">Cozinha</span>
+                            <input type="checkbox" id="18" aria-label="Alternar luz da Cozinha" />
+                            <span class="slider-button"></span>
+                        </label>
+                        <label class="switch-button">
+                            <span class="button-name">Corredor</span>
+                            <input type="checkbox" id="32" aria-label="Alternar luz do Corredor" />
+                            <span class="slider-button"></span>
+                        </label>
+                    </div>
+                </div>
+            </main>
+            <li></li>
+            <li></li>
+            <li></li>
+            <footer>
+                <h2>Desenvolvido por Robson Brasil</h2>
+            </footer>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    <script defer src="WebServer.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const WebServerToggle = document.getElementById('WebServerToggle');
+            const switchButtons = document.querySelectorAll('.switch-button input[type="checkbox"]');
+
+            // Recupera o estado do dark mode do LocalStorage
+            const WebServerState = localStorage.getItem('WebServerState');
+            if (WebServerState === 'enabled') {
+                document.body.classList.add('dark-mode');
+                WebServerToggle.checked = true;
+            }
+
+            WebServerToggle.addEventListener('change', () => {
+                // Atualiza o estado do dark mode no LocalStorage
+                if (WebServerToggle.checked) {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('WebServerState', 'enabled');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('WebServerState', 'disabled');
+                }
+            });
+
+            switchButtons.forEach(button => {
+                const buttonId = button.id;
+                const buttonState = localStorage.getItem(buttonId);
+
+                if (buttonState === '1') {
+                    button.checked = true;
+                }
+
+                button.addEventListener('change', () => {
+                    const newButtonState = button.checked ? '1' : '0';
+                    localStorage.setItem(buttonId, newButtonState);
+                    updateButtonStateOnServer(buttonId, newButtonState);
+                });
+            });
+
+            // Função para enviar a alteração do estado ao servidor
+            function updateButtonStateOnServer(buttonId, buttonState) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "/update?relay=" + buttonId + "&state=" + buttonState, true);
+                xhr.send();
+            }
+
+            // WebSocket para receber atualizações de estado dos botões do servidor MQTT
+            const gateway = `ws://192.168.10.10:8080/ws`;
+            let websocket;
+
+            function initWebSocket() {
+                console.log('Trying to open a WebSocket connection…');
+                websocket = new WebSocket(gateway);
+                websocket.onopen = onOpen;
+                websocket.onclose = onClose;
+                websocket.onmessage = onMessage;
+            }
+
+            function getReadings(){
+                websocket.send("getReadings");
+            }
+
+            // When websocket is established, call the getReadings() function
+            function onOpen(event) {
+                console.log('Connection opened');
+                getReadings();
+            }
+
+            function onClose(event) {
+                console.log('Connection closed');
+                setTimeout(initWebSocket, 2000);
+            }
+
+            // Function that receives the message from the ESP32 with the readings
+            function onMessage(event) {
+                console.log(event.data);
+                const myObj = JSON.parse(event.data);
+                const keys = Object.keys(myObj);
+
+                keys.forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.innerHTML = myObj[key];
+                    }
+                });
+            }
+            initWebSocket();
+        });
+    </script>
+</body>
+</html>
